@@ -143,10 +143,12 @@ BC_API data_chunk sha1_hash_chunk(const data_slice& data);
 BC_API hash_digest sha256_hash(const data_slice& data);
 BC_API data_chunk sha256_hash_chunk(const data_slice& data);
 
-/// Generate a sha256 hash.
-/// This hash function is used in electrum seed stretching.
-BC_API hash_digest sha256_hash(const data_slice& first,
-    const data_slice& second);
+/// Generate a sha256 tag digest.
+BC_API long_hash sha256_tag_digest(const std::string& tag);
+
+/// Generate a sha256 tagged hash.
+BC_API hash_digest sha256_tagged_hash(const long_hash& tag_digest,
+    const data_slice& data);
 
 // Generate a hmac sha256 hash.
 BC_API hash_digest hmac_sha256_hash(const data_slice& data,

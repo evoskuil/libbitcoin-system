@@ -54,6 +54,23 @@ BOOST_AUTO_TEST_CASE(sha256_hash_test)
     BOOST_REQUIRE_EQUAL(encode_base16(hash), "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7");
 }
 
+#define SHA256_TAG_TAG "2a1073a6e67f0e5f09a5957c659503c690efe7272be8313df872556a9a684d8c2a1073a6e67f0e5f09a5957c659503c690efe7272be8313df872556a9a684d8c"
+
+// TODO: verify test vector.
+BOOST_AUTO_TEST_CASE(sha256_tag_digest_test)
+{
+    const auto tag = sha256_tag_digest("tag");
+    BOOST_REQUIRE_EQUAL(encode_base16(tag), SHA256_TAG_TAG);
+}
+
+// TODO: verify test vector.
+BOOST_AUTO_TEST_CASE(sha256_tagged_hash_test)
+{
+    const data_chunk chunk{ 'd', 'a', 't', 'a' };
+    const auto hash = sha256_tagged_hash(base16_literal(SHA256_TAG_TAG), chunk);
+    BOOST_REQUIRE_EQUAL(encode_base16(hash), "c4e484e58d2f73685d37e56369524916937d3f72bb0bb5e0cc962f5d65836500");
+}
+
 BOOST_AUTO_TEST_CASE(sha512_hash_test)
 {
     const data_chunk chunk{ 'd', 'a', 't', 'a' };

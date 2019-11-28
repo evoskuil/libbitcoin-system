@@ -93,15 +93,19 @@ data_chunk sha256_hash_chunk(const data_slice& data)
     return hash;
 }
 
-hash_digest sha256_hash(const data_slice& first, const data_slice& second)
+long_hash sha256_tag_digest(const std::string& tag)
 {
-    hash_digest hash;
-    SHA256CTX context;
-    SHA256Init(&context);
-    SHA256Update(&context, first.data(), first.size());
-    SHA256Update(&context, second.data(), second.size());
-    SHA256Final(&context, hash.data());
+    long_hash hash;
+    data_chunk tag_chunk{ tag.begin(), tag.end() };
+    SHA256_(tag_chunk.data(), tag_chunk.size(), hash.data());
+    std::copy_n(hash.begin(), hash_size, &hash[hash_size]);
     return hash;
+}
+
+hash_digest sha256_tagged_hash(const long_hash& double_tag_digest,
+    const data_slice& data)
+{
+    return sha256_hash(build_chunk({ double_tag_digest, data }));
 }
 
 hash_digest hmac_sha256_hash(const data_slice& data, const data_slice& key)
