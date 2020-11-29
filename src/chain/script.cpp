@@ -62,6 +62,8 @@ const hash_digest script::one = hash_literal(
 // A default instance is invalid (until modified).
 script::script()
   : cached_(false),
+    taproot_(false),
+    tapscript_(false),
     valid_(false)
 {
 }
@@ -70,6 +72,8 @@ script::script(script&& other)
   : operations_(std::move(other.operations_move())),
     cached_(!operations_.empty()),
     bytes_(std::move(other.bytes_)),
+    taproot_(other.taproot_),
+    tapscript_(other.tapscript_),
     valid_(other.valid_)
 {
 }
@@ -78,6 +82,8 @@ script::script(const script& other)
   : operations_(other.operations_copy()),
     cached_(!operations_.empty()),
     bytes_(other.bytes_),
+    taproot_(other.taproot_),
+    tapscript_(other.tapscript_),
     valid_(other.valid_)
 {
 }
@@ -207,8 +213,7 @@ bool script::from_data(reader& source, bool prefix)
     {
         const auto size = source.read_size_little_endian();
 
-        // The max_script_size constant limits evaluation, but not all scripts
-        // evaluate, so use max_block_size to guard memory allocation here.
+        // The script size limit is removed (bip-taproot).
         if (size > max_block_size)
             source.invalidate();
         else
@@ -252,6 +257,8 @@ void script::from_operations(operation::list&& ops)
     operations_ = std::move(ops);
     cached_ = true;
     valid_ = true;
+    taproot_ = false;
+    tapscript_ = false;
 }
 
 // Concurrent read/write is not supported, so no critical section.
@@ -262,6 +269,8 @@ void script::from_operations(const operation::list& ops)
     operations_ = ops;
     cached_ = true;
     valid_ = true;
+    taproot_ = false;
+    tapscript_ = false;
 }
 
 // private/static
@@ -300,6 +309,8 @@ void script::reset()
     bytes_.shrink_to_fit();
     valid_ = false;
     cached_ = false;
+    taproot_ = false;
+    tapscript_ = false;
     operations_.clear();
     operations_.shrink_to_fit();
 }
@@ -478,6 +489,26 @@ const operation::list& script::operations() const
     ///////////////////////////////////////////////////////////////////////////
 
     return operations_;
+}
+
+bool script::taproot() const
+{
+    return taproot_;
+}
+
+void script::set_taproot()
+{
+    taproot_ = true;
+}
+
+bool script::tapscript() const
+{
+    return tapscript_;
+}
+
+void script::set_tapscript()
+{
+    tapscript_ = true;
 }
 
 // Signing (unversioned).
@@ -745,6 +776,32 @@ data_chunk script::to_sequences(const transaction& tx)
     return data;
 }
 
+data_chunk script::to_values(const transaction& tx)
+{
+    const auto sum = [&](size_t total, const input& /* input */)
+    {
+        return total + sizeof(uint32_t);
+    };
+
+    const auto& ins = tx.inputs();
+    auto size = std::accumulate(ins.begin(), ins.end(), size_t(0), sum);
+    data_chunk data;
+    data.reserve(size);
+    data_sink ostream(data);
+    ostream_writer sink(ostream);
+
+    const auto write = [&](const input& input)
+    {
+        const auto& prevout = input.previous_output().metadata.cache;
+        sink.write_8_bytes_little_endian(prevout.value());
+    };
+
+    std::for_each(ins.begin(), ins.end(), write);
+    ostream.flush();
+    BITCOIN_ASSERT(data.size() == size);
+    return data;
+}
+
 static size_t version_0_preimage_size(size_t script_size)
 {
     return sizeof(uint32_t)
@@ -819,7 +876,178 @@ hash_digest script::generate_version_0_signature_hash(const transaction& tx,
     return bitcoin_hash(data);
 }
 
-// Signing (unversioned and version 0).
+// Signing (version 1).
+//-----------------------------------------------------------------------------
+
+inline sighash_algorithm to_taproot_sighash_enum(uint8_t sighash_type)
+{
+    // Type 0x00 is treated as sighash_algorithm::all (bip-taproot).
+    return sighash_type == sighash_algorithm::unmasked_default ?
+        sighash_algorithm::all : to_sighash_enum(sighash_type);
+}
+
+inline bool is_valid_taproot_sighash_type(uint8_t sighash_type)
+{
+    // Type must be: 0x00, 0x01, 0x02, 0x03, 0x81, 0x82, or 0x83 (bip-taproot).
+    switch (sighash_type)
+    {
+        case sighash_algorithm::unmasked_default:
+        case sighash_algorithm::all:
+        case sighash_algorithm::none:
+        case sighash_algorithm::single:
+        case sighash_algorithm::all_anyone_can_pay:
+        case sighash_algorithm::none_anyone_can_pay:
+        case sighash_algorithm::single_anyone_can_pay:
+            return true;
+        default:
+            return false;
+    }
+}
+
+// Generate taproot tagged hash(x) sha256(sha256(tag) || sha256(tag) || x).
+static hash_digest taproot_sighash(const data_chunk& data)
+{
+    static const auto tag_digest = sha256_tag_digest("TapSighash");
+    return sha256_tagged_hash(tag_digest, data);
+}
+
+static size_t taproot_preimage_size(bool any, bool none, bool single,
+    bool annexed, size_t script_size)
+{
+    return sizeof(uint8_t)
+        + sizeof(uint8_t)
+        + sizeof(uint32_t)
+        + sizeof(uint32_t)
+        + (!any ? hash_size + hash_size + hash_size : 0u)
+        + (!none && !single ? hash_size : 0u)
+        + sizeof(uint8_t)
+        + script_size
+        + (any ? point::satoshi_fixed_size() + sizeof(uint64_t) : 0u)
+        + sizeof(uint32_t)
+        + (annexed ? hash_size : 0u)
+        + (single ? hash_size : 0u);
+}
+
+// TODO: move to test.
+////static size_t taproot_preimage_size(bool any, bool none, bool annexed)
+////{
+////    // Maximum preimage size specification (bip-taproot).
+////    return 178u
+////        - (any ? 1u : 0u) * 52u
+////        - (none ? 1u : 0u) * 32u
+////        + (annexed ? 1u : 0u) * 32u;
+////}
+
+// private/static
+hash_digest script::generate_taproot_signature_hash(const transaction& tx,
+    uint32_t input_index, const script& script_code, uint64_t value,
+    uint8_t sighash_type, spend_type spend)
+{
+    constexpr uint8_t epoch_zero = 0x00;
+    constexpr size_t taproot_script_size = 35u;
+
+    // This method does not guard against invalid taproot signature hash types.
+    BITCOIN_ASSERT(is_valid_taproot_sighash_type(sighash_type));
+    const auto sighash = to_taproot_sighash_enum(sighash_type);
+
+    const auto any = (sighash_type & sighash_algorithm::anyone_can_pay) != 0;
+    const auto single = (sighash == sighash_algorithm::single);
+    const auto none = (sighash == sighash_algorithm::none);
+    ////const auto all = (sighash == sighash_algorithm::all);
+
+    // Unlike unversioned algorithm this does not allow an invalid input index.
+    BITCOIN_ASSERT(input_index < tx.inputs().size());
+    const auto& input = tx.inputs()[input_index];
+    const auto annexed = input.witness().annexed();
+
+    // The previous output script size is fixed.
+    BITCOIN_ASSERT(script_code.serialized_size(true) == taproot_script_size);
+    const auto size = taproot_preimage_size(any, none, single, annexed,
+        taproot_script_size);
+
+    data_chunk data;
+    data.reserve(size);
+    data_sink ostream(data);
+    ostream_writer sink(ostream);
+
+    // Control: epoch, always 0 (1).
+    sink.write_byte(epoch_zero);
+
+    // Control: hash type of the signature (1 [not 4]).
+    sink.write_byte(sighash_type);
+
+    // Tx data: version of the transaction (4).
+    sink.write_little_endian(tx.version());
+
+    // Tx data: locktime of the transaction (4).
+    sink.write_little_endian(tx.locktime());
+
+    // Tx data: if sighash_algorithm::anyone_can_pay flag not set:
+    if (!any)
+    {
+        // Single sha256 of all input outpoints (32).
+        sink.write_hash(tx.inpoints_digest());
+
+        // Single sha256 of all input amounts (32).
+        sink.write_hash(tx.values_digest());
+
+        // Single sha256 of all input sequences (32).
+        sink.write_hash(tx.sequences_digest());
+    }
+
+    // Tx data: If both sighash_algorithm::none and ::single flags not set:
+    if (!none && !single)
+    {
+        // Single sha256 of all outputs (32).
+        sink.write_hash(tx.outputs_digest());
+    }
+
+    // Input data: spend type, bit 0 set if annex present otherwise none (1).
+    sink.write_byte(annexed ? spend_type::sentinel | spend : spend_type::none);
+
+    // Input data: prevout script spent by this input (with prefix) (35).
+    script_code.to_data(sink, true);
+
+    // Input data: If sighash_algorithm::anyone_can_pay is set.
+    if (any)
+    {
+        // This input point (32 + 4).
+        input.previous_output().to_data(sink);
+
+        // Value of the previous output spent by this input (8).
+        sink.write_little_endian(value);
+
+        // Sequence of this input (4).
+        sink.write_little_endian(input.sequence());
+    }
+
+    // Input data: If sighash_algorithm::anyone_can_pay is not set.
+    else
+    {
+        // Zero-based index of this tx input (4).
+        sink.write_little_endian(input_index);
+    }
+
+    // Input data: if annex exists.
+    if (annexed)
+    {
+        // Single sha256 hash of (compact_size(size of annex) || annex) (32).
+        sink.write_bytes(sha256_hash(input.witness().annex(true)));
+    }
+
+    // Output data: if sighash_algorithm::single is set:
+    if (single)
+    {
+        // Single sha256 of corresponding output (32).
+        sink.write_bytes(sha256_hash(tx.outputs()[input_index].to_data()));
+    }
+
+    ostream.flush();
+    BITCOIN_ASSERT(data.size() == size);
+    return taproot_sighash(data);
+}
+
+// Signing.
 //-----------------------------------------------------------------------------
 
 // static
@@ -836,6 +1064,10 @@ hash_digest script::generate_signature_hash(const transaction& tx,
         case script_version::zero:
             return generate_version_0_signature_hash(tx, input_index,
                 script_code, value, sighash_type);
+        case script_version::one:
+            // TODO: derive spend type from script properties.
+            return generate_taproot_signature_hash(tx, input_index,
+                script_code, value, sighash_type, spend_type::tap_script);
         case script_version::reserved:
         default:
             BITCOIN_ASSERT_MSG(false, "invalid script version");
@@ -856,6 +1088,8 @@ bool script::check_signature(const ec_signature& signature,
     const auto sighash = chain::script::generate_signature_hash(tx,
         input_index, script_code, sighash_type, version, value);
 
+    // TODO: incorporate v1/taproot handling before this point.
+
     // Validate the EC signature.
     return verify_signature(public_key, sighash, signature);
 }
@@ -870,6 +1104,8 @@ bool script::create_endorsement(endorsement& out, const ec_secret& secret,
     // This always produces a valid signature hash, including one_hash.
     const auto sighash = chain::script::generate_signature_hash(tx,
         input_index, prevout_script, sighash_type, version, value);
+
+    // TODO: incorporate v1/taproot handling before this point.
 
     // Create the EC signature and encode as DER.
     ec_signature signature;
@@ -1241,6 +1477,8 @@ script_version script::version() const
     {
         case opcode::push_size_0:
             return script_version::zero;
+        case opcode::push_positive_1:
+            return script_version::one;
         default:
             return script_version::reserved;
     }
@@ -1419,7 +1657,21 @@ void script::find_and_delete(const data_stack& endorsements)
 
 bool script::is_oversized() const
 {
-    return serialized_size(false) > max_script_size;
+    // Script size limit does not apply (bip-tapscript).
+    return !tapscript_ && serialized_size(false) > max_script_size;
+}
+
+// If any op_success opcode is encountered, validation succeeds, even if later
+// tapscript bytes would fail to decode otherwise (bip-tapscript).
+bool script::is_success() const
+{
+    if (!tapscript_)
+        return false;
+
+    // The first operations access must be method-based to guarantee the cache.
+    const auto& ops = operations();
+    const auto success = [](const operation& op) { return op.is_success(); };
+    return std::find_if(ops.begin(), ops.end(), success) != ops.end();
 }
 
 // An unspendable script is any that can provably not be spent under any
@@ -1467,7 +1719,7 @@ code script::verify(const transaction& tx, uint32_t input_index,
 
         // Validate the native script.
         if ((ec = in.witness().verify(tx, input_index, forks, prevout_script,
-            value)))
+            value, true)))
             return ec;
     }
 
@@ -1497,7 +1749,7 @@ code script::verify(const transaction& tx, uint32_t input_index,
 
             // Validate the non-native script.
             if ((ec = in.witness().verify(tx, input_index, forks,
-                embedded_script, value)))
+                embedded_script, value, false)))
                 return ec;
         }
     }

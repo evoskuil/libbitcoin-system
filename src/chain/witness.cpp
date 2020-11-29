@@ -161,9 +161,7 @@ bool witness::from_data(reader& source, bool prefix)
         // Tokens encoded as variable integer prefixed byte array (bip144).
         const auto size = source.read_size_little_endian();
 
-        // The max_script_size and max_push_data_size constants limit
-        // evaluation, but not all stacks evaluate, so use max_block_weight
-        // to guard memory allocation here.
+        // The script and push data size limits are removed (bip-taproot).
         if (size > max_block_weight)
         {
             source.invalidate();
@@ -335,12 +333,36 @@ const data_stack& witness::stack() const
     return stack_;
 }
 
+data_chunk witness::annex(bool prefix) const
+{
+    if (!annexed())
+        return {};
+
+    if (prefix)
+    {
+        // TODO: reserialize and return annex with size prefix.
+        return {};
+    }
+    else
+    {
+        return stack_.back();
+    }
+}
+
+bool witness::annexed() const
+{
+    return is_annexed(stack_);
+}
+
 // Utilities.
 //-----------------------------------------------------------------------------
 
-inline data_chunk top_element(const data_stack stack)
+// static
+bool witness::is_annexed(const data_stack& stack)
 {
-    return stack.empty() ? data_chunk{} : stack.back();
+    static constexpr size_t annex_sentinel = 0x50;
+
+    return stack.size() > 1 && stack.front().front() == annex_sentinel;
 }
 
 // static
@@ -378,9 +400,17 @@ operation::list witness::to_pay_key_hash(data_chunk&& program)
     };
 }
 
+// Extractions.
+//-----------------------------------------------------------------------------
+
+inline data_chunk top_element(const data_stack stack)
+{
+    return stack.empty() ? data_chunk{} : stack.back();
+}
+
 // The return script is only useful only for sigop counting.
 bool witness::extract_sigop_script(script& out_script,
-    const script& program_script) const
+    const script& program_script, bool native) const
 {
     // Caller may recycle script parameter.
     out_script.clear();
@@ -407,7 +437,20 @@ bool witness::extract_sigop_script(script& out_script,
             }
         }
 
-        // These versions are reserved for future extensions (bip141).
+        // A taproot non-tapscript script has sigops.
+        // Sigops are not statically counted (bip-tapscript).
+        case script_version::one:
+        {
+            if (native && program_script.witness_program().size() == hash_size)
+            {
+                // TODO: 
+                // TODO: consider only non-tapscript.
+            }
+
+            return true;
+        }
+
+        // Remaining paths are reserved for future extensions (bip141).
         case script_version::reserved:
             return true;
 
@@ -418,69 +461,130 @@ bool witness::extract_sigop_script(script& out_script,
     }
 }
 
-// Extract script and initial execution stack.
-bool witness::extract_script(script& out_script,
+// Extract v0 script (or fail) and initial execution stack.
+bool witness::extract_version_0_script(script& out_script,
     data_stack& out_stack, const script& program_script) const
 {
     auto program = program_script.witness_program();
     out_stack = stack_;
 
-    switch (program_script.version())
+    switch (program.size())
     {
-        case script_version::zero:
+        // p2wkh
+        // witness stack : <signature> <public-key>
+        // input script  : (empty)
+        // output script : <0> <20-byte-hash-of-public-key>
+        case short_hash_size:
         {
-            switch (program.size())
-            {
-                // p2wkh
-                // witness stack : <signature> <public-key>
-                // input script  : (empty)
-                // output script : <0> <20-byte-hash-of-public-key>
-                case short_hash_size:
-                {
-                    // Stack must be 2 elements (bip141).
-                    if (out_stack.size() != 2)
-                        return false;
+            // Stack must be 2 elements (bip141).
+            if (out_stack.size() != 2)
+                return false;
 
-                    // Create a pay-to-key-hash input script from the program.
-                    // The hash160 of public key must match program (bip141).
-                    out_script.from_operations(to_pay_key_hash(
-                        std::move(program)));
-                    return true;
-                }
-
-                // p2wsh
-                // witness stack : <script> [stack-elements]
-                // input script  : (empty)
-                // output script : <0> <32-byte-hash-of-script>
-                case hash_size:
-                {
-                    // The stack must consist of at least 1 element (bip141).
-                    if (out_stack.empty())
-                        return false;
-
-                    // Input script is popped from the stack (bip141).
-                    out_script.from_data(pop(out_stack), false);
-
-                    // The sha256 of popped script must match program (bip141).
-                    return std::equal(program.begin(), program.end(),
-                        sha256_hash(out_script.to_data(false)).begin());
-                }
-
-                // The witness extraction is invalid for v0.
-                default:
-                    return false;
-            }
+            // Create a pay-to-key-hash input script from the program.
+            // The hash160 of public key must match program (bip141).
+            out_script.from_operations(to_pay_key_hash(
+                std::move(program)));
+            return true;
         }
 
-        // These versions are reserved for future extensions (bip141).
-        case script_version::reserved:
-            return true;
+        // p2wsh
+        // witness stack : <script> [stack-elements]
+        // input script  : (empty)
+        // output script : <0> <32-byte-hash-of-script>
+        case hash_size:
+        {
+            // The stack must consist of at least 1 element (bip141).
+            if (out_stack.empty())
+                return false;
 
-        // The witness version is undefined.
-        case script_version::unversioned:
+            // Input script is popped from the stack (bip141).
+            out_script.from_data(pop(out_stack), false);
+
+            // The sha256 of popped script must match program (bip141).
+            return std::equal(program.begin(), program.end(),
+                sha256_hash(out_script.to_data(false)).begin());
+        }
+
+        // The witness extraction is invalid for v0.
         default:
             return false;
     }
+}
+
+static bool is_valid_control_block(const data_chunk& control)
+{
+    // TODO: compute and enforce control length.
+    // TODO: (control - 33) : modulo 32 == 0 && < 32 * 128. 
+    // Require 33 + 32m bytes, m is [0...128] (bip-taproot).
+    // TODO: implement crypto nonsense from bip-taproot.
+
+    return false;
+}
+
+static bool is_valid_script_path(const data_chunk& control,
+    const script& script)
+{
+    // TODO: Validate script against control block (bip-taproot).
+    return false;
+}
+
+// Extract (v1) tapscript (if indicated) and initial execution stack.
+bool witness::extract_taproot(script& out_script,
+    data_stack& out_stack, const script& program_script,
+    bool bip_tapscript) const
+{
+    // taproot
+    // input script  : (empty)
+    // output script : <1> <32-byte-schnorr-public-key>
+    // A taproot program is 32 bytes (bip-taproot).
+    auto program = program_script.witness_program();
+
+    // Fail if the witness stack has 0 elements (bip-taproot).
+    if (out_stack.empty())
+        return false;
+
+    // witness stack : <signature> [annex]
+    // The annex is ignored except by signature hash (bip-taproot).
+    if (is_annexed(out_stack))
+        pop(out_stack);
+
+    // A single element stack is a key path taproot spend (bip-taproot).
+    if (out_stack.size() == 1)
+    {
+        // witness stack : <signature> <public-key>
+        out_stack.push_back(std::move(program));
+        out_script = checksig_script;
+        ////out_script.set_taproot();
+        return true;
+    }
+
+    // A multi-element stack is a script path taproot spend (bip-taproot).
+    // witness stack : [stack-elements] <script> <control> [annex]
+
+    // Exclude the control block from the stack (bip-taproot).
+    const auto control = pop(out_stack);
+
+    // Validate the control block (bip-taproot).
+    if (!is_valid_control_block(control))
+        return false;
+
+    // Obtain the script and exclude from the stack (bip-taproot).
+    out_script.from_data(pop(out_stack), false);
+
+    // Validate script against the control block (bip-taproot).
+    if (!is_valid_script_path(control, out_script))
+        return false;
+
+    out_script.set_taproot();
+
+    if (!bip_tapscript)
+        return true;
+
+    // TODO: implement tapscript spend.
+    // It is a tapscript script path taproot spend... (bip-tapscript).
+
+    out_script.set_tapscript();
+    return true;
 }
 
 // Validation.
@@ -490,19 +594,22 @@ bool witness::extract_script(script& out_script,
 // The program script is either a prevout script or an embedded script.
 // It validates this witness, from which the witness script is derived.
 code witness::verify(const transaction& tx, uint32_t input_index,
-    uint32_t forks, const script& program_script, uint64_t value) const
+    uint32_t forks, const script& program_script, uint64_t value,
+    bool native) const
 {
     code ec;
     script script;
     data_stack stack;
     const auto version = program_script.version();
+    const auto bip_taproot = script::is_enabled(forks, rule_fork::bip_taproot_rule);
+    const auto bip_tapscript = script::is_enabled(forks, rule_fork::bip_tapscript_rule);
 
     switch (version)
     {
         // Version 0 (bip141).
         case script_version::zero:
         {
-            if (!extract_script(script, stack, program_script))
+            if (!extract_version_0_script(script, stack, program_script))
                 return error::invalid_witness;
 
             program witness(script, tx, input_index, forks, std::move(stack),
@@ -514,6 +621,28 @@ code witness::verify(const transaction& tx, uint32_t input_index,
             // A v0 script must succeed with a clean true stack (bip141).
             return witness.stack_result(true) ? error::success :
                 error::stack_false;
+        }
+
+        // Version 1 (bip-taproot).
+        case script_version::one:
+        {
+            // Non-taproot outputs remain unencumbered (bip-taproot).
+            // Taproot is v1 native with 32 byte witness program (bip-taproot).
+            if (!(bip_taproot && native &&
+                program_script.witness_program().size() == hash_size))
+                return error::success;
+
+            if (!extract_taproot(script, stack, program_script, bip_tapscript))
+                return error::invalid_witness;
+
+            program witness(script, tx, input_index, forks, std::move(stack),
+                value, version);
+
+            if ((ec = witness.evaluate()))
+                return ec;
+
+            // A v1 script must succeed with a clean true stack (bip-taproot).
+            return witness.stack_result(true) ? ec : error::stack_false;
         }
 
         // These versions are reserved for future extensions (bip141).

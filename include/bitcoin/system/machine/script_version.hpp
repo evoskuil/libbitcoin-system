@@ -31,7 +31,10 @@ enum class script_version
     /// Defined by bip141. 
     zero,
 
-    /// All reserved script versions (1..16).
+    /// Defined by bip-taproot. 
+    one,
+
+    /// All reserved script versions (2..16).
     reserved,
 
     /// All unversioned scripts.

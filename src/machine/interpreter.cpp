@@ -31,6 +31,9 @@ code interpreter::run(program& program)
 {
     code ec;
 
+    if (program.is_success())
+        return error::success;
+
     if (program.is_invalid())
         return error::invalid_script;
 

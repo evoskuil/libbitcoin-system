@@ -97,6 +97,7 @@ inline interpreter::result interpreter::op_if(program& program)
         if (program.empty())
             return error::op_if;
 
+        // TODO: tapscript minimal if.
         value = program.stack_true(false);
         program.pop();
     }
@@ -114,6 +115,7 @@ inline interpreter::result interpreter::op_notif(program& program)
         if (program.empty())
             return error::op_notif;
 
+        // TODO: tapscript minimal notif.
         value = !program.stack_true(false);
         program.pop();
     }

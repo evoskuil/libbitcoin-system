@@ -172,6 +172,11 @@ public:
     hash_digest sequences_hash() const;
     hash_digest hash(bool witness=false) const;
 
+    hash_digest outputs_digest() const;
+    hash_digest inpoints_digest() const;
+    hash_digest sequences_digest() const;
+    hash_digest values_digest() const;
+
     // Utilities.
     //-------------------------------------------------------------------------
 
@@ -239,6 +244,10 @@ private:
     mutable hash_ptr outputs_hash_;
     mutable hash_ptr inpoints_hash_;
     mutable hash_ptr sequences_hash_;
+    mutable hash_ptr outputs_digest_;
+    mutable hash_ptr inpoints_digest_;
+    mutable hash_ptr sequences_digest_;
+    mutable hash_ptr values_digest_;
     mutable upgrade_mutex hash_mutex_;
 
     // These share a mutex as they are not expected to contend.

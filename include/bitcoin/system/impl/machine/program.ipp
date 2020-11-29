@@ -40,15 +40,26 @@ namespace machine {
 // Constant registers.
 //-----------------------------------------------------------------------------
 
+// Check initial program state for success bypass (i.e. to skip validation).
+inline bool program::is_success() const
+{
+    // If any op_success opcode is encountered, validation succeeds, even if
+    // later tapscript bytes would fail to decode otherwise (bip-tapscript).
+    return script_.is_success();
+}
+
 // Check initial program state for validity (i.e. can evaluation return true).
 inline bool program::is_invalid() const
 {
-    // Stack elements must be within push size limit (bip141).
     // Invalid operations indicates a failure deserializing individual ops.
+    // Stack elements must be within push size limit (bip141).
+    // Script size limit does not apply (bip-tapscript).
+    // Initial stack overflow tested (bip-tapscript).
     return !script_.is_valid_operations()
         || script_.is_unspendable()
-        || script_.is_oversized()
-        || !chain::witness::is_push_size(primary_);
+        || !chain::witness::is_push_size(primary_)
+        || (!tapscript_ && script_.is_oversized())
+        || (tapscript_ && is_stack_overflow());
 }
 
 inline uint32_t program::forks() const
@@ -109,6 +120,10 @@ inline bool operation_overflow(size_t count)
 
 inline bool program::increment_operation_count(const operation& op)
 {
+    // The per script non-push opcodes limit does not apply (bip-tapscript).
+    if (script_.tapscript())
+        return true;
+
     // Addition is safe due to script size metadata.
     if (operation::is_counted(op.code()))
         ++operation_count_;
@@ -116,6 +131,7 @@ inline bool program::increment_operation_count(const operation& op)
     return !operation_overflow(operation_count_);
 }
 
+// This is not executed in tapscript path.
 inline bool program::increment_operation_count(int32_t public_keys)
 {
     static const auto max_keys = static_cast<int32_t>(max_script_public_keys);

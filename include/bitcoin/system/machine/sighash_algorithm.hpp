@@ -29,8 +29,12 @@ namespace machine {
 /// Comments from: bitcoin.org/en/developer-guide#standard-transactions
 enum sighash_algorithm : uint32_t
 {
-    /// The default, signs all the inputs and outputs, protecting everything
-    /// except the signature scripts against modification.
+    /// Use of the default hash_type = 0x00 results in signing over the
+    /// whole transaction just as for `all` (bip-taproot).
+    unmasked_default = 0x00,
+
+    /// The masked default, signs all the inputs and outputs, protecting
+    /// everything except the signature scripts against modification.
     all = 0x01,
 
     /// Signs all of the inputs but none of the outputs, allowing anyone to

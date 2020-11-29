@@ -74,7 +74,13 @@ enum rule_fork : uint32_t
     /// Prevent dummy value malleability (soft fork, feature).
     bip147_rule = 1u << 14,
 
-    // Future bitcoin forks work forward from << 15.
+    /// Version 1 script rules (soft fork, feature).
+    bip_taproot_rule = 1u << 15,
+
+    /// Version 1 tapscript rules (soft fork, feature).
+    bip_tapscript_rule = 1u << 16,
+
+    // Future bitcoin forks work forward from << 17.
     // Splitcoin/altcoin forks work backwards from << 30.
 
     /// Fix Satoshi's time warp bug (hard fork, security).

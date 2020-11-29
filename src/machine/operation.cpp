@@ -79,14 +79,14 @@ bool operation::from_data(reader& source)
     code_ = static_cast<opcode>(source.read_byte());
     const auto size = read_data_size(code_, source);
 
-    // The max_script_size and max_push_data_size constants limit
-    // evaluation, but not all scripts evaluate, so use max_block_size
-    // to guard memory allocation here.
+    // The script and push data size limits are removed (bip-taproot).
     if (size > max_block_size)
         source.invalidate();
     else
         data_ = source.read_bytes(size);
 
+    // If any op_success opcode is encountered, validation succeeds, even if
+    // later tapscript bytes would fail to decode otherwise (bip-tapscript).
     if (!source)
         reset();
 

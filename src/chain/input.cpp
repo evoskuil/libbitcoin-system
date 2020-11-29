@@ -435,7 +435,7 @@ size_t input::signature_operations(bool bip16, bool bip141) const
     // Count heavy sigops in the input script.
     auto sigops = script_.sigops(false) * sigops_factor;
 
-    if (bip141 && witness_.extract_sigop_script(witness, prevout))
+    if (bip141 && witness_.extract_sigop_script(witness, prevout, true))
     {
         // Add sigops in the witness script (bip141).
         return sigops + witness.sigops(true);
@@ -443,7 +443,7 @@ size_t input::signature_operations(bool bip16, bool bip141) const
 
     if (bip16 && extract_embedded_script(embedded))
     {
-        if (bip141 && witness_.extract_sigop_script(witness, embedded))
+        if (bip141 && witness_.extract_sigop_script(witness, embedded, false))
         {
             // Add sigops in the embedded witness script (bip141).
             return sigops + witness.sigops(true);

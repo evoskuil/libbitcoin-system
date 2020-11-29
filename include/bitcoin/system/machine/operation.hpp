@@ -121,6 +121,7 @@ public:
 
     /// Categories of opcodes.
     static bool is_push(opcode code);
+    static bool is_success(opcode code);
     static bool is_payload(opcode code);
     static bool is_counted(opcode code);
     static bool is_version(opcode code);
@@ -133,6 +134,7 @@ public:
 
     /// Categories of operations.
     bool is_push() const;
+    bool is_success() const;
     bool is_counted() const;
     bool is_version() const;
     bool is_positive() const;

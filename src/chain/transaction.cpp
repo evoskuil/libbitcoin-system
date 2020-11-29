@@ -393,6 +393,10 @@ void transaction::reset()
     outputs_hash_.reset();
     inpoints_hash_.reset();
     sequences_hash_.reset();
+    outputs_digest_.reset();
+    inpoints_digest_.reset();
+    sequences_digest_.reset();
+    values_digest_.reset();
     segregated_ = boost::none;
     total_input_value_ = boost::none;
     total_output_value_ = boost::none;
@@ -678,6 +682,27 @@ hash_digest transaction::inpoints_hash() const
 hash_digest transaction::sequences_hash() const
 {
     RETURN_CACHED(sequences, bitcoin, hash);
+}
+
+hash_digest transaction::outputs_digest() const
+{
+    RETURN_CACHED(outputs, sha256, digest);
+}
+
+hash_digest transaction::inpoints_digest() const
+{
+    RETURN_CACHED(inpoints, sha256, digest);
+}
+
+hash_digest transaction::sequences_digest() const
+{
+    RETURN_CACHED(sequences, sha256, digest);
+}
+
+// Values cannot be invalidated because they are applied as metadata.
+hash_digest transaction::values_digest() const
+{
+    RETURN_CACHED(values, sha256, digest);
 }
 
 // Utilities.

@@ -105,23 +105,31 @@ public:
 
     size_t serialized_size(bool prefix) const;
     const data_stack& stack() const;
+    data_chunk annex(bool prefix) const;
+    bool annexed() const;
 
     // Utilities.
     //-------------------------------------------------------------------------
 
+    static bool is_annexed(const data_stack& stack);
     static bool is_push_size(const data_stack& stack);
     static bool is_reserved_pattern(const data_stack& stack);
 
+    // Extractions.
+    //-------------------------------------------------------------------------
+
     bool extract_sigop_script(script& out_script,
+        const script& program_script, bool native) const;
+    bool extract_version_0_script(script& out_script, data_stack& out_stack,
         const script& program_script) const;
-    bool extract_script(script& out_script, data_stack& out_stack,
-        const script& program_script) const;
+    bool extract_taproot(script& out_script, data_stack& out_stack,
+        const script& program_script, bool bip_tapscript) const;
 
     // Validation.
     //-------------------------------------------------------------------------
 
     code verify(const transaction& tx, uint32_t input_index, uint32_t forks,
-        const script& program_script, uint64_t value) const;
+        const script& program_script, uint64_t value, bool native) const;
 
 protected:
     // So that input may call reset from its own.

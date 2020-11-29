@@ -60,18 +60,19 @@ public:
     program(const chain::script& script, const chain::transaction& transaction,
         uint32_t input_index, uint32_t forks);
 
-    /// Create an instance with initialized stack (witness run, v0 by default).
+    /// Create an instance with initialized stack (witness run).
     program(const chain::script& script, const chain::transaction& transaction,
         uint32_t input_index, uint32_t forks, data_stack&& stack,
-        uint64_t value, script_version version=script_version::zero);
+        uint64_t value, script_version version);
 
-    /// Create using copied tx, input, forks, value, stack (prevout run).
+    /// Copied tx, input, forks, value, tapscript, stack (prevout run).
     program(const chain::script& script, const program& other);
 
-    /// Create using copied tx, input, forks, value and moved stack (p2sh run).
+    /// Copied tx, input, forks, value tapscript, and moved stack (p2sh run).
     program(const chain::script& script, program&& other, bool move);
 
     /// Utilities.
+    bool is_success() const;
     bool is_invalid() const;
 
     /// Constant registers.

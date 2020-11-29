@@ -55,6 +55,18 @@ public:
     /// Consensus sentinel.
     static const hash_digest one;
 
+    enum spend_type : uint8_t
+    {
+        /// No spend type specified.
+        none = 0x00,
+
+        /// Sentinel for spend type annex encoding.
+        sentinel = 0x01,
+
+        /// Tapscript spend type specified.
+        tap_script = 0x02
+    };
+
     // Constructors.
     //-------------------------------------------------------------------------
 
@@ -130,6 +142,12 @@ public:
     size_t serialized_size(bool prefix) const;
     const operation::list& operations() const;
 
+    bool taproot() const;
+    void set_taproot();
+
+    bool tapscript() const;
+    void set_tapscript();
+
     // Signing.
     //-------------------------------------------------------------------------
 
@@ -157,6 +175,7 @@ public:
     static data_chunk to_outputs(const transaction& tx);
     static data_chunk to_inpoints(const transaction& tx);
     static data_chunk to_sequences(const transaction& tx);
+    static data_chunk to_values(const transaction& tx);
 
     /// Determine if the fork is enabled in the active forks set.
     static bool is_enabled(uint32_t active_forks, rule_fork fork)
@@ -217,6 +236,7 @@ public:
     size_t sigops(bool accurate) const;
     void find_and_delete(const data_stack& endorsements);
     bool is_oversized() const;
+    bool is_success() const;
     bool is_unspendable() const;
 
     // Validation.
@@ -247,6 +267,9 @@ private:
     static hash_digest generate_version_0_signature_hash(const transaction& tx,
         uint32_t input_index, const script& script_code, uint64_t value,
         uint8_t sighash_type);
+    static hash_digest generate_taproot_signature_hash(
+        const transaction& tx, uint32_t input_index, const script& script_code,
+        uint64_t value, uint8_t sighash_type, spend_type spend);
 
     void find_and_delete_(const data_chunk& endorsement);
 
@@ -259,6 +282,8 @@ private:
     mutable upgrade_mutex mutex_;
 
     data_chunk bytes_;
+    bool taproot_;
+    bool tapscript_;
     bool valid_;
 };
 
