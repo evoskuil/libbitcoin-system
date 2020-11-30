@@ -613,7 +613,7 @@ code witness::verify(const transaction& tx, uint32_t input_index,
                 return error::invalid_witness;
 
             program witness(script, tx, input_index, forks, std::move(stack),
-                value, version);
+                value, version, false);
 
             if ((ec = witness.evaluate()))
                 return ec;
@@ -636,7 +636,7 @@ code witness::verify(const transaction& tx, uint32_t input_index,
                 return error::invalid_witness;
 
             program witness(script, tx, input_index, forks, std::move(stack),
-                value, version);
+                value, version, bip_tapscript);
 
             if ((ec = witness.evaluate()))
                 return ec;

@@ -63,7 +63,7 @@ public:
     /// Create an instance with initialized stack (witness run).
     program(const chain::script& script, const chain::transaction& transaction,
         uint32_t input_index, uint32_t forks, data_stack&& stack,
-        uint64_t value, script_version version);
+        uint64_t value, script_version version, bool tapscript);
 
     /// Copied tx, input, forks, value, tapscript, stack (prevout run).
     program(const chain::script& script, const program& other);
@@ -158,6 +158,7 @@ private:
     const uint32_t forks_;
     const uint64_t value_;
     const script_version version_;
+    const bool tapscript_;
 
     size_t negative_count_;
     size_t operation_count_;
