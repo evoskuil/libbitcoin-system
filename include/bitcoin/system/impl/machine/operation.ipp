@@ -276,20 +276,20 @@ inline bool operation::is_push(opcode code)
 // If any success opcode is encountered, validation succeeds (bip-tapscript).
 inline bool operation::is_success(opcode code)
 {
-    BC_CONSTEXPR auto op_80 = static_cast<uint8_t>(opcode::reserved_80);
-    BC_CONSTEXPR auto op_98 = static_cast<uint8_t>(opcode::reserved_98);
-    BC_CONSTEXPR auto op_126 = static_cast<uint8_t>(opcode::disabled_cat);
-    BC_CONSTEXPR auto op_129 = static_cast<uint8_t>(opcode::disabled_right);
-    BC_CONSTEXPR auto op_131 = static_cast<uint8_t>(opcode::disabled_invert);
-    BC_CONSTEXPR auto op_134 = static_cast<uint8_t>(opcode::disabled_xor);
-    BC_CONSTEXPR auto op_137 = static_cast<uint8_t>(opcode::reserved_137);
-    BC_CONSTEXPR auto op_138 = static_cast<uint8_t>(opcode::reserved_138);
-    BC_CONSTEXPR auto op_141 = static_cast<uint8_t>(opcode::disabled_mul2);
-    BC_CONSTEXPR auto op_142 = static_cast<uint8_t>(opcode::disabled_div2);
-    BC_CONSTEXPR auto op_149 = static_cast<uint8_t>(opcode::disabled_mul);
-    BC_CONSTEXPR auto op_153 = static_cast<uint8_t>(opcode::disabled_rshift);
-    BC_CONSTEXPR auto op_187 = static_cast<uint8_t>(opcode::reserved_187);
-    BC_CONSTEXPR auto op_254 = static_cast<uint8_t>(opcode::reserved_254);
+    constexpr auto op_80 = static_cast<uint8_t>(opcode::reserved_80);
+    constexpr auto op_98 = static_cast<uint8_t>(opcode::reserved_98);
+    constexpr auto op_126 = static_cast<uint8_t>(opcode::disabled_cat);
+    constexpr auto op_129 = static_cast<uint8_t>(opcode::disabled_right);
+    constexpr auto op_131 = static_cast<uint8_t>(opcode::disabled_invert);
+    constexpr auto op_134 = static_cast<uint8_t>(opcode::disabled_xor);
+    constexpr auto op_137 = static_cast<uint8_t>(opcode::reserved_137);
+    constexpr auto op_138 = static_cast<uint8_t>(opcode::reserved_138);
+    constexpr auto op_141 = static_cast<uint8_t>(opcode::disabled_mul2);
+    constexpr auto op_142 = static_cast<uint8_t>(opcode::disabled_div2);
+    constexpr auto op_149 = static_cast<uint8_t>(opcode::disabled_mul);
+    constexpr auto op_153 = static_cast<uint8_t>(opcode::disabled_rshift);
+    constexpr auto op_187 = static_cast<uint8_t>(opcode::reserved_187);
+    constexpr auto op_254 = static_cast<uint8_t>(opcode::reserved_254);
 
     const auto value = static_cast<uint8_t>(code);
     return (value == op_80 || value == op_98)
