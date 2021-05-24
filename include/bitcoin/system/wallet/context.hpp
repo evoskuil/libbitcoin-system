@@ -214,16 +214,16 @@ namespace prefix
 struct BC_API context
 {
     /// Hierarchical-deterministic public/private key prefixes.
-    uint64_t hd_prefixes = prefix::ext::undefined;
+    uint64_t hd_prefixes;
 
     /// Payment (legacy address) address version byte.
-    uint8_t address_version = prefix::add::undefined;
+    uint8_t address_version;
 
     /// WIF (legacy private key) version byte.
-    uint16_t wif_prefix = prefix::wif::undefined;
+    uint16_t wif_prefix;
 
     /// Witness address prefix.
-    const char* witness_prefix = prefix::wit::undefined;
+    const char* witness_prefix;
 };
 
 /// Predefined wallet contexts.
