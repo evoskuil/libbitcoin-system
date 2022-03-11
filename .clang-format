@@ -1,3 +1,5 @@
+# The origin file is a dump of the Microsoft style that ships with clang-format
+# Dumped here to avoid abrupt changes to Microsoft style having an impact
 ---
 Language:        Cpp
 # BasedOnStyle:  Microsoft
