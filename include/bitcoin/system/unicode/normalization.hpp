@@ -22,8 +22,10 @@
 #include <string>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Change case of text, complies with section 3.13 of Unicode Standard.
 BC_API bool to_lower(std::string& value) noexcept;

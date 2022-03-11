@@ -25,9 +25,15 @@
 typedef bool is_non_constant;
 typedef const bool is_constant;
 
-class base : noncopyable {};
-class not_derived {};
-class derived : base {};
+class base : noncopyable
+{
+};
+class not_derived
+{
+};
+class derived : base
+{
+};
 
 template <typename Type>
 constexpr bool is_true()

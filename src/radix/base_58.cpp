@@ -26,8 +26,10 @@
 // Base 58 is an ascii data encoding with a domain of 58 symbols (characters).
 // 58 is not a power of 2 so base58 is not a bit mapping.
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 const std::string base58_chars =
     "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -35,8 +37,8 @@ const std::string base58_chars =
 bool is_base58(char character) noexcept
 {
     // The base58 character list is lexically sorted.
-    return std::binary_search(base58_chars.begin(), base58_chars.end(),
-        character);
+    return std::binary_search(
+        base58_chars.begin(), base58_chars.end(), character);
 }
 
 bool is_base58(const std::string& text) noexcept
@@ -50,8 +52,8 @@ bool is_base58(const std::string& text) noexcept
 }
 
 template <typename Data>
-static auto find_first_nonzero(const Data& data) noexcept ->
-    decltype(data.cbegin())
+static auto find_first_nonzero(const Data& data) noexcept
+    -> decltype(data.cbegin())
 {
     auto first_nonzero = data.cbegin();
     while (first_nonzero != data.end() && is_zero(*first_nonzero))
@@ -64,7 +66,7 @@ size_t count_leading_zeros(const data_slice& unencoded) noexcept
 {
     // Skip and count leading '1's.
     size_t leading_zeros = 0;
-    for (const auto byte: unencoded)
+    for (const auto byte : unencoded)
     {
         if (!is_zero(byte))
             break;
@@ -100,8 +102,8 @@ std::string encode_base58(const data_slice& unencoded) noexcept
     data_chunk indexes(indexes_size);
 
     // Process the bytes.
-    for (auto it = unencoded.begin() + leading_zeros;
-        it != unencoded.end(); ++it)
+    for (auto it = unencoded.begin() + leading_zeros; it != unencoded.end();
+         ++it)
     {
         pack_value(indexes, *it);
     }
@@ -111,8 +113,8 @@ std::string encode_base58(const data_slice& unencoded) noexcept
 
     // Translate the result into a string.
     std::string encoded;
-    const size_t estimated_size = leading_zeros +
-        (indexes.end() - first_nonzero);
+    const size_t estimated_size =
+        leading_zeros + (indexes.end() - first_nonzero);
     encoded.reserve(estimated_size);
     encoded.assign(leading_zeros, '1');
 
@@ -127,7 +129,7 @@ size_t count_leading_zeros(const std::string& encoded) noexcept
 {
     // Skip and count leading '1's.
     size_t leading_zeros = 0;
-    for (const auto digit: encoded)
+    for (const auto digit : encoded)
     {
         if (digit != base58_chars[0])
             break;

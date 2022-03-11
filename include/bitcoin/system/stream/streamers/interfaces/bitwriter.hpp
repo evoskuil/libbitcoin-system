@@ -27,12 +27,13 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/bytewriter.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// A bit writer interface.
-class bitwriter
-  : public virtual bytewriter
+class bitwriter : public virtual bytewriter
 {
 public:
     /// Write one bit (high to low).

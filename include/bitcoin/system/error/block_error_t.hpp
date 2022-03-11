@@ -23,9 +23,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/error/macros.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace error {
+namespace libbitcoin
+{
+namespace system
+{
+namespace error
+{
 
 // Block sequence is limited to 0xff for single byte store encoding.
 // With the uint8_t domain specified the compiler enforces this guard.

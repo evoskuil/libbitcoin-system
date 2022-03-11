@@ -23,8 +23,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 template <size_t Size>
 bool decode_base58(data_array<Size>& out, const std::string& in) noexcept
@@ -39,7 +41,7 @@ bool decode_base58(data_array<Size>& out, const std::string& in) noexcept
 
 // TODO: determine if the sizing function is always accurate.
 template <size_t Size>
-data_array<Size * 733 / 1000> base58_array(const char(&string)[Size]) noexcept
+data_array<Size * 733 / 1000> base58_array(const char (&string)[Size]) noexcept
 {
     // log(58) / log(256), rounded up.
     data_array<Size * 733 / 1000> out;

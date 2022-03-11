@@ -33,8 +33,9 @@ void encode_decode_test(const std::string& base16, const std::string& encoded)
 
 BOOST_AUTO_TEST_CASE(base58__is_base58__valid__true)
 {
-    const std::string base58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-    for (char character: base58)
+    const std::string base58 =
+        "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    for (char character : base58)
     {
         BOOST_REQUIRE(is_base58(character));
     }
@@ -43,7 +44,7 @@ BOOST_AUTO_TEST_CASE(base58__is_base58__valid__true)
 BOOST_AUTO_TEST_CASE(base58__is_base58__invalid__false)
 {
     const std::string non_base58 = "0OIl+- //#";
-    for (char character: non_base58)
+    for (char character : non_base58)
     {
         BOOST_REQUIRE(!is_base58(character));
     }
@@ -63,8 +64,12 @@ BOOST_AUTO_TEST_CASE(base58__encode_base58__various_round_trip__expected)
     encode_decode_test("61", "2g");
     encode_decode_test("626262", "a3gV");
     encode_decode_test("636363", "aPEr");
-    encode_decode_test("73696d706c792061206c6f6e6720737472696e67", "2cFupjhnEsSn59qHXstmK2ffpLv2");
-    encode_decode_test("00eb15231dfceb60925886b67d065299925915aeb172c06647", "1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L");
+    encode_decode_test(
+        "73696d706c792061206c6f6e6720737472696e67",
+        "2cFupjhnEsSn59qHXstmK2ffpLv2");
+    encode_decode_test(
+        "00eb15231dfceb60925886b67d065299925915aeb172c06647",
+        "1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L");
     encode_decode_test("516b6fcd0f", "ABnLTmg");
     encode_decode_test("bf4f89001e670274dd", "3SEo3LWLoPntC");
     encode_decode_test("572e4794", "3EFU7m");
@@ -75,15 +80,10 @@ BOOST_AUTO_TEST_CASE(base58__encode_base58__various_round_trip__expected)
 
 BOOST_AUTO_TEST_CASE(base58__decode_base58__address_round_trip__expected)
 {
-    const data_chunk checked
-    {
-        {
-            0x00, 0x5c, 0xc8, 0x7f, 0x4a, 0x3f, 0xdf, 0xe3,
-            0xa2, 0x34, 0x6b, 0x69, 0x53, 0x26, 0x7c, 0xa8,
-            0x67, 0x28, 0x26, 0x30, 0xd3, 0xf9, 0xb7, 0x8e,
-            0x64
-        }
-    };
+    const data_chunk checked{{0x00, 0x5c, 0xc8, 0x7f, 0x4a, 0x3f, 0xdf,
+                              0xe3, 0xa2, 0x34, 0x6b, 0x69, 0x53, 0x26,
+                              0x7c, 0xa8, 0x67, 0x28, 0x26, 0x30, 0xd3,
+                              0xf9, 0xb7, 0x8e, 0x64}};
     const auto address = "19TbMSWwHvnxAKy12iNm3KdbGfzfaMFViT";
     BOOST_REQUIRE_EQUAL(encode_base58(checked), address);
 
@@ -94,17 +94,13 @@ BOOST_AUTO_TEST_CASE(base58__decode_base58__address_round_trip__expected)
 
 BOOST_AUTO_TEST_CASE(base58__decode_base58__array__expected)
 {
-    const data_array<25> expected
-    {
-        {
-            0x00, 0x5c, 0xc8, 0x7f, 0x4a, 0x3f, 0xdf, 0xe3,
-            0xa2, 0x34, 0x6b, 0x69, 0x53, 0x26, 0x7c, 0xa8,
-            0x67, 0x28, 0x26, 0x30, 0xd3, 0xf9, 0xb7, 0x8e,
-            0x64
-        }
-    };
+    const data_array<25> expected{{0x00, 0x5c, 0xc8, 0x7f, 0x4a, 0x3f, 0xdf,
+                                   0xe3, 0xa2, 0x34, 0x6b, 0x69, 0x53, 0x26,
+                                   0x7c, 0xa8, 0x67, 0x28, 0x26, 0x30, 0xd3,
+                                   0xf9, 0xb7, 0x8e, 0x64}};
     data_array<25> converted;
-    BOOST_REQUIRE(decode_base58(converted, "19TbMSWwHvnxAKy12iNm3KdbGfzfaMFViT"));
+    BOOST_REQUIRE(
+        decode_base58(converted, "19TbMSWwHvnxAKy12iNm3KdbGfzfaMFViT"));
     BOOST_REQUIRE_EQUAL(converted, expected);
 }
 

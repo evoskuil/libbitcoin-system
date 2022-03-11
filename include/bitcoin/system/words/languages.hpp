@@ -27,9 +27,12 @@
 #include <bitcoin/system/unicode/unicode.hpp>
 #include <bitcoin/system/words/language.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
 
 class BC_API languages
 {
@@ -47,13 +50,13 @@ public:
     static std::string to_delimiter(language identifier) noexcept;
 
     /// All languages except reference::ja are joined by an ASCII space.
-    static std::string join(const string_list& words,
-        language identifier) noexcept;
+    static std::string join(
+        const string_list& words, language identifier) noexcept;
 
     /// There is no trimming or token compression for reference::ja.
     /// All other languages are split and trimmed on ASCII whitespace.
-    static string_list split(const std::string& sentence,
-        language identifier) noexcept;
+    static string_list split(
+        const std::string& sentence, language identifier) noexcept;
 
     // constructors
     // ------------------------------------------------------------------------
@@ -92,7 +95,8 @@ public:
 
 protected:
     languages() noexcept;
-    languages(const data_chunk& entropy, const string_list& words,
+    languages(
+        const data_chunk& entropy, const string_list& words,
         language identifier) noexcept;
 
     // Normalizes ascii whitespace and attempts nfkd and case lowering.

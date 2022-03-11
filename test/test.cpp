@@ -22,10 +22,10 @@
 #include <boost/filesystem.hpp>
 #include <bitcoin/system.hpp>
 
-namespace std {
+namespace std
+{
 
-std::ostream& operator<<(std::ostream& stream,
-    const data_slice& slice) noexcept
+std::ostream& operator<<(std::ostream& stream, const data_slice& slice) noexcept
 {
     // Avoid serialize() here for its own test benefit.
     // stream << serialize(slice);
@@ -35,7 +35,8 @@ std::ostream& operator<<(std::ostream& stream,
 
 } // namespace std
 
-namespace test {
+namespace test
+{
 
 const std::string directory = "tests";
 

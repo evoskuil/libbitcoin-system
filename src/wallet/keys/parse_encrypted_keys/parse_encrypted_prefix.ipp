@@ -24,36 +24,39 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/wallet/keys/encrypted_keys.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
-template<uint8_t Size>
+template <uint8_t Size>
 parse_encrypted_prefix<Size>::parse_encrypted_prefix(
     const data_array<Size>& value) noexcept
-  : prefix_(value), valid_(false)
+    : prefix_(value), valid_(false)
 {
 }
 
-template<uint8_t Size>
+template <uint8_t Size>
 uint8_t parse_encrypted_prefix<Size>::context() const noexcept
 {
     return prefix_.back();
 }
 
-template<uint8_t Size>
+template <uint8_t Size>
 data_array<Size> parse_encrypted_prefix<Size>::prefix() const noexcept
 {
     return prefix_;
 }
 
-template<uint8_t Size>
+template <uint8_t Size>
 bool parse_encrypted_prefix<Size>::valid() const noexcept
 {
     return valid_;
 }
 
-template<uint8_t Size>
+template <uint8_t Size>
 void parse_encrypted_prefix<Size>::valid(bool value) noexcept
 {
     valid_ = value;

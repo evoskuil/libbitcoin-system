@@ -28,9 +28,11 @@
 #include <bitcoin/system/stream/devices/push_sink.hpp>
 #include <bitcoin/system/stream/make_stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 /// Streams are not copyable, so factory cannot be used for type inference.
 /// All sources and sinks (devices) accept only const and non-const references.
 /// Insert requires the container type, but there are only two (string/chunk).
@@ -39,30 +41,30 @@ namespace system {
 /// For better performance, use Container.resize() and use a copy_sink.
 namespace stream
 {
-    namespace in
-    {
-        /// An input stream that copies data from a data_reference.
-        using copy = make_stream<copy_source<data_reference>>;
-    }
+namespace in
+{
+/// An input stream that copies data from a data_reference.
+using copy = make_stream<copy_source<data_reference>>;
+} // namespace in
 
-    namespace out
-    {
-        /// An output stream that copies data to a data_slab.
-        using copy = make_stream<copy_sink<data_slab>>;
+namespace out
+{
+/// An output stream that copies data to a data_slab.
+using copy = make_stream<copy_sink<data_slab>>;
 
-        /// An output stream that inserts data to a container.
-        template <typename Container>
-        using push = make_stream<push_sink<Container>>;
-        using text = push<std::string>;
-        using data = push<data_chunk>;
-    }
+/// An output stream that inserts data to a container.
+template <typename Container>
+using push = make_stream<push_sink<Container>>;
+using text = push<std::string>;
+using data = push<data_chunk>;
+} // namespace out
 
-    namespace flip
-    {
-        /// An input/output stream that copies data to a data_slab.
-        using copy = make_stream<flip_sink<data_slab>>;
-    }
-}
+namespace flip
+{
+/// An input/output stream that copies data to a data_slab.
+using copy = make_stream<flip_sink<data_slab>>;
+} // namespace flip
+} // namespace stream
 
 } // namespace system
 } // namespace libbitcoin

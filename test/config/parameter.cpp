@@ -46,18 +46,17 @@ static void load_test_options(po::options_description& options)
 {
     using namespace boost::filesystem;
     using namespace boost::program_options;
-    options.add_options()
-        ("short_long,s", "Long and short name.")
-        (",m", "Short name only.")
-        ("longy", value<std::string>()->required(), "Long name only.")
-        ("simple", value<std::string>(), "Simple string.")
-        ("defaulty", value<bool>()->default_value(true), "Defaulted bool.")
-        ("required", value<path>()->required(), "Required path.")
-        ("toggled", value<bool>()->zero_tokens(), "Toggle only bool.")
+    options.add_options()("short_long,s", "Long and short name.")(
+        ",m", "Short name only.")(
+        "longy", value<std::string>()->required(),
+        "Long name only.")("simple", value<std::string>(), "Simple string.")(
+        "defaulty", value<bool>()->default_value(true), "Defaulted bool.")(
+        "required", value<path>()->required(), "Required path.")(
+        "toggled", value<bool>()->zero_tokens(), "Toggle only bool.")
         /* The enumerability of the data types does not control multiple,
            instance behavior but it is necessary to capture multiples. */
-        ("VECTOR", value<std::vector<std::string>>(), "String vector.")
-        ("multitoken", value<int>()->multitoken(), "Multi-token int.");
+        ("VECTOR", value<std::vector<std::string>>(), "String vector.")(
+            "multitoken", value<int>()->multitoken(), "Multi-token int.");
 }
 
 static void load_test_arguments(argument_list& arguments)
@@ -70,18 +69,18 @@ static void load_test_arguments(argument_list& arguments)
     arguments.push_back(argument_pair("multitoken", -1));
 }
 
-#define CONFIG_TEST_PARAMETER_SETUP(index) \
-    po::options_description options; \
-    load_test_options(options); \
-    argument_list names; \
-    load_test_arguments(names); \
-    auto option = *(options.options()[index]); \
+#define CONFIG_TEST_PARAMETER_SETUP(index)                                     \
+    po::options_description options;                                           \
+    load_test_options(options);                                                \
+    argument_list names;                                                       \
+    load_test_arguments(names);                                                \
+    auto option = *(options.options()[index]);                                 \
     config::parameter parameter
 
-#define CONFIG_TEST_PARAMETER_OPTIONS_SETUP(index) \
-    po::options_description options; \
-    load_test_options(options); \
-    auto option = *(options.options()[index]); \
+#define CONFIG_TEST_PARAMETER_OPTIONS_SETUP(index)                             \
+    po::options_description options;                                           \
+    load_test_options(options);                                                \
+    auto option = *(options.options()[index]);                                 \
     config::parameter parameter
 
 // ------------------------------------------------------------------------- //
@@ -90,13 +89,15 @@ BOOST_AUTO_TEST_SUITE(parameter__position)
 BOOST_AUTO_TEST_CASE(parameter__position__short_and_long__not_positional)
 {
     CONFIG_TEST_PARAMETER_SETUP(opt::short_long);
-    BOOST_REQUIRE_EQUAL(parameter.position(option, names), parameter::not_positional);
+    BOOST_REQUIRE_EQUAL(
+        parameter.position(option, names), parameter::not_positional);
 }
 
 BOOST_AUTO_TEST_CASE(parameter__position__short_only__not_positional)
 {
     CONFIG_TEST_PARAMETER_SETUP(opt::shorty);
-    BOOST_REQUIRE_EQUAL(parameter.position(option, names), parameter::not_positional);
+    BOOST_REQUIRE_EQUAL(
+        parameter.position(option, names), parameter::not_positional);
 }
 
 BOOST_AUTO_TEST_CASE(parameter__position__long_only__expected_position)
@@ -126,7 +127,8 @@ BOOST_AUTO_TEST_CASE(parameter__position__required__expected_position)
 BOOST_AUTO_TEST_CASE(parameter__position__toggled__not_positional)
 {
     CONFIG_TEST_PARAMETER_SETUP(opt::toggled);
-    BOOST_REQUIRE_EQUAL(parameter.position(option, names), parameter::not_positional);
+    BOOST_REQUIRE_EQUAL(
+        parameter.position(option, names), parameter::not_positional);
 }
 
 BOOST_AUTO_TEST_CASE(parameter__position__vector__expected_position)

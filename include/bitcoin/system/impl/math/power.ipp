@@ -24,8 +24,10 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/math/sign.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // TODO: test all with uintx.
 
@@ -33,8 +35,9 @@ namespace system {
 // C++11: no local variables, loops, or multiple returns.
 
 // Returns 0 for undefined (base < 2 or value < 1).
-template <typename Exponent, typename Base, typename Value,
-    if_integer<Exponent>, if_integer<Base>, if_integer<Value>>
+template <
+    typename Exponent, typename Base, typename Value, if_integer<Exponent>,
+    if_integer<Base>, if_integer<Value>>
 inline Exponent ceilinged_log(Base base, Value value) noexcept
 {
     if (base < 2 || value < 1)
@@ -43,10 +46,10 @@ inline Exponent ceilinged_log(Base base, Value value) noexcept
     const auto exponent = floored_log<Exponent>(base, value);
     return exponent + ((power<Value>(base, exponent) == value) ? 0 : 1);
 }
-    
+
 // Returns 0 for undefined (value < 1).
-template <typename Exponent, typename Value,
-    if_integer<Exponent>, if_integer<Value>>
+template <
+    typename Exponent, typename Value, if_integer<Exponent>, if_integer<Value>>
 inline Exponent ceilinged_log2(Value value) noexcept
 {
     if (value < 1)
@@ -57,34 +60,42 @@ inline Exponent ceilinged_log2(Value value) noexcept
 }
 
 // Returns 0 for undefined (base < 2 or value < 1).
-template <typename Exponent, typename Base, typename Value,
-    if_integer<Exponent>, if_integer<Base>, if_integer<Value>>
+template <
+    typename Exponent, typename Base, typename Value, if_integer<Exponent>,
+    if_integer<Base>, if_integer<Value>>
 inline Exponent floored_log(Base base, Value value) noexcept
 {
     if (base < 2 || value < 1)
         return 0;
 
     Exponent exponent = 0;
-    while (((value /= base)) > 0) { ++exponent; }
+    while (((value /= base)) > 0)
+    {
+        ++exponent;
+    }
     return exponent;
 }
 
 // Returns 0 for undefined (value < 1).
-template <typename Exponent, typename Value,
-    if_integer<Exponent>, if_integer<Value>>
+template <
+    typename Exponent, typename Value, if_integer<Exponent>, if_integer<Value>>
 inline Exponent floored_log2(Value value) noexcept
 {
     if (value < 1)
         return 0;
 
     Exponent exponent = 0;
-    while (((value >>= 1)) > 0) { ++exponent; };
+    while (((value >>= 1)) > 0)
+    {
+        ++exponent;
+    };
     return exponent;
 }
 
 // Returns 0 for undefined (0^0).
-template <typename Value, typename Base, typename Exponent,
-    if_integer<Value>, if_integer<Base>, if_integer<Exponent>>
+template <
+    typename Value, typename Base, typename Exponent, if_integer<Value>,
+    if_integer<Base>, if_integer<Exponent>>
 inline Value power(Base base, Exponent exponent) noexcept
 {
     if (is_zero(base))
@@ -94,18 +105,22 @@ inline Value power(Base base, Exponent exponent) noexcept
         return 1;
 
     if (is_negative(exponent))
-        return absolute(base) > 1 ? 0 :
-            (is_odd(exponent) && is_negative(base) ? -1 : 1);
+        return absolute(base) > 1
+                   ? 0
+                   : (is_odd(exponent) && is_negative(base) ? -1 : 1);
 
     Value value = base;
-    while (--exponent > 0) { value *= base; }
+    while (--exponent > 0)
+    {
+        value *= base;
+    }
     return value;
 }
 
 // uintx power2 can be implemented by bit_set(int, exponent) on a new int.
 // We could use 64 element lookup table for integrals, instead of shifting.
-template <typename Value, typename Exponent,
-    if_integer<Value>, if_integer<Exponent>>
+template <
+    typename Value, typename Exponent, if_integer<Value>, if_integer<Exponent>>
 inline Value power2(Exponent exponent) noexcept
 {
     if (is_zero(exponent))
@@ -115,7 +130,10 @@ inline Value power2(Exponent exponent) noexcept
         return 0;
 
     Value value = 2;
-    while (--exponent > 0) { value <<= 1; };
+    while (--exponent > 0)
+    {
+        value <<= 1;
+    };
     return value;
 }
 

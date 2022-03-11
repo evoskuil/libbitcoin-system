@@ -434,7 +434,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_num_equal__true_exected_message)
     BOOST_REQUIRE_EQUAL(ec.message(), "op_num_equal");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_num_equal_verify1__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_num_equal_verify1__true_exected_message)
 {
     constexpr auto value = error::op_num_equal_verify1;
     const auto ec = code(value);
@@ -443,7 +444,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_num_equal_verify1__true_exected_messag
     BOOST_REQUIRE_EQUAL(ec.message(), "op_num_equal_verify1");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_num_equal_verify2__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_num_equal_verify2__true_exected_message)
 {
     constexpr auto value = error::op_num_equal_verify2;
     const auto ec = code(value);
@@ -479,7 +481,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_greater_than__true_exected_message)
     BOOST_REQUIRE_EQUAL(ec.message(), "op_greater_than");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_less_than_or_equal__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_less_than_or_equal__true_exected_message)
 {
     constexpr auto value = error::op_less_than_or_equal;
     const auto ec = code(value);
@@ -488,7 +491,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_less_than_or_equal__true_exected_messa
     BOOST_REQUIRE_EQUAL(ec.message(), "op_less_than_or_equal");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_greater_than_or_equal__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_greater_than_or_equal__true_exected_message)
 {
     constexpr auto value = error::op_greater_than_or_equal;
     const auto ec = code(value);
@@ -578,7 +582,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_code_separator__true_exected_message)
     BOOST_REQUIRE_EQUAL(ec.message(), "op_code_separator");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify1__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sig_verify1__true_exected_message)
 {
     constexpr auto value = error::op_check_sig_verify1;
     const auto ec = code(value);
@@ -587,7 +592,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify1__true_exected_messag
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sig_verify1");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify2__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sig_verify2__true_exected_message)
 {
     constexpr auto value = error::op_check_sig_verify2;
     const auto ec = code(value);
@@ -596,7 +602,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify2__true_exected_messag
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sig_verify2");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify3__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sig_verify3__true_exected_message)
 {
     constexpr auto value = error::op_check_sig_verify3;
     const auto ec = code(value);
@@ -605,7 +612,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify3__true_exected_messag
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sig_verify3");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify4__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sig_verify4__true_exected_message)
 {
     constexpr auto value = error::op_check_sig_verify4;
     const auto ec = code(value);
@@ -614,7 +622,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify4__true_exected_messag
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sig_verify4");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify5__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sig_verify5__true_exected_message)
 {
     constexpr auto value = error::op_check_sig_verify5;
     const auto ec = code(value);
@@ -623,7 +632,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify5__true_exected_messag
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sig_verify5");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig_verify_parse__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sig_verify_parse__true_exected_message)
 {
     constexpr auto value = error::op_check_sig_verify_parse;
     const auto ec = code(value);
@@ -641,7 +651,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sig__true_exected_message)
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sig");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify1__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify1__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify1;
     const auto ec = code(value);
@@ -650,7 +661,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify1__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify1");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify2__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify2__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify2;
     const auto ec = code(value);
@@ -659,7 +671,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify2__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify2");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify3__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify3__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify3;
     const auto ec = code(value);
@@ -668,7 +681,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify3__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify3");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify4__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify4__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify4;
     const auto ec = code(value);
@@ -677,7 +691,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify4__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify4");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify5__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify5__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify5;
     const auto ec = code(value);
@@ -686,7 +701,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify5__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify5");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify6__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify6__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify6;
     const auto ec = code(value);
@@ -695,7 +711,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify6__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify6");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify7__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify7__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify7;
     const auto ec = code(value);
@@ -704,7 +721,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify7__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify7");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify8__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify8__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify8;
     const auto ec = code(value);
@@ -713,7 +731,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify8__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify8");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify9__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify9__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify9;
     const auto ec = code(value);
@@ -722,7 +741,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify9__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig_verify9");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig_verify_parse__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_multisig_verify_parse__true_exected_message)
 {
     constexpr auto value = error::op_check_multisig_verify_parse;
     const auto ec = code(value);
@@ -740,7 +760,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_multisig__true_exected_message)
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_multisig");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify1__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_locktime_verify1__true_exected_message)
 {
     constexpr auto value = error::op_check_locktime_verify1;
     const auto ec = code(value);
@@ -749,7 +770,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify1__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_locktime_verify1");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify2__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_locktime_verify2__true_exected_message)
 {
     constexpr auto value = error::op_check_locktime_verify2;
     const auto ec = code(value);
@@ -758,7 +780,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify2__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_locktime_verify2");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify3__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_locktime_verify3__true_exected_message)
 {
     constexpr auto value = error::op_check_locktime_verify3;
     const auto ec = code(value);
@@ -767,7 +790,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify3__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_locktime_verify3");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify4__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_locktime_verify4__true_exected_message)
 {
     constexpr auto value = error::op_check_locktime_verify4;
     const auto ec = code(value);
@@ -776,7 +800,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify4__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_locktime_verify4");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify5__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_locktime_verify5__true_exected_message)
 {
     constexpr auto value = error::op_check_locktime_verify5;
     const auto ec = code(value);
@@ -785,7 +810,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_locktime_verify5__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_locktime_verify5");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify1__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sequence_verify1__true_exected_message)
 {
     constexpr auto value = error::op_check_sequence_verify1;
     const auto ec = code(value);
@@ -794,7 +820,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify1__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sequence_verify1");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify2__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sequence_verify2__true_exected_message)
 {
     constexpr auto value = error::op_check_sequence_verify2;
     const auto ec = code(value);
@@ -803,7 +830,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify2__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sequence_verify2");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify3__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sequence_verify3__true_exected_message)
 {
     constexpr auto value = error::op_check_sequence_verify3;
     const auto ec = code(value);
@@ -812,7 +840,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify3__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sequence_verify3");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify4__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sequence_verify4__true_exected_message)
 {
     constexpr auto value = error::op_check_sequence_verify4;
     const auto ec = code(value);
@@ -821,7 +850,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify4__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sequence_verify4");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify5__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sequence_verify5__true_exected_message)
 {
     constexpr auto value = error::op_check_sequence_verify5;
     const auto ec = code(value);
@@ -830,7 +860,8 @@ BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify5__true_exected_m
     BOOST_REQUIRE_EQUAL(ec.message(), "op_check_sequence_verify5");
 }
 
-BOOST_AUTO_TEST_CASE(op_error_t__code__op_check_sequence_verify6__true_exected_message)
+BOOST_AUTO_TEST_CASE(
+    op_error_t__code__op_check_sequence_verify6__true_exected_message)
 {
     constexpr auto value = error::op_check_sequence_verify6;
     const auto ec = code(value);

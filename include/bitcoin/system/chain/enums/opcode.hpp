@@ -23,16 +23,19 @@
 #include <string>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 enum class opcode : uint8_t
 {
     // ------------------------------------------------------------------------
     // is_relaxed_push, is_push (excluding reserved_80)
 
-    push_size_0 = 0,        // is_version (pushes [] to the stack, not 0)
+    push_size_0 = 0, // is_version (pushes [] to the stack, not 0)
     push_size_1 = 1,
     push_size_2 = 2,
     push_size_3 = 3,
@@ -111,38 +114,38 @@ enum class opcode : uint8_t
     push_one_size = 76,
     push_two_size = 77,
     push_four_size = 78,
-    push_negative_1 = 79,   // is_numeric
-    reserved_80 = 80,       // is_reserved [op_reserved]
-    push_positive_1 = 81,   // is_numeric, is_positive, is_version
-    push_positive_2 = 82,   // is_numeric, is_positive, is_version
-    push_positive_3 = 83,   // is_numeric, is_positive, is_version
-    push_positive_4 = 84,   // is_numeric, is_positive, is_version
-    push_positive_5 = 85,   // is_numeric, is_positive, is_version
-    push_positive_6 = 86,   // is_numeric, is_positive, is_version
-    push_positive_7 = 87,   // is_numeric, is_positive, is_version
-    push_positive_8 = 88,   // is_numeric, is_positive, is_version
-    push_positive_9 = 89,   // is_numeric, is_positive, is_version
-    push_positive_10 = 90,  // is_numeric, is_positive, is_version
-    push_positive_11 = 91,  // is_numeric, is_positive, is_version
-    push_positive_12 = 92,  // is_numeric, is_positive, is_version
-    push_positive_13 = 93,  // is_numeric, is_positive, is_version
-    push_positive_14 = 94,  // is_numeric, is_positive, is_version
-    push_positive_15 = 95,  // is_numeric, is_positive, is_version
-    push_positive_16 = 96,  // is_numeric, is_positive, is_version
+    push_negative_1 = 79,  // is_numeric
+    reserved_80 = 80,      // is_reserved [op_reserved]
+    push_positive_1 = 81,  // is_numeric, is_positive, is_version
+    push_positive_2 = 82,  // is_numeric, is_positive, is_version
+    push_positive_3 = 83,  // is_numeric, is_positive, is_version
+    push_positive_4 = 84,  // is_numeric, is_positive, is_version
+    push_positive_5 = 85,  // is_numeric, is_positive, is_version
+    push_positive_6 = 86,  // is_numeric, is_positive, is_version
+    push_positive_7 = 87,  // is_numeric, is_positive, is_version
+    push_positive_8 = 88,  // is_numeric, is_positive, is_version
+    push_positive_9 = 89,  // is_numeric, is_positive, is_version
+    push_positive_10 = 90, // is_numeric, is_positive, is_version
+    push_positive_11 = 91, // is_numeric, is_positive, is_version
+    push_positive_12 = 92, // is_numeric, is_positive, is_version
+    push_positive_13 = 93, // is_numeric, is_positive, is_version
+    push_positive_14 = 94, // is_numeric, is_positive, is_version
+    push_positive_15 = 95, // is_numeric, is_positive, is_version
+    push_positive_16 = 96, // is_numeric, is_positive, is_version
 
     // ------------------------------------------------------------------------
     // is_counted [notice that reserved_80 is not counted]
 
     nop = 97,
-    op_ver = 98,            // is_reserved [disabled in 0.3.6]
-    if_ = 99,               // is_conditional
-    notif = 100,            // is_conditional
-    op_verif = 101,         // is_invalid [disabled in 0.3.6]
-    op_vernotif = 102,      // is_invalid [disabled in 0.3.6]
-    else_ = 103,            // is_conditional
-    endif = 104,            // is_conditional
+    op_ver = 98,       // is_reserved [disabled in 0.3.6]
+    if_ = 99,          // is_conditional
+    notif = 100,       // is_conditional
+    op_verif = 101,    // is_invalid [disabled in 0.3.6]
+    op_vernotif = 102, // is_invalid [disabled in 0.3.6]
+    else_ = 103,       // is_conditional
+    endif = 104,       // is_conditional
     verify = 105,
-    op_return = 106,        // is_reserved [disabled in 0.3.6]
+    op_return = 106, // is_reserved [disabled in 0.3.6]
     toaltstack = 107,
     fromaltstack = 108,
     drop2 = 109,
@@ -162,34 +165,34 @@ enum class opcode : uint8_t
     rot = 123,
     swap = 124,
     tuck = 125,
-    op_cat = 126,           // is_invalid [disabled in 0.3.10]
-    op_substr = 127,        // is_invalid [disabled in 0.3.10]
-    op_left = 128,          // is_invalid [disabled in 0.3.10]
-    op_right = 129,         // is_invalid [disabled in 0.3.10]
+    op_cat = 126,    // is_invalid [disabled in 0.3.10]
+    op_substr = 127, // is_invalid [disabled in 0.3.10]
+    op_left = 128,   // is_invalid [disabled in 0.3.10]
+    op_right = 129,  // is_invalid [disabled in 0.3.10]
     size = 130,
-    op_invert = 131,        // is_invalid [disabled in 0.3.10]
-    op_and = 132,           // is_invalid [disabled in 0.3.10]
-    op_or = 133,            // is_invalid [disabled in 0.3.10]
-    op_xor = 134,           // is_invalid [disabled in 0.3.10]
+    op_invert = 131, // is_invalid [disabled in 0.3.10]
+    op_and = 132,    // is_invalid [disabled in 0.3.10]
+    op_or = 133,     // is_invalid [disabled in 0.3.10]
+    op_xor = 134,    // is_invalid [disabled in 0.3.10]
     equal = 135,
     equalverify = 136,
-    reserved_137 = 137,     // is_reserved [op_reserved1]
-    reserved_138 = 138,     // is_reserved [op_reserved2]
+    reserved_137 = 137, // is_reserved [op_reserved1]
+    reserved_138 = 138, // is_reserved [op_reserved2]
     add1 = 139,
     sub1 = 140,
-    op_mul2 = 141,          // is_invalid [disabled in 0.3.10]
-    op_div2 = 142,          // is_invalid [disabled in 0.3.10]
+    op_mul2 = 141, // is_invalid [disabled in 0.3.10]
+    op_div2 = 142, // is_invalid [disabled in 0.3.10]
     negate = 143,
     abs = 144,
     not_ = 145,
     nonzero = 146,
     add = 147,
     sub = 148,
-    op_mul = 149,           // is_invalid [disabled in 0.3.10]
-    op_div = 150,           // is_invalid [disabled in 0.3.10]
-    op_mod = 151,           // is_invalid [disabled in 0.3.10]
-    op_lshift = 152,        // is_invalid [disabled in 0.3.10]
-    op_rshift = 153,        // is_invalid [disabled in 0.3.10]
+    op_mul = 149,    // is_invalid [disabled in 0.3.10]
+    op_div = 150,    // is_invalid [disabled in 0.3.10]
+    op_mod = 151,    // is_invalid [disabled in 0.3.10]
+    op_lshift = 152, // is_invalid [disabled in 0.3.10]
+    op_rshift = 153, // is_invalid [disabled in 0.3.10]
     booland = 154,
     boolor = 155,
     numequal = 156,
@@ -233,7 +236,7 @@ enum class opcode : uint8_t
     // These are enumerated to provide explicit deserialization of byte opcode.
     // is_reserved [unnamed]
 
-    reserved_186 = 186,     // To be subsumed by bip342 (tapscript).
+    reserved_186 = 186, // To be subsumed by bip342 (tapscript).
     reserved_187 = 187,
     reserved_188 = 188,
     reserved_189 = 189,
@@ -306,19 +309,19 @@ enum class opcode : uint8_t
 };
 
 /// Convert the opcode to a mnemonic string.
-BC_API std::string opcode_to_mnemonic(opcode value,
-    uint32_t active_forks) noexcept;
+BC_API std::string opcode_to_mnemonic(
+    opcode value, uint32_t active_forks) noexcept;
 
 /// Convert a string to an opcode.
-BC_API bool opcode_from_mnemonic(opcode& out_code,
-    const std::string& value) noexcept;
+BC_API bool opcode_from_mnemonic(
+    opcode& out_code, const std::string& value) noexcept;
 
 /// Convert any opcode to a string hexadecimal representation.
 BC_API std::string opcode_to_hexadecimal(opcode code) noexcept;
 
 /// Convert any hexadecimal byte to an opcode.
-BC_API bool opcode_from_hexadecimal(opcode& out_code,
-    const std::string& value) noexcept;
+BC_API bool opcode_from_hexadecimal(
+    opcode& out_code, const std::string& value) noexcept;
 
 } // namespace chain
 } // namespace system

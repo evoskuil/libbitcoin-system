@@ -43,7 +43,8 @@ BOOST_AUTO_TEST_CASE(limits__binary_search_native__empty__not_found)
     BOOST_REQUIRE_EQUAL(binary_search(empty, value), negative_one);
 }
 
-BOOST_AUTO_TEST_CASE(limits__binary_search_native__one_element_unmatched__not_found)
+BOOST_AUTO_TEST_CASE(
+    limits__binary_search_native__one_element_unmatched__not_found)
 {
     const std::string single = "a";
     const auto value = 'b';
@@ -72,7 +73,8 @@ BOOST_AUTO_TEST_CASE(limits__binary_search_native__two_elements_match_second__1)
     BOOST_REQUIRE_EQUAL(result, 1);
 }
 
-BOOST_AUTO_TEST_CASE(limits__binary_search_native__three_elements_match_second__1)
+BOOST_AUTO_TEST_CASE(
+    limits__binary_search_native__three_elements_match_second__1)
 {
     const std::string sorted = "abc";
     const auto value = 'b';
@@ -86,7 +88,8 @@ BOOST_AUTO_TEST_CASE(limits__binary_search_native__sorted_contained__expected)
     BOOST_REQUIRE_EQUAL(binary_search(sorted, value), 8);
 }
 
-BOOST_AUTO_TEST_CASE(limits__binary_search_native__reverse_sorted_contained__unlucky)
+BOOST_AUTO_TEST_CASE(
+    limits__binary_search_native__reverse_sorted_contained__unlucky)
 {
     const std::string unsorted = "zyxwvutscba";
     const auto value = 'x';
@@ -95,46 +98,50 @@ BOOST_AUTO_TEST_CASE(limits__binary_search_native__reverse_sorted_contained__unl
 
 // binary_search (list element comparison operators)
 
-BOOST_AUTO_TEST_CASE(limits__binary_search_element__three_various_elements_unmatched__not_found)
+BOOST_AUTO_TEST_CASE(
+    limits__binary_search_element__three_various_elements_unmatched__not_found)
 {
-    const string_list sorted{ "afgdjdfj", "btffghfg", "cfdd" };
+    const string_list sorted{"afgdjdfj", "btffghfg", "cfdd"};
     const auto value = "bcd";
     BOOST_REQUIRE_EQUAL(binary_search(sorted, value), negative_one);
 }
 
-BOOST_AUTO_TEST_CASE(limits__binary_search_element__three_various_elements_matched__found)
+BOOST_AUTO_TEST_CASE(
+    limits__binary_search_element__three_various_elements_matched__found)
 {
-    const string_list sorted{ "afgdjdfj", "btffghfg", "cfdd" };
+    const string_list sorted{"afgdjdfj", "btffghfg", "cfdd"};
     const auto value = "cfdd";
     BOOST_REQUIRE_EQUAL(binary_search(sorted, value), 2);
 }
 
 BOOST_AUTO_TEST_CASE(limits__binary_search_element__unsorted_contained__unlucky)
 {
-    const string_list unsorted{ { "z", "y", "x" } };
+    const string_list unsorted{{"z", "y", "x"}};
     const auto value = "z";
     BOOST_REQUIRE_EQUAL(binary_search(unsorted, value), negative_one);
 }
 
 // binary_search (key comparison operators)
 
-BOOST_AUTO_TEST_CASE(limits__binary_search_key__three_various_elements_unmatched__not_found)
+BOOST_AUTO_TEST_CASE(
+    limits__binary_search_key__three_various_elements_unmatched__not_found)
 {
-    const std::vector<const char*> sorted{ "afgdjdfj", "btffghfg", "cfdd" };
+    const std::vector<const char*> sorted{"afgdjdfj", "btffghfg", "cfdd"};
     const std::string value = "bcd";
     BOOST_REQUIRE_EQUAL(binary_search(sorted, value), negative_one);
 }
 
-BOOST_AUTO_TEST_CASE(limits__binary_search_key__three_various_elements_matched__found)
+BOOST_AUTO_TEST_CASE(
+    limits__binary_search_key__three_various_elements_matched__found)
 {
-    const std::vector<const char*> sorted{ "afgdjdfj", "btffghfg", "cfdd" };
+    const std::vector<const char*> sorted{"afgdjdfj", "btffghfg", "cfdd"};
     const std::string value = "cfdd";
     BOOST_REQUIRE_EQUAL(binary_search(sorted, value), 2);
 }
 
 BOOST_AUTO_TEST_CASE(limits__binary_search_key__unsorted_contained__unlucky)
 {
-    const std::vector<const char*> unsorted{ "z", "y", "x" };
+    const std::vector<const char*> unsorted{"z", "y", "x"};
     const std::string value = "z";
     BOOST_REQUIRE_EQUAL(binary_search(unsorted, value), negative_one);
 }
@@ -148,14 +155,14 @@ BOOST_AUTO_TEST_CASE(collection__cast_vector__empty__empty)
 
 BOOST_AUTO_TEST_CASE(collection__cast_vector__one_element__same)
 {
-    const auto result = cast<char>(data_chunk{ 42 });
+    const auto result = cast<char>(data_chunk{42});
     BOOST_REQUIRE_EQUAL(result.size(), 1u);
     BOOST_REQUIRE_EQUAL(result.front(), 42);
 }
 
 BOOST_AUTO_TEST_CASE(collection__cast_vector__distinct_types__same)
 {
-    const data_chunk value{ 42, 24 };
+    const data_chunk value{42, 24};
     const auto result = cast<uint32_t>(value);
     BOOST_REQUIRE_EQUAL(value.size(), result.size());
     BOOST_REQUIRE_EQUAL(result[0], value[0]);
@@ -165,7 +172,7 @@ BOOST_AUTO_TEST_CASE(collection__cast_vector__distinct_types__same)
 BOOST_AUTO_TEST_CASE(collection__cast_vector__narrowing__same)
 {
     // Implicit narrowing cast doesn't warn.
-    const std::vector<uint32_t> value{ 42, 24 };
+    const std::vector<uint32_t> value{42, 24};
     const auto result = cast<uint8_t>(value);
     BOOST_REQUIRE_EQUAL(value.size(), result.size());
     BOOST_REQUIRE_EQUAL(result[0], value[0]);
@@ -181,14 +188,14 @@ BOOST_AUTO_TEST_CASE(collection__cast_array__empty__empty)
 
 BOOST_AUTO_TEST_CASE(collection__cast_array__one_element__same)
 {
-    const auto result = cast<char>(data_array<1>{ 42 });
+    const auto result = cast<char>(data_array<1>{42});
     BOOST_REQUIRE_EQUAL(result.size(), 1u);
     BOOST_REQUIRE_EQUAL(result.front(), 42);
 }
 
 BOOST_AUTO_TEST_CASE(collection__cast_array__distinct_types__same)
 {
-    const data_array<2> value{ 42, 24 };
+    const data_array<2> value{42, 24};
     const auto result = cast<uint32_t>(value);
     BOOST_REQUIRE_EQUAL(value.size(), result.size());
     BOOST_REQUIRE_EQUAL(result[0], value[0]);
@@ -198,7 +205,7 @@ BOOST_AUTO_TEST_CASE(collection__cast_array__distinct_types__same)
 BOOST_AUTO_TEST_CASE(collection__cast_array__narrowing__same)
 {
     // Implicit narrowing cast doesn't warn.
-    const std::array<uint32_t, 2> value{ 42, 24 };
+    const std::array<uint32_t, 2> value{42, 24};
     const auto result = cast<uint8_t>(value);
     BOOST_REQUIRE_EQUAL(value.size(), result.size());
     BOOST_REQUIRE_EQUAL(result[0], value[0]);
@@ -219,7 +226,7 @@ BOOST_AUTO_TEST_CASE(collection__move_append__both_empty__empty)
 BOOST_AUTO_TEST_CASE(collection__move_append__source_empty__expected)
 {
     data_chunk source;
-    data_chunk target{ 0, 2, 4, 6, 8 };
+    data_chunk target{0, 2, 4, 6, 8};
     const data_chunk expected = target;
     move_append(target, source);
     BOOST_REQUIRE_EQUAL(target, expected);
@@ -227,7 +234,7 @@ BOOST_AUTO_TEST_CASE(collection__move_append__source_empty__expected)
 
 BOOST_AUTO_TEST_CASE(collection__move_append__target_empty__expected)
 {
-    data_chunk source{ 0, 2, 4, 6, 8 };
+    data_chunk source{0, 2, 4, 6, 8};
     data_chunk target;
     const data_chunk expected = source;
     move_append(target, source);
@@ -236,9 +243,9 @@ BOOST_AUTO_TEST_CASE(collection__move_append__target_empty__expected)
 
 BOOST_AUTO_TEST_CASE(collection__move_append__neither_empty__expected)
 {
-    data_chunk source{ 10, 12, 14, 16, 18 };
-    data_chunk target{ 0, 2, 4, 6, 8 };
-    const data_chunk expected{ 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 };
+    data_chunk source{10, 12, 14, 16, 18};
+    data_chunk target{0, 2, 4, 6, 8};
+    const data_chunk expected{0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
     move_append(target, source);
     BOOST_REQUIRE_EQUAL(target, expected);
 }
@@ -256,7 +263,7 @@ BOOST_AUTO_TEST_CASE(collection__pop__empty__empty_default)
 BOOST_AUTO_TEST_CASE(collection__pop__single__empty_expected)
 {
     const uint8_t expected = 42u;
-    data_chunk stack{ expected };
+    data_chunk stack{expected};
     const auto value = pop(stack);
     BOOST_REQUIRE(stack.empty());
     BOOST_REQUIRE_EQUAL(value, expected);
@@ -265,8 +272,8 @@ BOOST_AUTO_TEST_CASE(collection__pop__single__empty_expected)
 BOOST_AUTO_TEST_CASE(collection__pop__multiple__popped_expected)
 {
     const uint8_t expected_value = 42u;
-    data_chunk stack{ 0, 1, 2, 3, expected_value };
-    const data_chunk expected_stack{ 0, 1, 2, 3 };
+    data_chunk stack{0, 1, 2, 3, expected_value};
+    const data_chunk expected_stack{0, 1, 2, 3};
     const auto value = pop(stack);
     BOOST_REQUIRE_EQUAL(value, expected_value);
     BOOST_REQUIRE_EQUAL(stack, expected_stack);
@@ -281,17 +288,17 @@ BOOST_AUTO_TEST_CASE(collection__is_distinct__empty__true)
 
 BOOST_AUTO_TEST_CASE(collection__is_distinct__single__true)
 {
-    BOOST_REQUIRE(is_distinct(data_chunk{ 42 }));
+    BOOST_REQUIRE(is_distinct(data_chunk{42}));
 }
 
 BOOST_AUTO_TEST_CASE(collection__is_distinct__distinct__true)
 {
-    BOOST_REQUIRE(is_distinct(data_chunk{ 0, 2, 4, 6, 8 }));
+    BOOST_REQUIRE(is_distinct(data_chunk{0, 2, 4, 6, 8}));
 }
 
 BOOST_AUTO_TEST_CASE(collection__is_distinct__const_nondistinct__false)
 {
-    const data_chunk set{ 0, 2, 4, 2, 8 };
+    const data_chunk set{0, 2, 4, 2, 8};
     BOOST_REQUIRE(!is_distinct(set));
 }
 
@@ -304,23 +311,22 @@ BOOST_AUTO_TEST_CASE(collection__is_sorted__empty__true)
 
 BOOST_AUTO_TEST_CASE(collection__is_sorted__single__true)
 {
-    BOOST_REQUIRE(is_sorted(data_chunk{ 42 }));
+    BOOST_REQUIRE(is_sorted(data_chunk{42}));
 }
 
 BOOST_AUTO_TEST_CASE(collection__is_sorted__sorted_distinct__true)
 {
-    BOOST_REQUIRE(is_sorted(data_chunk{ 0, 2, 4, 6, 8 }));
+    BOOST_REQUIRE(is_sorted(data_chunk{0, 2, 4, 6, 8}));
 }
 
 BOOST_AUTO_TEST_CASE(collection__is_sorted__sorted_non_distinct__true)
 {
-    BOOST_REQUIRE(is_sorted(data_chunk{ 0, 2, 2, 6, 8 }));
+    BOOST_REQUIRE(is_sorted(data_chunk{0, 2, 2, 6, 8}));
 }
-
 
 BOOST_AUTO_TEST_CASE(collection__is_sorted__unsorted__false)
 {
-    BOOST_REQUIRE(!is_sorted(data_chunk{ 0, 2, 4, 2, 8 }));
+    BOOST_REQUIRE(!is_sorted(data_chunk{0, 2, 4, 2, 8}));
 }
 
 // distinct
@@ -333,33 +339,35 @@ BOOST_AUTO_TEST_CASE(collection__distinct_move__empty__empty)
 BOOST_AUTO_TEST_CASE(collection__distinct_move__single__unchanged)
 {
     const uint8_t expected = 42;
-    BOOST_REQUIRE_EQUAL(distinct(data_chunk{ expected }).front(), expected);
+    BOOST_REQUIRE_EQUAL(distinct(data_chunk{expected}).front(), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__distinct_move__distinct_sorted__unchanged)
 {
-    const data_chunk expected{ 0, 2, 4, 6, 8 };
-    BOOST_REQUIRE_EQUAL(distinct(data_chunk{ 0, 2, 4, 6, 8 }), expected);
+    const data_chunk expected{0, 2, 4, 6, 8};
+    BOOST_REQUIRE_EQUAL(distinct(data_chunk{0, 2, 4, 6, 8}), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__distinct_move__distinct_unsorted__sorted)
 {
-    const data_chunk expected{ 0, 2, 4, 6, 8 };
-    BOOST_REQUIRE_EQUAL(distinct(data_chunk{ 2, 0, 8, 6, 4 }), expected);
+    const data_chunk expected{0, 2, 4, 6, 8};
+    BOOST_REQUIRE_EQUAL(distinct(data_chunk{2, 0, 8, 6, 4}), expected);
 }
 
-BOOST_AUTO_TEST_CASE(collection__distinct__distinct_unsorted_duplicates__sorted_distinct)
+BOOST_AUTO_TEST_CASE(
+    collection__distinct__distinct_unsorted_duplicates__sorted_distinct)
 {
-    data_chunk set{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk expected{ 0, 2, 4, 6, 8 };
+    data_chunk set{2, 0, 0, 8, 6, 4};
+    const data_chunk expected{0, 2, 4, 6, 8};
     distinct(set);
     BOOST_REQUIRE_EQUAL(set, expected);
 }
 
-BOOST_AUTO_TEST_CASE(collection__distinct_copy__distinct_unsorted_duplicates__sorted_distinct)
+BOOST_AUTO_TEST_CASE(
+    collection__distinct_copy__distinct_unsorted_duplicates__sorted_distinct)
 {
-    const data_chunk set{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk expected{ 0, 2, 4, 6, 8 };
+    const data_chunk set{2, 0, 0, 8, 6, 4};
+    const data_chunk expected{0, 2, 4, 6, 8};
     BOOST_REQUIRE_EQUAL(distinct_copy(set), expected);
 }
 
@@ -375,49 +383,49 @@ BOOST_AUTO_TEST_CASE(collection__intersecting__empty_sets__false)
 BOOST_AUTO_TEST_CASE(collection__intersecting__left_set_empty__false)
 {
     const data_chunk left;
-    const data_chunk right{ 0, 2, 4, 6, 8 };
+    const data_chunk right{0, 2, 4, 6, 8};
     BOOST_REQUIRE(!intersecting(left, right));
 }
 
 BOOST_AUTO_TEST_CASE(collection__intersecting__right_set_empty__false)
 {
-    const data_chunk left{ 2, 0, 0, 8, 6, 4 };
+    const data_chunk left{2, 0, 0, 8, 6, 4};
     const data_chunk right;
     BOOST_REQUIRE(!intersecting(left, right));
 }
 
 BOOST_AUTO_TEST_CASE(collection__intersecting__distinct_sets__false)
 {
-    const data_chunk left{ 0, 2, 4, 6, 8 };
-    const data_chunk right{ 1, 3, 5, 7, 9 };
+    const data_chunk left{0, 2, 4, 6, 8};
+    const data_chunk right{1, 3, 5, 7, 9};
     BOOST_REQUIRE(!intersecting(left, right));
 }
 
 BOOST_AUTO_TEST_CASE(collection__intersecting__same_sets__true)
 {
-    const data_chunk left{ 0, 2, 4, 6, 8 };
-    const data_chunk right{ 0, 2, 4, 6, 8 };
+    const data_chunk left{0, 2, 4, 6, 8};
+    const data_chunk right{0, 2, 4, 6, 8};
     BOOST_REQUIRE(intersecting(left, right));
 }
 
 BOOST_AUTO_TEST_CASE(collection__intersecting__consistent_sets__true)
 {
-    const data_chunk left{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk right{ 0, 2, 4, 6, 8 };
+    const data_chunk left{2, 0, 0, 8, 6, 4};
+    const data_chunk right{0, 2, 4, 6, 8};
     BOOST_REQUIRE(intersecting(left, right));
 }
 
 BOOST_AUTO_TEST_CASE(collection__intersecting__left_subset__true)
 {
-    const data_chunk left{ 8, 6 };
-    const data_chunk right{ 0, 2, 4, 6, 8 };
+    const data_chunk left{8, 6};
+    const data_chunk right{0, 2, 4, 6, 8};
     BOOST_REQUIRE(intersecting(left, right));
 }
 
 BOOST_AUTO_TEST_CASE(collection__intersecting__right_subset__true)
 {
-    const data_chunk left{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk right{ 0, 8 };
+    const data_chunk left{2, 0, 0, 8, 6, 4};
+    const data_chunk right{0, 8};
     BOOST_REQUIRE(intersecting(left, right));
 }
 
@@ -434,14 +442,14 @@ BOOST_AUTO_TEST_CASE(collection__difference__empty_sets__empty)
 BOOST_AUTO_TEST_CASE(collection__idifference__minuend_empty__empty)
 {
     const data_chunk minuend;
-    const data_chunk subtrahend{ 0, 2, 4, 6, 8 };
+    const data_chunk subtrahend{0, 2, 4, 6, 8};
     const auto expected = minuend;
     BOOST_REQUIRE_EQUAL(difference(minuend, subtrahend), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__difference__subtrahend_empty__minuend)
 {
-    const data_chunk minuend{ 2, 0, 0, 8, 6, 4 };
+    const data_chunk minuend{2, 0, 0, 8, 6, 4};
     const data_chunk subtrahend;
     const auto expected = minuend;
     BOOST_REQUIRE_EQUAL(difference(minuend, subtrahend), expected);
@@ -449,41 +457,41 @@ BOOST_AUTO_TEST_CASE(collection__difference__subtrahend_empty__minuend)
 
 BOOST_AUTO_TEST_CASE(collection__difference__distinct_sets__minuend)
 {
-    const data_chunk minuend{ 0, 2, 4, 6, 8 };
-    const data_chunk subtrahend{ 1, 3, 5, 7, 9 };
+    const data_chunk minuend{0, 2, 4, 6, 8};
+    const data_chunk subtrahend{1, 3, 5, 7, 9};
     const data_chunk expected = minuend;
     BOOST_REQUIRE_EQUAL(difference(minuend, subtrahend), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__difference__same_sets__empty)
 {
-    const data_chunk minuend{ 0, 2, 4, 6, 8 };
-    const data_chunk subtrahend{ 0, 2, 4, 6, 8 };
+    const data_chunk minuend{0, 2, 4, 6, 8};
+    const data_chunk subtrahend{0, 2, 4, 6, 8};
     const data_chunk expected;
     BOOST_REQUIRE_EQUAL(difference(minuend, subtrahend), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__difference__consistent_sets__empty)
 {
-    const data_chunk minuend{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk subtrahend{ 0, 2, 4, 6, 8 };
+    const data_chunk minuend{2, 0, 0, 8, 6, 4};
+    const data_chunk subtrahend{0, 2, 4, 6, 8};
     const data_chunk expected;
     BOOST_REQUIRE_EQUAL(difference(minuend, subtrahend), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__difference__minuend_subset__empty)
 {
-    const data_chunk minuend{ 8, 6 };
-    const data_chunk subtrahend{ 0, 2, 4, 6, 8 };
+    const data_chunk minuend{8, 6};
+    const data_chunk subtrahend{0, 2, 4, 6, 8};
     const data_chunk expected;
     BOOST_REQUIRE_EQUAL(difference(minuend, subtrahend), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__difference__subtrahend_subset__expected)
 {
-    const data_chunk minuend{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk subtrahend{ 0, 8 };
-    const data_chunk expected{ 2, 6, 4 };
+    const data_chunk minuend{2, 0, 0, 8, 6, 4};
+    const data_chunk subtrahend{0, 8};
+    const data_chunk expected{2, 6, 4};
     BOOST_REQUIRE_EQUAL(difference(minuend, subtrahend), expected);
 }
 
@@ -497,21 +505,21 @@ BOOST_AUTO_TEST_CASE(collection__reverse_move__empty__empty)
 BOOST_AUTO_TEST_CASE(collection__reverse_move__single__unchanged)
 {
     const uint8_t expected = 42;
-    BOOST_REQUIRE_EQUAL(reverse(data_chunk{ expected }).front(), expected);
+    BOOST_REQUIRE_EQUAL(reverse(data_chunk{expected}).front(), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__reverse__unsorted_duplicates__reversed)
 {
-    data_chunk set{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk expected{ 4, 6, 8, 0, 0, 2 };
+    data_chunk set{2, 0, 0, 8, 6, 4};
+    const data_chunk expected{4, 6, 8, 0, 0, 2};
     reverse(set);
     BOOST_REQUIRE_EQUAL(set, expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__reverse_copy__unsorted_duplicates__reversed)
 {
-    const data_chunk set{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk expected{ 4, 6, 8, 0, 0, 2 };
+    const data_chunk set{2, 0, 0, 8, 6, 4};
+    const data_chunk expected{4, 6, 8, 0, 0, 2};
     BOOST_REQUIRE_EQUAL(reverse_copy(set), expected);
 }
 
@@ -525,21 +533,21 @@ BOOST_AUTO_TEST_CASE(collection__sort_move__empty__empty)
 BOOST_AUTO_TEST_CASE(collection__sort_move__single__unchanged)
 {
     const uint8_t expected = 42;
-    BOOST_REQUIRE_EQUAL(sort(data_chunk{ expected }).front(), expected);
+    BOOST_REQUIRE_EQUAL(sort(data_chunk{expected}).front(), expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__sort_move__unsorted_duplicates__sorted)
 {
-    data_chunk set{ 2, 0, 0, 8, 6, 4 };
-    const data_chunk expected{ 0, 0, 2, 4, 6, 8 };
+    data_chunk set{2, 0, 0, 8, 6, 4};
+    const data_chunk expected{0, 0, 2, 4, 6, 8};
     sort(set);
     BOOST_REQUIRE_EQUAL(set, expected);
 }
 
 BOOST_AUTO_TEST_CASE(collection__sort_copy__unsorted_duplicates__sorted)
 {
-    const data_chunk set{ 2, 0, 0, 8, 6, 4 };
-    data_chunk expected{ 0, 0, 2, 4, 6, 8 };
+    const data_chunk set{2, 0, 0, 8, 6, 4};
+    data_chunk expected{0, 0, 2, 4, 6, 8};
     BOOST_REQUIRE_EQUAL(sort_copy(set), expected);
 }
 
@@ -555,29 +563,29 @@ BOOST_AUTO_TEST_CASE(collection__starts_with__empty_empty__true)
 BOOST_AUTO_TEST_CASE(collection__starts_with__not_empty_empty__false)
 {
     static const data_chunk buffer;
-    static const data_chunk sequence{ 42 };
+    static const data_chunk sequence{42};
     BOOST_REQUIRE(!starts_with(buffer.begin(), buffer.end(), sequence));
 }
 
 BOOST_AUTO_TEST_CASE(collection__starts_with__same_vectors__true)
 {
-    static const data_chunk buffer{ 42 };
-    static const data_chunk sequence{ 42 };
+    static const data_chunk buffer{42};
+    static const data_chunk sequence{42};
     BOOST_REQUIRE(starts_with(buffer.begin(), buffer.end(), sequence));
 }
 
 BOOST_AUTO_TEST_CASE(collection__starts_with__matched_vectors__true)
 {
-    static const data_chunk buffer{ 42, 24, 15 };
-    static const data_chunk sequence{ 42 };
+    static const data_chunk buffer{42, 24, 15};
+    static const data_chunk sequence{42};
     BOOST_REQUIRE(starts_with(buffer.begin(), buffer.end(), sequence));
 }
 
 BOOST_AUTO_TEST_CASE(collection__starts_with__mismatched_arrays__false)
 {
     // Must be the same length when using arrays.
-    static const data_array<2> buffer{ { 24, 0 } };
-    static const data_array<2> sequence{ { 24, 42 } };
+    static const data_array<2> buffer{{24, 0}};
+    static const data_array<2> sequence{{24, 42}};
     const auto result = starts_with(buffer.begin(), buffer.end(), sequence);
     BOOST_REQUIRE(!result);
 }
@@ -585,8 +593,8 @@ BOOST_AUTO_TEST_CASE(collection__starts_with__mismatched_arrays__false)
 BOOST_AUTO_TEST_CASE(collection__starts_with__matched_arrays__true)
 {
     // Must be the same length when using arrays.
-    static const data_array<2> buffer{ { 24, 42 } };
-    static const data_array<2> sequence{ { 24, 42 } };
+    static const data_array<2> buffer{{24, 42}};
+    static const data_array<2> sequence{{24, 42}};
     const auto result = starts_with(buffer.begin(), buffer.end(), sequence);
     BOOST_REQUIRE(result);
 }

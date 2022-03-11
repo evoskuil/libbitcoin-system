@@ -57,15 +57,15 @@ BOOST_AUTO_TEST_CASE(copy_sink__write__nullptr__false)
 BOOST_AUTO_TEST_CASE(copy_sink__write__empty__true)
 {
     const std::string from;
-    data_chunk sink{ 0x00 };
+    data_chunk sink{0x00};
     copy_sink<data_slab> instance(sink);
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), 0), 0);
 }
 
 BOOST_AUTO_TEST_CASE(copy_sink__write__negative__false)
 {
-    const std::string from{ "a" };
-    data_chunk sink{ 0x00 };
+    const std::string from{"a"};
+    data_chunk sink{0x00};
     copy_sink<data_slab> instance(sink);
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), -1), -1);
     BOOST_REQUIRE_EQUAL(sink[0], 0x00);
@@ -73,8 +73,8 @@ BOOST_AUTO_TEST_CASE(copy_sink__write__negative__false)
 
 BOOST_AUTO_TEST_CASE(copy_sink__write__past_end__expected)
 {
-    const std::string from{ "a" };
-    data_chunk sink{ 0x00 };
+    const std::string from{"a"};
+    data_chunk sink{0x00};
     copy_sink<data_slab> instance(sink);
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), 2), 1);
     BOOST_REQUIRE_EQUAL(sink[0], from[0]);
@@ -82,8 +82,8 @@ BOOST_AUTO_TEST_CASE(copy_sink__write__past_end__expected)
 
 BOOST_AUTO_TEST_CASE(copy_sink__write__zero__zero)
 {
-    const std::string from{ "a" };
-    data_chunk sink{ 0x00 };
+    const std::string from{"a"};
+    data_chunk sink{0x00};
     copy_sink<data_slab> instance(sink);
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), 0), 0);
     BOOST_REQUIRE_EQUAL(sink[0], 0x00);
@@ -91,8 +91,8 @@ BOOST_AUTO_TEST_CASE(copy_sink__write__zero__zero)
 
 BOOST_AUTO_TEST_CASE(copy_sink__write__one__expected)
 {
-    const std::string from{ "a" };
-    data_chunk sink{ 0x00 };
+    const std::string from{"a"};
+    data_chunk sink{0x00};
     copy_sink<data_slab> instance(sink);
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), 1), 1);
     BOOST_REQUIRE_EQUAL(sink[0], from[0]);
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(copy_sink__write__one__expected)
 
 BOOST_AUTO_TEST_CASE(copy_sink__write__multiple__correct_tracking)
 {
-    const std::string from{ "abcdef" };
+    const std::string from{"abcdef"};
     data_chunk sink(6, 0x00);
     copy_sink<data_slab> instance(sink);
     BOOST_REQUIRE_EQUAL(instance.write(&from[0], 1), 1);

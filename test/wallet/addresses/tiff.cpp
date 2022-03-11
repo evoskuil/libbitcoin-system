@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(tiff__to_image__empty__false)
 BOOST_AUTO_TEST_CASE(tiff__to_image__width_0__false)
 {
     static const auto width = 0u;
-    static const data_chunk bitmap{ 'x' };
+    static const data_chunk bitmap{'x'};
     data_chunk tiff;
     stream::out::data stream(tiff);
     BOOST_REQUIRE(!tiff::to_image(stream, bitmap, width));
@@ -66,11 +66,10 @@ BOOST_AUTO_TEST_CASE(tiff__to_image__perfect_square__expected_true)
 {
     // A square with sides of 4 pixels is 4 rows of 1 byte.
     static const auto width = 4u;
-    static const data_chunk bitmap{ 0x20, 0xa0, 0x20, 0xb0 };
+    static const data_chunk bitmap{0x20, 0xa0, 0x20, 0xb0};
 
     // Manually-contructed expectation of tiff encoding.
-    static const data_chunk expected
-    {
+    static const data_chunk expected{
         // Header.
         0x4d, 0x4d,             // "MM" Motorola encoding (big endian)
         0x00, 0x2a,             // magic number (42)
@@ -79,7 +78,7 @@ BOOST_AUTO_TEST_CASE(tiff__to_image__perfect_square__expected_true)
         // [Each directory may be anywhere in the file]
 
         // IFD0, word boundary required.
-        0x00, 0x0a,             // count of entries
+        0x00, 0x0a, // count of entries
 
         // IFDE0
         0x01, 0x00,             // image_width
@@ -148,7 +147,7 @@ BOOST_AUTO_TEST_CASE(tiff__to_image__perfect_square__expected_true)
         0x00, 0x00, 0x00, 0x00, // null teminated linked list
 
         // pad
-        0x00, 0x00,             // pad
+        0x00, 0x00, // pad
 
         // [Each field value may be anywhere in the file.]
 

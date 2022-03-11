@@ -35,9 +35,12 @@
 #include <bitcoin/system/error/error.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 class BC_API transaction
 {
@@ -53,13 +56,16 @@ public:
     transaction(transaction&& other) noexcept;
     transaction(const transaction& other) noexcept;
 
-    transaction(uint32_t version, chain::inputs&& inputs,
-        chain::outputs&& outputs, uint32_t locktime) noexcept;
-    transaction(uint32_t version, const chain::inputs& inputs,
+    transaction(
+        uint32_t version, chain::inputs&& inputs, chain::outputs&& outputs,
+        uint32_t locktime) noexcept;
+    transaction(
+        uint32_t version, const chain::inputs& inputs,
         const chain::outputs& outputs, uint32_t locktime) noexcept;
-    transaction(uint32_t version, const inputs_ptr& inputs,
-        const outputs_ptr& outputs, uint32_t locktime) noexcept;
-    
+    transaction(
+        uint32_t version, const inputs_ptr& inputs, const outputs_ptr& outputs,
+        uint32_t locktime) noexcept;
+
     transaction(const data_slice& data, bool witness) noexcept;
     transaction(std::istream&& stream, bool witness) noexcept;
     transaction(std::istream& stream, bool witness) noexcept;
@@ -114,18 +120,19 @@ public:
     hash_digest sequences_hash() const noexcept;
 
     // signature_hash exposed for op_check_multisig caching.
-    hash_digest signature_hash(uint32_t index, const script& sub,
-        uint64_t value, uint8_t flags, script_version version,
-        bool bip143) const noexcept;
+    hash_digest signature_hash(
+        uint32_t index, const script& sub, uint64_t value, uint8_t flags,
+        script_version version, bool bip143) const noexcept;
 
-    bool check_signature(const ec_signature& signature,
-        const data_slice& public_key, const script& sub, uint32_t index,
-        uint64_t value, uint8_t flags, script_version version,
-        bool bip143) const noexcept;
-
-    bool create_endorsement(endorsement& out, const ec_secret& secret,
+    bool check_signature(
+        const ec_signature& signature, const data_slice& public_key,
         const script& sub, uint32_t index, uint64_t value, uint8_t flags,
         script_version version, bool bip143) const noexcept;
+
+    bool create_endorsement(
+        endorsement& out, const ec_secret& secret, const script& sub,
+        uint32_t index, uint64_t value, uint8_t flags, script_version version,
+        bool bip143) const noexcept;
 
     // Guards (for tx pool without compact blocks).
     // ------------------------------------------------------------------------
@@ -141,7 +148,8 @@ public:
     code connect(const context& state) const noexcept;
 
 protected:
-    transaction(bool segregated, uint32_t version, const inputs_ptr& inputs,
+    transaction(
+        bool segregated, uint32_t version, const inputs_ptr& inputs,
         const outputs_ptr& outputs, uint32_t locktime, bool valid) noexcept;
 
     // Guard (context free).
@@ -171,8 +179,9 @@ protected:
     // Accept (contextual).
     // ------------------------------------------------------------------------
 
-    bool is_non_final(size_t height, uint32_t timestamp,
-        uint32_t median_time_past, bool bip113) const noexcept;
+    bool is_non_final(
+        size_t height, uint32_t timestamp, uint32_t median_time_past,
+        bool bip113) const noexcept;
 
     // prevouts required
     bool is_missing_prevouts() const noexcept;
@@ -196,16 +205,20 @@ private:
     ////static size_t maximum_size(bool coinbase) noexcept;
 
     // signature hash
-    void signature_hash_single(writer& sink, uint32_t index, const script& sub,
+    void signature_hash_single(
+        writer& sink, uint32_t index, const script& sub,
         uint8_t flags) const noexcept;
-    void signature_hash_none(writer& sink, uint32_t index, const script& sub,
+    void signature_hash_none(
+        writer& sink, uint32_t index, const script& sub,
         uint8_t flags) const noexcept;
-    void signature_hash_all(writer& sink, uint32_t index, const script& sub,
+    void signature_hash_all(
+        writer& sink, uint32_t index, const script& sub,
         uint8_t flags) const noexcept;
-    hash_digest unversioned_signature_hash(uint32_t index, const script& sub,
-        uint8_t flags) const noexcept;
-    hash_digest version_0_signature_hash(uint32_t index, const script& sub,
-        uint64_t value, uint8_t flags, bool bip143) const noexcept;
+    hash_digest unversioned_signature_hash(
+        uint32_t index, const script& sub, uint8_t flags) const noexcept;
+    hash_digest version_0_signature_hash(
+        uint32_t index, const script& sub, uint64_t value, uint8_t flags,
+        bool bip143) const noexcept;
 
     // Transaction should be stored as shared (adds 16 bytes).
     // copy: 5 * 64 + 2 = 41 bytes (vs. 16 when shared).
@@ -243,10 +256,11 @@ DECLARE_JSON_VALUE_CONVERTORS(transaction::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::transaction>
 {
-    size_t operator()(const bc::system::chain::transaction& value) const noexcept
+    size_t operator()(
+        const bc::system::chain::transaction& value) const noexcept
     {
         // Witness coinbases will collide (null_hash).
         return std::hash<bc::system::hash_digest>{}(value.hash(true));

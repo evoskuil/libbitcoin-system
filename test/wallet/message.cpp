@@ -23,22 +23,34 @@ BOOST_AUTO_TEST_SUITE(messages_tests)
 using namespace bc::system::wallet;
 
 // $ bx base16-encode "Satoshi" | bx sha256
-#define SECRET "002688cc350a5333a87fa622eacec626c3d1c0ebf9f3793de3885fa254d7e393"
-#define SIGNATURE_COMPRESSED "20c0ae26619db18abd1e8a84d005bafd336512eda7207cf7f4f6c36c9614ed6bcf531a954929ddc0a86578f4d28a26e19b676c890a49881d6f25e393befd6d1682"
-#define SIGNATURE_UNCOMPRESSED "1c3484d71301fbdd9eec713894add25867663d9a91d637682f09179a211d16a1f26068178de890a0117df61c436e9062f87ae1790579829caae2911833ba9e35b0"
+#define SECRET                                                                 \
+    "002688cc350a5333a87fa622eacec626c3d1c0ebf9f3793de3885fa254d7e393"
+#define SIGNATURE_COMPRESSED                                                   \
+    "20c0ae26619db18abd1e8a84d005bafd336512eda7207cf7f4f6c36c9614ed6bcf531a95" \
+    "4929ddc0a86578f4d28a26e19b676c890a49881d6f25e393befd6d1682"
+#define SIGNATURE_UNCOMPRESSED                                                 \
+    "1c3484d71301fbdd9eec713894add25867663d9a91d637682f09179a211d16a1f2606817" \
+    "8de890a0117df61c436e9062f87ae1790579829caae2911833ba9e35b0"
 
 // WIF keys also used in WIF test vectors.
 #define WIF_COMPRESSED "L1WepftUBemj6H4XQovkiW1ARVjxMqaw4oj2kmkYqdG1xTnBcHfC"
 #define WIF_UNCOMPRESSED "5JngqQmHagNTknnCshzVUysLMWAjT23FWs1TgNU5wyFH5SB3hrP"
-#define SIGNATURE_WIF_COMPRESSED "20813288c5d9e3a56a297758df28bec5ffe4ceb107ac66f1d215c156ecb7845ca65efb7a84a5267edc77538479ccb01efdb006837d35e246b2cacae22acb4c6e46"
-#define SIGNATURE_WIF_UNCOMPRESSED "1b25c35d61aa2ff5353efc36d747ed3ef179bc0f5b3d1c60f0617006c9015a0d8271da05103b987d1c26a2ecb053a56ce885805cbacefa230e69bfe18727ea4a04"
+#define SIGNATURE_WIF_COMPRESSED                                               \
+    "20813288c5d9e3a56a297758df28bec5ffe4ceb107ac66f1d215c156ecb7845ca65efb7a" \
+    "84a5267edc77538479ccb01efdb006837d35e246b2cacae22acb4c6e46"
+#define SIGNATURE_WIF_UNCOMPRESSED                                             \
+    "1b25c35d61aa2ff5353efc36d747ed3ef179bc0f5b3d1c60f0617006c9015a0d8271da05" \
+    "103b987d1c26a2ecb053a56ce885805cbacefa230e69bfe18727ea4a04"
 
 // Generated using Electrum and above SECRET (compressed):
-#define ELECTRUM_SIGNATURE "1f1429ddc5e03888411065e4b36eec7de4901d580d51e6209798b9c06fdd39461a4884679f35d1e8d7321fe01f3401ed916732383f6b5f8a688ea9ae4321fbf4ae"
+#define ELECTRUM_SIGNATURE                                                     \
+    "1f1429ddc5e03888411065e4b36eec7de4901d580d51e6209798b9c06fdd39461a488467" \
+    "9f35d1e8d7321fe01f3401ed916732383f6b5f8a688ea9ae4321fbf4ae"
 
 BOOST_AUTO_TEST_SUITE(messages__recovery_magic)
 
-BOOST_AUTO_TEST_CASE(message__recovery_id_to_magic__uncompressed_valid__expected)
+BOOST_AUTO_TEST_CASE(
+    message__recovery_id_to_magic__uncompressed_valid__expected)
 {
     uint8_t out_magic;
     BOOST_REQUIRE(recovery_id_to_magic(out_magic, 0, false));
@@ -119,7 +131,8 @@ BOOST_AUTO_TEST_CASE(message__magic_to_recovery_id__invalid__false)
     bool out_compressed;
     uint8_t out_recovery_id;
     BOOST_REQUIRE(!magic_to_recovery_id(out_recovery_id, out_compressed, 0));
-    BOOST_REQUIRE(!magic_to_recovery_id(out_recovery_id, out_compressed, max_uint8));
+    BOOST_REQUIRE(
+        !magic_to_recovery_id(out_recovery_id, out_compressed, max_uint8));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -130,7 +143,7 @@ BOOST_AUTO_TEST_CASE(message__sign_message__compressed__expected)
 {
     const auto compressed = true;
     const auto secret = base16_array(SECRET);
-    const payment_address address({ secret, 0x00, compressed });
+    const payment_address address({secret, 0x00, compressed});
     const auto message = to_chunk(std::string("Compressed"));
     message_signature out_signature;
     BOOST_REQUIRE(sign_message(out_signature, message, secret, compressed));
@@ -141,7 +154,7 @@ BOOST_AUTO_TEST_CASE(message__sign_message__uncompressed__expected)
 {
     const auto compressed = false;
     const auto secret = base16_array(SECRET);
-    const payment_address address({ secret, 0x00, compressed });
+    const payment_address address({secret, 0x00, compressed});
     const auto message = to_chunk(std::string("Uncompressed"));
     message_signature out_signature;
     BOOST_REQUIRE(sign_message(out_signature, message, secret, compressed));
@@ -164,7 +177,8 @@ BOOST_AUTO_TEST_CASE(message__sign_message_wif__compressed__expected)
     const payment_address address(secret);
     const auto message = to_chunk(std::string("Compressed"));
     message_signature out_signature;
-    BOOST_REQUIRE(sign_message(out_signature, message, secret, secret.compressed()));
+    BOOST_REQUIRE(
+        sign_message(out_signature, message, secret, secret.compressed()));
     BOOST_REQUIRE_EQUAL(encode_base16(out_signature), SIGNATURE_WIF_COMPRESSED);
 }
 
@@ -174,8 +188,10 @@ BOOST_AUTO_TEST_CASE(message__sign_message_wif__uncompressed__expected)
     const payment_address address(secret);
     const auto message = to_chunk(std::string("Uncompressed"));
     message_signature out_signature;
-    BOOST_REQUIRE(sign_message(out_signature, message, secret, secret.compressed()));
-    BOOST_REQUIRE_EQUAL(encode_base16(out_signature), SIGNATURE_WIF_UNCOMPRESSED);
+    BOOST_REQUIRE(
+        sign_message(out_signature, message, secret, secret.compressed()));
+    BOOST_REQUIRE_EQUAL(
+        encode_base16(out_signature), SIGNATURE_WIF_UNCOMPRESSED);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -192,7 +208,7 @@ BOOST_AUTO_TEST_CASE(message__verify_message__compressed__expected)
 
 BOOST_AUTO_TEST_CASE(message__verify_message__uncompressed__expected)
 {
-    const payment_address address({ base16_array(SECRET), 0x00, false });
+    const payment_address address({base16_array(SECRET), 0x00, false});
     const auto message = to_chunk(std::string("Uncompressed"));
     const auto signature = base16_array(SIGNATURE_UNCOMPRESSED);
     BOOST_REQUIRE(verify_message(message, address, signature));

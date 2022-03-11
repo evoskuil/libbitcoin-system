@@ -22,29 +22,35 @@
 #include <type_traits>
 #include <bitcoin/system/constraints.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// All operations below support signed and unsigned integer parameters.
 
 /// Cast to smallest signed integer type to hold the maximum unsigned value.
-template <typename Integer,
+template <
+    typename Integer,
     typename Signed = typename std::make_signed<Integer>::type,
     if_integer<Integer> = true>
 constexpr Signed to_signed(Integer value) noexcept;
 
 /// Cast to smallest unsigned integer type to hold the maximum signed value.
-template <typename Integer,
+template <
+    typename Integer,
     typename Unsigned = typename std::make_unsigned<Integer>::type,
     if_integer<Integer> = true>
 constexpr Unsigned to_unsigned(Integer value) noexcept;
 
 /// Obtain the absolute value of the integer.
-template <typename Integer,
+template <
+    typename Integer,
     typename Absolute = typename std::make_unsigned<Integer>::type,
     if_signed_integer<Integer> = true>
 constexpr Absolute absolute(Integer value) noexcept;
-template <typename Integer, typename Absolute = Integer,
+template <
+    typename Integer, typename Absolute = Integer,
     if_unsigned_integer<Integer> = true>
 constexpr Absolute absolute(Integer value) noexcept;
 
@@ -56,36 +62,42 @@ constexpr bool is_negative(Integer) noexcept;
 
 /// Use !is_lesser(left, right) for (left >= right).
 /// Determine whether the left integer is greater than the right.
-template <typename Left, typename Right,
-    if_same_signed_integer<Left, Right> = true>
+template <
+    typename Left, typename Right, if_same_signed_integer<Left, Right> = true>
 constexpr bool is_greater(Left left, Right right) noexcept;
-template <typename Left, typename Right,
-    if_unsigned_integer<Left> = true, if_signed_integer<Right> = true>
+template <
+    typename Left, typename Right, if_unsigned_integer<Left> = true,
+    if_signed_integer<Right> = true>
 constexpr bool is_greater(Left left, Right right) noexcept;
-template <typename Left, typename Right,
-    if_signed_integer<Left> = true, if_unsigned_integer<Right> = true>
+template <
+    typename Left, typename Right, if_signed_integer<Left> = true,
+    if_unsigned_integer<Right> = true>
 constexpr bool is_greater(Left left, Right right) noexcept;
 
 /// Use !is_greater(left, right) for (left <= right).
 /// Determine whether the left integer is less than the right.
-template <typename Left, typename Right,
-    if_same_signed_integer<Left, Right> = true>
+template <
+    typename Left, typename Right, if_same_signed_integer<Left, Right> = true>
 constexpr bool is_lesser(Left left, Right right) noexcept;
-template <typename Left, typename Right,
-    if_signed_integer<Left> = true, if_unsigned_integer<Right> = true>
+template <
+    typename Left, typename Right, if_signed_integer<Left> = true,
+    if_unsigned_integer<Right> = true>
 constexpr bool is_lesser(Left left, Right right) noexcept;
-template <typename Left, typename Right,
-    if_unsigned_integer<Left> = true, if_signed_integer<Right> = true>
+template <
+    typename Left, typename Right, if_unsigned_integer<Left> = true,
+    if_signed_integer<Right> = true>
 constexpr bool is_lesser(Left left, Right right) noexcept;
 
 /// Return the greater of the two values, cast to the Result type.
-template<typename Result, typename Left, typename Right,
-    if_integer<Left> = true, if_integer<Right> = true>
+template <
+    typename Result, typename Left, typename Right, if_integer<Left> = true,
+    if_integer<Right> = true>
 constexpr Result greater(Left left, Right right) noexcept;
 
 /// Return the lesser of the two values, cast to the Result type.
-template<typename Result, typename Left, typename Right,
-    if_integer<Left> = true, if_integer<Right> = true>
+template <
+    typename Result, typename Left, typename Right, if_integer<Left> = true,
+    if_integer<Right> = true>
 constexpr Result lesser(Left left, Right right) noexcept;
 
 } // namespace system
@@ -94,4 +106,3 @@ constexpr Result lesser(Left left, Right right) noexcept;
 #include <bitcoin/system/impl/math/sign.ipp>
 
 #endif
-

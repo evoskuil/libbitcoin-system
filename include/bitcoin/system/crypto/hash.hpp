@@ -27,8 +27,10 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Common bitcoin hash container sizes.
 static constexpr size_t hash_size = 32;
@@ -57,60 +59,29 @@ typedef std::vector<long_hash> long_hash_list;
 
 /// Null-valued common hashes.
 
-constexpr mini_hash null_mini_hash
-{
-    {
-        0, 0, 0, 0, 0, 0
-    }
-};
+constexpr mini_hash null_mini_hash{{0, 0, 0, 0, 0, 0}};
 
-constexpr quarter_hash null_quarter_hash
-{
-    {
-        0, 0, 0, 0, 0, 0, 0, 0
-    }
-};
+constexpr quarter_hash null_quarter_hash{{0, 0, 0, 0, 0, 0, 0, 0}};
 
-constexpr half_hash null_half_hash
-{
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    }
-};
+constexpr half_hash null_half_hash{
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-constexpr short_hash null_short_hash
-{
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    }
-};
+constexpr short_hash null_short_hash{
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-constexpr hash_digest null_hash
-{
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    }
-};
+constexpr hash_digest null_hash{{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
 // Consensus sentinel.
-constexpr hash_digest one_hash
-{
-    {
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    }
-};
+constexpr hash_digest one_hash{{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-constexpr long_hash null_long_hash
-{
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    }
-};
+constexpr long_hash null_long_hash{
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
 /// Hash conversions of corresponding integers.
 BC_API mini_hash to_hash(const uint48_t& value) noexcept;
@@ -131,8 +102,9 @@ BC_API uint512_t to_uint512(const long_hash& hash) noexcept;
 /// Generate a scrypt hash to fill a byte array.
 /// Memory required (bytes) = 2 * 64 * work * resources.
 template <size_t Size>
-data_array<Size> scrypt(const data_slice& data, const data_slice& salt,
-    uint64_t work, uint32_t resources, uint32_t parallelism) noexcept;
+data_array<Size> scrypt(
+    const data_slice& data, const data_slice& salt, uint64_t work,
+    uint32_t resources, uint32_t parallelism) noexcept;
 
 /// Generate a scrypt hash.
 BC_API hash_digest scrypt_hash(const data_slice& data) noexcept;
@@ -142,8 +114,8 @@ BC_API hash_digest bitcoin_hash(const data_slice& data) noexcept;
 
 /// Generate a bitcoin hash of first + second concatenation.
 /// This hash function is used in merkle root generation.
-BC_API hash_digest bitcoin_hash(const data_slice& first,
-    const data_slice& second) noexcept;
+BC_API hash_digest
+bitcoin_hash(const data_slice& first, const data_slice& second) noexcept;
 
 /// Reduce a set of bitcoin hashes by bitcoin-hashing pairs in place.
 BC_API bool hash_reduce(std::vector<hash_digest>& hashes) noexcept;
@@ -165,31 +137,33 @@ BC_API data_chunk sha256_hash_chunk(const data_slice& data) noexcept;
 
 /// Generate a sha256 hash of first + second concatenation.
 /// This hash function is used in electrum seed stretching.
-BC_API hash_digest sha256_hash(const data_slice& first,
-    const data_slice& second) noexcept;
+BC_API hash_digest
+sha256_hash(const data_slice& first, const data_slice& second) noexcept;
 // Generate a hmac sha256 hash.
-BC_API hash_digest hmac_sha256_hash(const data_slice& data,
-    const data_slice& key) noexcept;
+BC_API hash_digest
+hmac_sha256_hash(const data_slice& data, const data_slice& key) noexcept;
 
 /// Generate a pbkdf2 hmac sha256 hash.
-BC_API data_chunk pbkdf2_hmac_sha256_chunk(const data_slice& passphrase,
-    const data_slice& salt, size_t iterations, size_t length) noexcept;
+BC_API data_chunk pbkdf2_hmac_sha256_chunk(
+    const data_slice& passphrase, const data_slice& salt, size_t iterations,
+    size_t length) noexcept;
 
 /// Generate a sha512 hash.
 BC_API long_hash sha512_hash(const data_slice& data) noexcept;
 
 /// Generate a hmac sha512 hash.
-BC_API long_hash hmac_sha512_hash(const data_slice& data,
-    const data_slice& key) noexcept;
+BC_API long_hash
+hmac_sha512_hash(const data_slice& data, const data_slice& key) noexcept;
 
 /// Generate a pkcs5 pbkdf2 hmac sha512 hash.
-BC_API long_hash pkcs5_pbkdf2_hmac_sha512(const data_slice& passphrase,
-    const data_slice& salt, size_t iterations) noexcept;
+BC_API long_hash pkcs5_pbkdf2_hmac_sha512(
+    const data_slice& passphrase, const data_slice& salt,
+    size_t iterations) noexcept;
 
 /// Generate a scrypt hash of specified length.
-BC_API data_chunk scrypt_chunk(const data_slice& data, const data_slice& salt,
-    uint64_t work, uint32_t resources, uint32_t parallelism,
-    size_t length) noexcept;
+BC_API data_chunk scrypt_chunk(
+    const data_slice& data, const data_slice& salt, uint64_t work,
+    uint32_t resources, uint32_t parallelism, size_t length) noexcept;
 
 /// DJB2 hash key algorithm by Dan Bernstein.
 BC_API size_t djb2_hash(const data_slice& data) noexcept;
@@ -233,7 +207,7 @@ namespace boost
 template <>
 struct hash<bc::system::data_chunk>
 {
-    size_t operator()(const bc::system::data_chunk& data) const  noexcept
+    size_t operator()(const bc::system::data_chunk& data) const noexcept
     {
         return bc::system::djb2_hash(data);
     }
@@ -242,7 +216,7 @@ struct hash<bc::system::data_chunk>
 template <size_t Size>
 struct hash<bc::system::data_array<Size>>
 {
-    size_t operator()(const bc::system::data_array<Size>& data) const  noexcept
+    size_t operator()(const bc::system::data_array<Size>& data) const noexcept
     {
         return bc::system::djb2_hash(data);
     }

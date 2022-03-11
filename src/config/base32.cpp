@@ -24,21 +24,22 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/radix/base_32.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 base32::base32() noexcept
 {
 }
 
-base32::base32(const data_chunk& value) noexcept
-  : value_(value)
+base32::base32(const data_chunk& value) noexcept : value_(value)
 {
 }
 
-base32::base32(const base32& other) noexcept
-  : base32(other.value_)
+base32::base32(const base32& other) noexcept : base32(other.value_)
 {
 }
 

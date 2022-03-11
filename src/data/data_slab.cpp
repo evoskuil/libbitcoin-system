@@ -24,31 +24,32 @@
 #include <bitcoin/system/data/data_slice.hpp>
 #include <bitcoin/system/constants.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // constructors
 // ----------------------------------------------------------------------------
 
-data_slab::data_slab() noexcept
-  : data_slab(nullptr, nullptr, zero)
+data_slab::data_slab() noexcept : data_slab(nullptr, nullptr, zero)
 {
 }
 
 data_slab::data_slab(const data_slab& other) noexcept
-  : begin_(other.begin_), end_(other.end_), size_(other.size_)
+    : begin_(other.begin_), end_(other.end_), size_(other.size_)
 {
 }
 
 data_slab::data_slab(std::string& text) noexcept
-  : data_slab(from_size(text.begin(), text.size()))
+    : data_slab(from_size(text.begin(), text.size()))
 {
 }
 
 // private
-data_slab::data_slab(const pointer begin, const pointer end,
-    size_type size) noexcept
-  : begin_(begin), end_(end), size_(size)
+data_slab::data_slab(
+    const pointer begin, const pointer end, size_type size) noexcept
+    : begin_(begin), end_(end), size_(size)
 {
 }
 
@@ -57,17 +58,17 @@ data_slab::data_slab(const pointer begin, const pointer end,
 
 std::vector<data_slab::value_type> data_slab::to_chunk() const noexcept
 {
-    return { begin_, end_ };
+    return {begin_, end_};
 }
 
 data_slice data_slab::to_slice() const noexcept
 {
-    return { begin_, end_ };
+    return {begin_, end_};
 }
 
 std::string data_slab::to_string() const noexcept
 {
-    return { begin_, end_ };
+    return {begin_, end_};
 }
 
 // Cannot provide a "decode" factory since the data is not owned.

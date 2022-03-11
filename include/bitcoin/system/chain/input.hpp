@@ -34,9 +34,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 class BC_API input
 {
@@ -52,18 +55,24 @@ public:
     input(input&& other) noexcept;
     input(const input& other) noexcept;
 
-    input(chain::point&& point, chain::script&& script,
+    input(
+        chain::point&& point, chain::script&& script,
         uint32_t sequence) noexcept;
-    input(const chain::point& point, const chain::script& script,
+    input(
+        const chain::point& point, const chain::script& script,
         uint32_t sequence) noexcept;
-    input(const chain::point::ptr& point, const chain::script::ptr& script,
+    input(
+        const chain::point::ptr& point, const chain::script::ptr& script,
         uint32_t sequence) noexcept;
 
-    input(chain::point&& point, chain::script&& script,
-        chain::witness&& witness, uint32_t sequence) noexcept;
-    input(const chain::point& point, const chain::script& script,
+    input(
+        chain::point&& point, chain::script&& script, chain::witness&& witness,
+        uint32_t sequence) noexcept;
+    input(
+        const chain::point& point, const chain::script& script,
         const chain::witness& witness, uint32_t sequence) noexcept;
-    input(const chain::point::ptr& point, const chain::script::ptr& script,
+    input(
+        const chain::point::ptr& point, const chain::script::ptr& script,
         const chain::witness::ptr& witness, uint32_t sequence) noexcept;
 
     input(const data_slice& data) noexcept;
@@ -117,7 +126,8 @@ protected:
     // So that witness may be set late in deserialization.
     friend class transaction;
 
-    input(const chain::point::ptr& point, const chain::script::ptr& script,
+    input(
+        const chain::point::ptr& point, const chain::script::ptr& script,
         const chain::witness::ptr& witness, uint32_t sequence, bool valid,
         const chain::prevout::ptr& prevout) noexcept;
 
@@ -152,7 +162,7 @@ DECLARE_JSON_VALUE_CONVERTORS(input::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::input>
 {
     size_t operator()(const bc::system::chain::input& value) const noexcept

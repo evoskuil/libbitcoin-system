@@ -28,8 +28,10 @@
 #include <bitcoin/system/stream/streamers/byte_reader.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/bitreader.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Suppress multiple inheritance warnings.
 // The inheritance is virtual, so not actually multiple.
@@ -41,9 +43,7 @@ namespace system {
 
 /// A bit reader that accepts an istream.
 template <typename IStream = std::istream>
-class bit_reader
-  : public byte_reader<IStream>,
-    public virtual bitreader
+class bit_reader : public byte_reader<IStream>, public virtual bitreader
 {
 public:
     /// Constructors.

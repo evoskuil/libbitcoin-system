@@ -25,21 +25,22 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/radix/base_16.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 base16::base16() noexcept
 {
 }
 
-base16::base16(const data_chunk& value) noexcept
-  : value_(value)
+base16::base16(const data_chunk& value) noexcept : value_(value)
 {
 }
 
-base16::base16(const base16& other) noexcept
-  : base16(other.value_)
+base16::base16(const base16& other) noexcept : base16(other.value_)
 {
 }
 
@@ -55,7 +56,7 @@ base16::operator const data_chunk&() const noexcept
 
 base16::operator data_slice() const noexcept
 {
-    return { value_.begin(), value_.end() };
+    return {value_.begin(), value_.end()};
 }
 
 std::istream& operator>>(std::istream& input, base16& argument)

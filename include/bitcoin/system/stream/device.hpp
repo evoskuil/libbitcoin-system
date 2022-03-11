@@ -23,9 +23,11 @@
 #include <utility>
 #include <boost/iostreams/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 namespace ios = boost::iostreams;
 
 /// Virtual base class for ios::stream devices.

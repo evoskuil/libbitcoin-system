@@ -18,9 +18,12 @@
  */
 #include <bitcoin/system/wallet/context.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 const context btc_mainnet_p2kh = ctx::btc::main::p2pkh;
 const context btc_mainnet_p2sh = ctx::btc::main::p2sh;

@@ -25,8 +25,10 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 inline bool is_between(uint8_t value, uint8_t low, uint8_t high) noexcept
 {
@@ -46,8 +48,8 @@ inline uint8_t from_base16_characters(char high, char low) noexcept
         return character - '0' + '\x0';
     };
 
-    return (from_base16_digit(high) << to_half(byte_bits)) |
-        from_base16_digit(low);
+    return (from_base16_digit(high) << to_half(byte_bits))
+           | from_base16_digit(low);
 }
 
 template <size_t Size>
@@ -93,13 +95,13 @@ bool decode_hash(data_array<Size>& out, const std::string& in) noexcept
 }
 
 template <size_t Size, if_odd<Size>>
-std::string base16_string(const char(&string)[Size]) noexcept
+std::string base16_string(const char (&string)[Size]) noexcept
 {
     return to_string(base16_chunk(string));
 }
 
 template <size_t Size, if_odd<Size>>
-data_chunk base16_chunk(const char(&string)[Size]) noexcept
+data_chunk base16_chunk(const char (&string)[Size]) noexcept
 {
     data_chunk out;
     decode_base16(out, string);
@@ -107,7 +109,8 @@ data_chunk base16_chunk(const char(&string)[Size]) noexcept
 }
 
 template <size_t Size, if_odd<Size>>
-data_array<to_half(sub1(Size))> base16_array(const char(&string)[Size]) noexcept
+data_array<to_half(sub1(Size))> base16_array(
+    const char (&string)[Size]) noexcept
 {
     data_array<to_half(sub1(Size))> out;
     if (!decode_base16(out, string))
@@ -117,7 +120,7 @@ data_array<to_half(sub1(Size))> base16_array(const char(&string)[Size]) noexcept
 }
 
 template <size_t Size, if_odd<Size>>
-data_array<to_half(sub1(Size))> base16_hash(const char(&string)[Size]) noexcept
+data_array<to_half(sub1(Size))> base16_hash(const char (&string)[Size]) noexcept
 {
     data_array<to_half(sub1(Size))> out;
     if (!decode_hash(out, string))

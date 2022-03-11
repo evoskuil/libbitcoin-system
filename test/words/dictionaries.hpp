@@ -22,113 +22,47 @@
 #include <cstddef>
 #include <bitcoin/system.hpp>
 
- // Avoid using namespace in shared headers, but okay here.
+// Avoid using namespace in shared headers, but okay here.
 using namespace bc::system::words;
 
-namespace test {
-namespace mnemonics_dictionaries {
+namespace test
+{
+namespace mnemonics_dictionaries
+{
 
 const size_t test_dictionary_size = 10;
 typedef dictionary<test_dictionary_size>::words test_words;
 typedef words::dictionary<test_dictionary_size> test_dictionary;
 typedef words::dictionaries<5, test_dictionary::size()> test_dictionaries;
 
-const test_words test_words_en
-{
+const test_words test_words_en{
     true,
-    {
-        "abandon",
-        "ability",
-        "able",
-        "about",
-        "above",
-        "absent",
-        "absorb",
-        "abstract",
-        "absurd",
-        "abuse"
-    }
-};
+    {"abandon", "ability", "able", "about", "above", "absent", "absorb",
+     "abstract", "absurd", "abuse"}};
 
-const test_words test_words_es
-{
+const test_words test_words_es{
     false,
-    {
-        "ábaco",
-        "abdomen",
-        "abeja",
-        "abierto",
-        "abogado",
-        "abono",
-        "aborto",
-        "abrazo",
-        "abrir",
-        "abuelo"
-    }
-};
+    {"ábaco", "abdomen", "abeja", "abierto", "abogado", "abono", "aborto",
+     "abrazo", "abrir", "abuelo"}};
 
-const test_words test_words_ja
-{
+const test_words test_words_ja{
     false,
-    {
-        "あいこくしん",
-        "あいさつ",
-        "あいだ",
-        "あおぞら",
-        "あかちゃん",
-        "あきる",
-        "あけがた",
-        "あける",
-        "あこがれる",
-        "あさい"
-    }
-};
+    {"あいこくしん", "あいさつ", "あいだ", "あおぞら", "あかちゃん", "あきる",
+     "あけがた", "あける", "あこがれる", "あさい"}};
 
-const test_words test_words_zh_Hans
-{
-    false,
-    {
-        "的",
-        "一",
-        "是",
-        "在",
-        "不",
-        "了",
-        "有",
-        "和",
-        "人",
-        "这"
-    }
-};
+const test_words test_words_zh_Hans{
+    false, {"的", "一", "是", "在", "不", "了", "有", "和", "人", "这"}};
 
-const test_words test_words_zh_Hant
-{
-    false,
-    {
-        "的",
-        "一",
-        "是",
-        "在",
-        "不",
-        "了",
-        "有",
-        "和",
-        "人",
-        "這"
-    }
-};
+const test_words test_words_zh_Hant{
+    false, {"的", "一", "是", "在", "不", "了", "有", "和", "人", "這"}};
 
 // This is the instance under test.
-const test_dictionaries instance
-{
-    {
-        test_dictionary{ language::en, test_words_en },
-        test_dictionary{ language::es, test_words_es },
-        test_dictionary{ language::ja, test_words_ja },
-        test_dictionary{ language::zh_Hans, test_words_zh_Hans },
-        test_dictionary{ language::zh_Hant, test_words_zh_Hant }
-    }
-};
+const test_dictionaries instance{
+    {test_dictionary{language::en, test_words_en},
+     test_dictionary{language::es, test_words_es},
+     test_dictionary{language::ja, test_words_ja},
+     test_dictionary{language::zh_Hans, test_words_zh_Hans},
+     test_dictionary{language::zh_Hant, test_words_zh_Hant}}};
 
 } // namespace mnemonics_dictionaries
 } // namespace test

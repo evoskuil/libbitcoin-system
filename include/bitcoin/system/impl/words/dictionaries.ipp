@@ -27,9 +27,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/words/language.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
 
 // Word-not-found sentinel, consistent with dictionary.index.
 constexpr int32_t missing = -1;
@@ -37,19 +40,19 @@ constexpr int32_t missing = -1;
 // Constructor.
 // ----------------------------------------------------------------------------
 
-template<size_t Count, size_t Size>
+template <size_t Count, size_t Size>
 dictionaries<Count, Size>::dictionaries(const list& dictionaries) noexcept
-  : dictionaries_(dictionaries)
+    : dictionaries_(dictionaries)
 {
 }
 
-template<size_t Count, size_t Size>
+template <size_t Count, size_t Size>
 bool dictionaries<Count, Size>::exists(language identifier) const noexcept
 {
     return to_dictionary(identifier) != dictionaries_.end();
 }
 
-template<size_t Count, size_t Size>
+template <size_t Count, size_t Size>
 language dictionaries<Count, Size>::to_identifier(
     const std::string& name) const noexcept
 {
@@ -57,7 +60,7 @@ language dictionaries<Count, Size>::to_identifier(
     return it != dictionaries_.end() ? it->identifier() : language::none;
 }
 
-template<size_t Count, size_t Size>
+template <size_t Count, size_t Size>
 std::string dictionaries<Count, Size>::to_name(
     language identifier) const noexcept
 {
@@ -68,52 +71,52 @@ std::string dictionaries<Count, Size>::to_name(
 // Search.
 // ----------------------------------------------------------------------------
 
-template<size_t Count, size_t Size>
-std::string dictionaries<Count, Size>::at(size_t index,
-    language identifier) const noexcept
+template <size_t Count, size_t Size>
+std::string dictionaries<Count, Size>::at(
+    size_t index, language identifier) const noexcept
 {
     const auto it = to_dictionary(identifier);
     return it != dictionaries_.end() ? it->at(index) : "";
 }
 
-template<size_t Count, size_t Size>
-string_list dictionaries<Count, Size>::at(const search& indexes,
-    language identifier) const noexcept
+template <size_t Count, size_t Size>
+string_list dictionaries<Count, Size>::at(
+    const search& indexes, language identifier) const noexcept
 {
     const auto it = to_dictionary(identifier);
     return it != dictionaries_.end() ? it->at(indexes) : string_list{};
 }
 
-template<size_t Count, size_t Size>
-int32_t dictionaries<Count, Size>::index(const std::string& word,
-    language identifier) const noexcept
+template <size_t Count, size_t Size>
+int32_t dictionaries<Count, Size>::index(
+    const std::string& word, language identifier) const noexcept
 {
     const auto it = to_dictionary(identifier);
     return it != dictionaries_.end() ? it->index(word) : missing;
 }
 
-template<size_t Count, size_t Size>
-typename dictionaries<Count, Size>::result
-dictionaries<Count, Size>::index(const string_list& words,
-    language identifier) const noexcept
+template <size_t Count, size_t Size>
+typename dictionaries<Count, Size>::result dictionaries<Count, Size>::index(
+    const string_list& words, language identifier) const noexcept
 {
     const auto it = to_dictionary(identifier);
     return it != dictionaries_.end() ? it->index(words) : result{};
 }
 
-template<size_t Count, size_t Size>
-language dictionaries<Count, Size>::contains(const std::string& word,
-    language identifier) const noexcept
+template <size_t Count, size_t Size>
+language dictionaries<Count, Size>::contains(
+    const std::string& word, language identifier) const noexcept
 {
     if (identifier != language::none)
     {
         const auto it = to_dictionary(identifier);
-        return it != dictionaries_.end() && it->contains(word) ?
-            identifier : language::none;
+        return it != dictionaries_.end() && it->contains(word) ? identifier
+                                                               : language::none;
     }
 
     // std::find_if returns first match, order is guaranteed.
-    const auto it = std::find_if(dictionaries_.begin(), dictionaries_.end(),
+    const auto it = std::find_if(
+        dictionaries_.begin(), dictionaries_.end(),
         [&](const dictionary<Size>& dictionary) noexcept
         {
             return dictionary.contains(word);
@@ -122,19 +125,21 @@ language dictionaries<Count, Size>::contains(const std::string& word,
     return it != dictionaries_.end() ? it->identifier() : language::none;
 }
 
-template<size_t Count, size_t Size>
-language dictionaries<Count, Size>::contains(const string_list& words,
-    language identifier) const noexcept
+template <size_t Count, size_t Size>
+language dictionaries<Count, Size>::contains(
+    const string_list& words, language identifier) const noexcept
 {
     if (identifier != language::none)
     {
         const auto it = to_dictionary(identifier);
-        return it != dictionaries_.end() && it->contains(words) ?
-            identifier : language::none;
+        return it != dictionaries_.end() && it->contains(words)
+                   ? identifier
+                   : language::none;
     }
 
     // std::find_if returns first match, order is guaranteed.
-    const auto it = std::find_if(dictionaries_.begin(), dictionaries_.end(),
+    const auto it = std::find_if(
+        dictionaries_.begin(), dictionaries_.end(),
         [&](const dictionary<Size>& dictionary) noexcept
         {
             return dictionary.contains(words);
@@ -146,24 +151,26 @@ language dictionaries<Count, Size>::contains(const string_list& words,
 // private
 // ----------------------------------------------------------------------------
 
-template<size_t Count, size_t Size>
-typename dictionaries<Count, Size>::list::const_iterator
-dictionaries<Count, Size>::to_dictionary(language identifier) const noexcept
+template <size_t Count, size_t Size>
+typename dictionaries<Count, Size>::list::const_iterator dictionaries<
+    Count, Size>::to_dictionary(language identifier) const noexcept
 {
     // std::find_if returns first match, order is guaranteed.
-    return std::find_if(dictionaries_.begin(), dictionaries_.end(),
+    return std::find_if(
+        dictionaries_.begin(), dictionaries_.end(),
         [&](const dictionary<Size>& dictionary) noexcept
         {
             return dictionary.identifier() == identifier;
         });
 }
 
-template<size_t Count, size_t Size>
-typename dictionaries<Count, Size>::list::const_iterator
-dictionaries<Count, Size>::to_dictionary(const std::string& name) const noexcept
+template <size_t Count, size_t Size>
+typename dictionaries<Count, Size>::list::const_iterator dictionaries<
+    Count, Size>::to_dictionary(const std::string& name) const noexcept
 {
     // std::find_if returns first match, order is guaranteed.
-    return std::find_if(dictionaries_.begin(), dictionaries_.end(),
+    return std::find_if(
+        dictionaries_.begin(), dictionaries_.end(),
         [&](const dictionary<Size>& dictionary) noexcept
         {
             return dictionary.name() == name;

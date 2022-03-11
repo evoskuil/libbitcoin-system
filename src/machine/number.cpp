@@ -26,19 +26,20 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace machine {
+namespace libbitcoin
+{
+namespace system
+{
+namespace machine
+{
 
 using namespace system::chain;
 
-number::number() noexcept
-  : number(numbers::positive_0)
+number::number() noexcept : number(numbers::positive_0)
 {
 }
 
-number::number(int64_t value) noexcept
-  : value_(value)
+number::number(int64_t value) noexcept : value_(value)
 {
 }
 

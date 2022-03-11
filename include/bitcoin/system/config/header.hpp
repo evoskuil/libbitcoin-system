@@ -24,9 +24,12 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for header.
 class BC_API header
@@ -40,8 +43,8 @@ public:
     operator const chain::header&() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, header& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const header& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const header& argument) noexcept;
 
 private:
     chain::header value_;

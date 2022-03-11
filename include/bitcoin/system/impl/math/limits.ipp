@@ -23,30 +23,33 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/math/sign.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
-template <typename Result, typename Integer,
-    if_integer<Result>, if_integer<Integer>>
+template <
+    typename Result, typename Integer, if_integer<Result>, if_integer<Integer>>
 constexpr Result limit(Integer value) noexcept
 {
     return limit(value, std::numeric_limits<Result>::max());
 }
 
-template <typename Result, typename Integer,
-    if_integer<Result>, if_integer<Integer>>
+template <
+    typename Result, typename Integer, if_integer<Result>, if_integer<Integer>>
 constexpr Result limit(Integer value, Result maximum) noexcept
 {
     return limit(value, std::numeric_limits<Result>::min(), maximum);
 }
 
-template <typename Result, typename Integer,
-    if_integer<Result>, if_integer<Integer>>
+template <
+    typename Result, typename Integer, if_integer<Result>, if_integer<Integer>>
 constexpr Result limit(Integer value, Result minimum, Result maximum) noexcept
 {
-    return is_lesser(value, minimum) ? minimum :
-        (is_greater(value, maximum) ? maximum :
-            static_cast<Result>(value));
+    return is_lesser(value, minimum)
+               ? minimum
+               : (is_greater(value, maximum) ? maximum
+                                             : static_cast<Result>(value));
 }
 
 } // namespace system

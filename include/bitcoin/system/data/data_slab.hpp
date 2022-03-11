@@ -28,8 +28,10 @@
 #include <bitcoin/system/data/data_slice.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Lifetime:
 /// No prvalues are accepted, as they are not meaningfully-writeable.
@@ -123,7 +125,7 @@ public:
     bool empty() const noexcept;
 
     /// Unary operators.
-    template<size_type Size>
+    template <size_type Size>
     operator std::array<value_type, Size>() const noexcept;
     operator std::vector<value_type>() const noexcept;
     operator data_slice() const noexcept;
@@ -133,8 +135,8 @@ private:
     data_slab(const pointer begin, const pointer end, size_type size) noexcept;
 
     template <typename Iterator>
-    static data_slab from_iterators(const Iterator& begin,
-        const Iterator& end) noexcept;
+    static data_slab from_iterators(
+        const Iterator& begin, const Iterator& end) noexcept;
 
     template <typename Pointer>
     static data_slab from_size(const Pointer begin, size_type size) noexcept;

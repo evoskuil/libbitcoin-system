@@ -29,20 +29,22 @@
 #include <bitcoin/system/wallet/addresses/stealth_address.hpp>
 #include <bitcoin/system/wallet/addresses/uri_reader.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// A bitcoin URI corresponding to BIP21 and BIP72.
 /// The object is not constant, setters can change state after construction.
-class BC_API bitcoin_uri
-  : public uri_reader
+class BC_API bitcoin_uri : public uri_reader
 {
 public:
     /// Constructors.
     bitcoin_uri() noexcept;
     bitcoin_uri(const bitcoin_uri& other) noexcept;
-    bitcoin_uri(const std::string& uri, bool strict=true) noexcept;
+    bitcoin_uri(const std::string& uri, bool strict = true) noexcept;
 
     /// Operators.
     bool operator<(const bitcoin_uri& other) const noexcept;
@@ -50,8 +52,8 @@ public:
     bool operator!=(const bitcoin_uri& other) const noexcept;
     bitcoin_uri& operator=(const bitcoin_uri& other) noexcept;
     friend std::istream& operator>>(std::istream& in, bitcoin_uri& to);
-    friend std::ostream& operator<<(std::ostream& out,
-        const bitcoin_uri& from) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& out, const bitcoin_uri& from) noexcept;
 
     /// Test whether the URI has been initialized.
     operator bool() const noexcept;
@@ -84,7 +86,8 @@ public:
     bool set_authority(const std::string& authority) noexcept;
     bool set_path(const std::string& path) noexcept;
     bool set_fragment(const std::string& fragment) noexcept;
-    bool set_parameter(const std::string& key, const std::string& value) noexcept;
+    bool set_parameter(
+        const std::string& key, const std::string& value) noexcept;
 
 private:
     /// Private helpers.
@@ -102,4 +105,3 @@ private:
 } // namespace libbitcoin
 
 #endif
-

@@ -21,9 +21,11 @@
 
 #include <iostream>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 template <typename Stream>
 Stream& stream_result(Stream& stream, bool success) noexcept
 {

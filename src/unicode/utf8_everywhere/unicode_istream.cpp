@@ -22,8 +22,10 @@
 #include <iostream>
 #include <bitcoin/system/unicode/utf8_everywhere/unicode_streambuf.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 unicode_istream::unicode_istream(
 #ifdef _MSC_VER
@@ -32,9 +34,9 @@ unicode_istream::unicode_istream(
     std::istream& narrow_stream, std::wistream&, size_t)
 #endif
 #ifdef _MSC_VER
-  : std::istream(new unicode_streambuf(wide_stream.rdbuf(), size))
+    : std::istream(new unicode_streambuf(wide_stream.rdbuf(), size))
 #else
-  : std::istream(narrow_stream.rdbuf())
+    : std::istream(narrow_stream.rdbuf())
 #endif
 {
 }

@@ -24,9 +24,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/unicode/unicode.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
 
 // local definitions
 // ----------------------------------------------------------------------------
@@ -37,26 +40,20 @@ typedef std::unordered_map<language, const char*> language_map;
 // Dictionaries are collections of words in one of these languages.
 // There can be multiple dictionaries for a given language identifier.
 
-static const language_map map
-{
-    { language::en, "en" },
-    { language::es, "es" },
-    { language::it, "it" },
-    { language::fr, "fr" },
-    { language::cs, "cs" },
-    { language::pt, "pt" },
-    { language::ja, "ja" },
-    { language::ko, "ko" },
-    { language::zh_Hans, "zh_Hans" },
-    { language::zh_Hant, "zh_Hant" }
-};
+static const language_map map{
+    {language::en, "en"},           {language::es, "es"},
+    {language::it, "it"},           {language::fr, "fr"},
+    {language::cs, "cs"},           {language::pt, "pt"},
+    {language::ja, "ja"},           {language::ko, "ko"},
+    {language::zh_Hans, "zh_Hans"}, {language::zh_Hant, "zh_Hant"}};
 
 // static methods
 // ----------------------------------------------------------------------------
 
 language languages::from_name(const std::string& name) noexcept
 {
-    const auto it = std::find_if(map.begin(), map.end(),
+    const auto it = std::find_if(
+        map.begin(), map.end(),
         [&](const language_map::value_type& pair) noexcept
         {
             return pair.second == name;
@@ -67,7 +64,8 @@ language languages::from_name(const std::string& name) noexcept
 
 std::string languages::to_name(language identifier) noexcept
 {
-    const auto it = std::find_if(map.begin(), map.end(),
+    const auto it = std::find_if(
+        map.begin(), map.end(),
         [&](const language_map::value_type& pair) noexcept
         {
             return pair.first == identifier;
@@ -81,8 +79,8 @@ std::string languages::to_delimiter(language identifier) noexcept
     return identifier == language::ja ? ideographic_space : ascii_space;
 }
 
-std::string languages::join(const string_list& words,
-    language identifier) noexcept
+std::string languages::join(
+    const string_list& words, language identifier) noexcept
 {
     // Language is specialized for joining in japanese.
     return system::join(words, to_delimiter(identifier));
@@ -101,7 +99,8 @@ string_list languages::try_normalize(const string_list& words) noexcept
 
     // This is only used for dictionary matching.
     // All dictionaries are confirmed via test cases to be lower/nfkd.
-    std::transform(words.begin(), words.end(), normal.begin(),
+    std::transform(
+        words.begin(), words.end(), normal.begin(),
         [](const std::string& word) noexcept
         {
             auto token = ascii_to_lower(trim_copy(word, unicode_whitespace));
@@ -118,20 +117,21 @@ string_list languages::try_normalize(const string_list& words) noexcept
 
 // protected
 languages::languages() noexcept
-  : entropy_(), words_(), identifier_(language::none)
+    : entropy_(), words_(), identifier_(language::none)
 {
 }
 
 languages::languages(const languages& other) noexcept
-  : entropy_(other.entropy_), words_(other.words_),
-    identifier_(other.identifier_)
+    : entropy_(other.entropy_), words_(other.words_),
+      identifier_(other.identifier_)
 {
 }
 
 // protected
-languages::languages(const data_chunk& entropy, const string_list& words,
+languages::languages(
+    const data_chunk& entropy, const string_list& words,
     language identifier) noexcept
-  : entropy_(entropy), words_(words), identifier_(identifier)
+    : entropy_(entropy), words_(words), identifier_(identifier)
 {
 }
 
@@ -183,8 +183,8 @@ bool languages::operator==(const languages& other) const noexcept
 {
     // Words and entropy are equivalent except in the case of electrum_v1
     // overflows. Comparing here prevents the need for electrum_v1 override.
-    return entropy_ == other.entropy_ && identifier_ == other.identifier_ &&
-        words_ == other.words_;
+    return entropy_ == other.entropy_ && identifier_ == other.identifier_
+           && words_ == other.words_;
 }
 
 bool languages::operator!=(const languages& other) const noexcept

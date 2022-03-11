@@ -27,9 +27,12 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // This sentinel is serialized and defined by consensus, not implementation.
 const uint32_t point::null_index = no_previous_output;
@@ -38,65 +41,61 @@ const uint32_t point::null_index = no_previous_output;
 // ----------------------------------------------------------------------------
 
 // Invalid default used in signature hashing.
-point::point() noexcept
-  : point(null_hash, point::null_index, false)
+point::point() noexcept : point(null_hash, point::null_index, false)
 {
 }
 
 point::point(point&& other) noexcept
-  : point(std::move(other.hash_), other.index_, true)
+    : point(std::move(other.hash_), other.index_, true)
 {
 }
 
 point::point(const point& other) noexcept
-  : point(other.hash_, other.index_, other.valid_)
+    : point(other.hash_, other.index_, other.valid_)
 {
 }
 
 point::point(hash_digest&& hash, uint32_t index) noexcept
-  : point(std::move(hash), index, true)
+    : point(std::move(hash), index, true)
 {
 }
 
 point::point(const hash_digest& hash, uint32_t index) noexcept
-  : point(hash, index, true)
+    : point(hash, index, true)
 {
 }
 
-point::point(const data_slice& data) noexcept
-  : point(stream::in::copy(data))
+point::point(const data_slice& data) noexcept : point(stream::in::copy(data))
 {
 }
 
 point::point(std::istream&& stream) noexcept
-  : point(read::bytes::istream(stream))
+    : point(read::bytes::istream(stream))
 {
 }
 
 point::point(std::istream& stream) noexcept
-  : point(read::bytes::istream(stream))
+    : point(read::bytes::istream(stream))
 {
 }
 
-point::point(reader&& source) noexcept
-  : point(from_data(source))
+point::point(reader&& source) noexcept : point(from_data(source))
 {
 }
 
-point::point(reader& source) noexcept
-  : point(from_data(source))
+point::point(reader& source) noexcept : point(from_data(source))
 {
 }
 
 // protected
 point::point(hash_digest&& hash, uint32_t index, bool valid) noexcept
-  : hash_(std::move(hash)), index_(index), valid_(valid)
+    : hash_(std::move(hash)), index_(index), valid_(valid)
 {
 }
 
 // protected
 point::point(const hash_digest& hash, uint32_t index, bool valid) noexcept
-  : hash_(hash), index_(index), valid_(valid)
+    : hash_(hash), index_(index), valid_(valid)
 {
 }
 
@@ -121,8 +120,7 @@ point& point::operator=(const point& other) noexcept
 
 bool point::operator==(const point& other) const noexcept
 {
-    return (hash_ == other.hash_)
-        && (index_ == other.index_);
+    return (hash_ == other.hash_) && (index_ == other.index_);
 }
 
 bool point::operator!=(const point& other) const noexcept
@@ -133,8 +131,8 @@ bool point::operator!=(const point& other) const noexcept
 bool operator<(const point& left, const point& right) noexcept
 {
     // Arbitrary compare, for uniqueness sorting.
-    return left.index() == right.index() ?
-        left.hash() < right.hash() : left.index() < right.index();
+    return left.index() == right.index() ? left.hash() < right.hash()
+                                         : left.index() < right.index();
 }
 
 // Deserialization.
@@ -143,12 +141,7 @@ bool operator<(const point& left, const point& right) noexcept
 // static/private
 point point::from_data(reader& source) noexcept
 {
-    return
-    {
-        source.read_hash(),
-        source.read_4_bytes_little_endian(),
-        source
-    };
+    return {source.read_hash(), source.read_4_bytes_little_endian(), source};
 }
 
 // Serialization.
@@ -218,30 +211,23 @@ point tag_invoke(json::value_to_tag<point>, const json::value& value) noexcept
     if (!decode_hash(hash, value.at("hash").get_string().c_str()))
         return {};
 
-    return
-    {
-        hash,
-        value.at("index").to_number<uint32_t>()
-    };
+    return {hash, value.at("index").to_number<uint32_t>()};
 }
 
-void tag_invoke(json::value_from_tag, json::value& value,
-    const point& point) noexcept
+void tag_invoke(
+    json::value_from_tag, json::value& value, const point& point) noexcept
 {
-    value =
-    {
-        { "hash", encode_hash(point.hash()) },
-        { "index", point.index() }
-    };
+    value = {{"hash", encode_hash(point.hash())}, {"index", point.index()}};
 }
 
-point::ptr tag_invoke(json::value_to_tag<point::ptr>,
-    const json::value& value) noexcept
+point::ptr tag_invoke(
+    json::value_to_tag<point::ptr>, const json::value& value) noexcept
 {
     return to_shared(tag_invoke(json::value_to_tag<point>{}, value));
 }
 
-void tag_invoke(json::value_from_tag tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag tag, json::value& value,
     const point::ptr& output) noexcept
 {
     tag_invoke(tag, value, *output);

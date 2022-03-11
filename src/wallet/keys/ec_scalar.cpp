@@ -25,39 +25,36 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // construction
 // ----------------------------------------------------------------------------
 
-ec_scalar::ec_scalar() noexcept
-  : secret_(null_hash)
+ec_scalar::ec_scalar() noexcept : secret_(null_hash)
 {
 }
 
 ec_scalar::ec_scalar(ec_scalar&& scalar) noexcept
-  : secret_(std::move(scalar.secret_))
+    : secret_(std::move(scalar.secret_))
 {
 }
 
-ec_scalar::ec_scalar(const ec_scalar& scalar) noexcept
-  : secret_(scalar.secret_)
+ec_scalar::ec_scalar(const ec_scalar& scalar) noexcept : secret_(scalar.secret_)
 {
 }
 
-ec_scalar::ec_scalar(ec_secret&& secret) noexcept
-  : secret_(std::move(secret))
+ec_scalar::ec_scalar(ec_secret&& secret) noexcept : secret_(std::move(secret))
 {
 }
 
-ec_scalar::ec_scalar(const ec_secret& secret) noexcept
-  : secret_(secret)
+ec_scalar::ec_scalar(const ec_secret& secret) noexcept : secret_(secret)
 {
 }
 
-ec_scalar::ec_scalar(int64_t value) noexcept
-  : ec_scalar(from_int64(value))
+ec_scalar::ec_scalar(int64_t value) noexcept : ec_scalar(from_int64(value))
 {
 }
 
@@ -103,15 +100,12 @@ ec_scalar ec_scalar::from_int64(int64_t value) noexcept
 
     ec_secret secret = null_hash;
     write::bytes::copy writer(
-    { 
-        std::prev(secret.end(), sizeof(value)),
-        secret.end()
-    });
+        {std::prev(secret.end(), sizeof(value)), secret.end()});
 
     // All hashes and secrets are stored as big-endian by convention.
     writer.write_8_bytes_big_endian(absolute(value));
 
-    return value > 0 ? ec_scalar{ secret } : -ec_scalar{ secret };
+    return value > 0 ? ec_scalar{secret} : -ec_scalar{secret};
 }
 
 // arithmetic assignment operators
@@ -143,8 +137,8 @@ ec_scalar ec_scalar::operator-() const noexcept
     auto out = secret_;
     if (!ec_negate(out))
         return {};
-    
-    return ec_scalar{ std::move(out) };
+
+    return ec_scalar{std::move(out)};
 }
 
 // binary math operators (const)
@@ -155,8 +149,8 @@ ec_scalar operator+(const ec_scalar& left, const ec_scalar& right) noexcept
     ec_secret out = left.secret();
     if (!ec_add(out, right.secret()))
         return {};
-    
-    return ec_scalar{ std::move(out) };
+
+    return ec_scalar{std::move(out)};
 }
 
 ec_scalar operator-(const ec_scalar& left, const ec_scalar& right) noexcept
@@ -169,8 +163,8 @@ ec_scalar operator*(const ec_scalar& left, const ec_scalar& right) noexcept
     auto out = left.secret();
     if (!ec_multiply(out, right.secret()))
         return {};
-    
-    return ec_scalar{ std::move(out) };
+
+    return ec_scalar{std::move(out)};
 }
 
 // comparison operators
@@ -200,8 +194,8 @@ bool operator==(const ec_scalar& left, const ec_scalar& right) noexcept
 {
     // Compare arrays from left and right in reverse order since scalars are
     // encoded in big endian format, with leading bytes zero for small scalars.
-    return std::equal(left.secret().rbegin(), left.secret().rend(),
-        right.secret().rbegin());
+    return std::equal(
+        left.secret().rbegin(), left.secret().rend(), right.secret().rbegin());
 }
 
 bool operator!=(const ec_scalar& left, const ec_scalar& right) noexcept

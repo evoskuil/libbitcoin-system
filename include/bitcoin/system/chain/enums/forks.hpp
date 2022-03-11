@@ -22,9 +22,12 @@
 #include <cstdint>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 enum forks : uint32_t
 {
@@ -137,28 +140,21 @@ enum forks : uint32_t
 
     /// Rules that use bip34-based activation.
     bip34_activations =
-        forks::bip34_rule |
-        forks::bip65_rule |
-        forks::bip66_rule,
+        forks::bip34_rule | forks::bip65_rule | forks::bip66_rule,
 
     /// TODO:
     /// Rules that use BIP9 bit 0 first time activation.
     bip9_bit0_group =
-        forks::bip68_rule |
-        forks::bip112_rule |
-        forks::bip113_rule,
+        forks::bip68_rule | forks::bip112_rule | forks::bip113_rule,
 
     /// TODO:
     /// Rules that use BIP9 bit 1 first time activation.
     bip9_bit1_group =
-        forks::bip141_rule |
-        forks::bip143_rule |
-        forks::bip147_rule,
+        forks::bip141_rule | forks::bip143_rule | forks::bip147_rule,
 
     /// TODO:
     /// Rules that use BIP9 bit 4 first time activation.
-    bip9_bit4_group =
-        forks::bip91_rule,
+    bip9_bit4_group = forks::bip91_rule,
 
     /// TODO: rules that use taproot-style activation.
 

@@ -29,8 +29,10 @@
 #include <bitcoin/system/serial/serial.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 constexpr uint64_t siphash_magic_0 = 0x736f6d6570736575;
 constexpr uint64_t siphash_magic_1 = 0x646f72616e646f6d;
@@ -40,8 +42,8 @@ constexpr uint64_t finalization = 0x00000000000000ff;
 constexpr uint64_t max_encoded_byte_count = (1 << byte_bits);
 
 // C++14: can make constexpr.
-static void sip_round(uint64_t& v0, uint64_t& v1, uint64_t& v2,
-    uint64_t& v3) noexcept
+static void sip_round(
+    uint64_t& v0, uint64_t& v1, uint64_t& v2, uint64_t& v3) noexcept
 {
     v0 += v1;
     v2 += v3;
@@ -63,8 +65,9 @@ static void sip_round(uint64_t& v0, uint64_t& v1, uint64_t& v2,
 }
 
 // C++14: can make constexpr.
-static void compression_round(uint64_t& v0, uint64_t& v1, uint64_t& v2,
-    uint64_t& v3, uint64_t word) noexcept
+static void compression_round(
+    uint64_t& v0, uint64_t& v1, uint64_t& v2, uint64_t& v3,
+    uint64_t word) noexcept
 {
     v3 ^= word;
     sip_round(v0, v1, v2, v3);
@@ -89,11 +92,10 @@ uint64_t siphash(const siphash_key& key, const data_slice& message) noexcept
     read::bytes::copy source(message);
 
     for (size_t index = eight; index <= bytes; index += eight)
-        compression_round(v0, v1, v2, v3,
-            source.read_8_bytes_little_endian());
+        compression_round(v0, v1, v2, v3, source.read_8_bytes_little_endian());
 
-    auto last = is_zero(bytes % eight) ? 0ll :
-        source.read_8_bytes_little_endian();
+    auto last =
+        is_zero(bytes % eight) ? 0ll : source.read_8_bytes_little_endian();
 
     last ^= ((bytes % max_encoded_byte_count) << to_bits(sub1(eight)));
     compression_round(v0, v1, v2, v3, last);

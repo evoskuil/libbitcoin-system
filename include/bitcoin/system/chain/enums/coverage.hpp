@@ -21,9 +21,12 @@
 
 #include <cstdint>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 /// Signature hash types.
 /// Comments from: bitcoin.org/en/developer-guide#standard-transactions

@@ -22,10 +22,14 @@
 #include <bitcoin/system/words/dictionary.hpp>
 #include <bitcoin/system/words/dictionaries.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
-namespace mnemonic {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
+namespace mnemonic
+{
 
 typedef words::dictionary<2048> catalog;
 

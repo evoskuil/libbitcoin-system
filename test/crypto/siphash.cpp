@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(siphash__hash__vectors__expected)
     half_hash hash;
     BOOST_REQUIRE(decode_base16(hash, hash_test_key));
 
-    for (const auto& result: siphash_hash_tests)
+    for (const auto& result : siphash_hash_tests)
     {
         data_chunk data;
         BOOST_REQUIRE(decode_base16(data, result.message));
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(siphash__key__vectors__expected)
 
     const auto key = to_siphash_key(hash);
 
-    for (const auto& result: siphash_hash_tests)
+    for (const auto& result : siphash_hash_tests)
     {
         data_chunk data;
         BOOST_REQUIRE(decode_base16(data, result.message));

@@ -23,19 +23,23 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/math/sign.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // TODO: test with uintx.
 
-template <typename Result, typename Left, typename Right,
+template <
+    typename Result, typename Left, typename Right,
     if_same_signed_integer<Left, Right>>
 constexpr Result add(Left left, Right right) noexcept
 {
     return static_cast<Result>(left) + static_cast<Result>(right);
 }
 
-template <typename Result, typename Left, typename Right,
+template <
+    typename Result, typename Left, typename Right,
     if_same_signed_integer<Left, Right>>
 constexpr Result subtract(Left left, Right right) noexcept
 {
@@ -46,11 +50,11 @@ template <typename Integer, if_signed_integer<Integer>>
 constexpr bool overflows(Integer left, Integer right) noexcept
 {
     // C++14: local variables allowed in constexpr.
-    return !is_zero(right) &&
-        (!is_negative(right) ||
-            (left < std::numeric_limits<Integer>::min() - right)) &&
-        (is_negative(right) ||
-            (left > std::numeric_limits<Integer>::max() - right));
+    return !is_zero(right)
+           && (!is_negative(right)
+               || (left < std::numeric_limits<Integer>::min() - right))
+           && (is_negative(right)
+               || (left > std::numeric_limits<Integer>::max() - right));
 }
 
 template <typename Integer, if_unsigned_integer<Integer>>
@@ -63,11 +67,11 @@ template <typename Integer, if_signed_integer<Integer>>
 constexpr bool underflows(Integer left, Integer right) noexcept
 {
     // C++14: local variables allowed in constexpr.
-    return !is_zero(right) &&
-        (!is_negative(right) ||
-            (left > std::numeric_limits<Integer>::max() + right)) &&
-        (is_negative(right) ||
-            (left < std::numeric_limits<Integer>::min() + right));
+    return !is_zero(right)
+           && (!is_negative(right)
+               || (left > std::numeric_limits<Integer>::max() + right))
+           && (is_negative(right)
+               || (left < std::numeric_limits<Integer>::min() + right));
 }
 
 template <typename Integer, if_unsigned_integer<Integer>>
@@ -79,31 +83,33 @@ constexpr bool underflows(Integer left, Integer right) noexcept
 template <typename Integer, if_signed_integer<Integer>>
 constexpr Integer ceilinged_add(Integer left, Integer right) noexcept
 {
-    return overflows(left, right) ? (is_negative(right) ?
-        std::numeric_limits<Integer>::min() :
-        std::numeric_limits<Integer>::max()) : (left + right);
+    return overflows(left, right)
+               ? (is_negative(right) ? std::numeric_limits<Integer>::min()
+                                     : std::numeric_limits<Integer>::max())
+               : (left + right);
 }
 
 template <typename Integer, if_unsigned_integer<Integer>>
 constexpr Integer ceilinged_add(Integer left, Integer right) noexcept
 {
-    return overflows(left, right) ? std::numeric_limits<Integer>::max() :
-        (left + right);
+    return overflows(left, right) ? std::numeric_limits<Integer>::max()
+                                  : (left + right);
 }
 
 template <typename Integer, if_signed_integer<Integer>>
 constexpr Integer floored_subtract(Integer left, Integer right) noexcept
 {
-    return underflows(left, right) ? (is_negative(right) ?
-        std::numeric_limits<Integer>::max() :
-        std::numeric_limits<Integer>::min()) : (left - right);
+    return underflows(left, right)
+               ? (is_negative(right) ? std::numeric_limits<Integer>::max()
+                                     : std::numeric_limits<Integer>::min())
+               : (left - right);
 }
 
 template <typename Integer, if_unsigned_integer<Integer>>
 constexpr Integer floored_subtract(Integer left, Integer right) noexcept
 {
-    return underflows(left, right) ? std::numeric_limits<Integer>::min() :
-        (left - right);
+    return underflows(left, right) ? std::numeric_limits<Integer>::min()
+                                   : (left - right);
 }
 
 } // namespace system

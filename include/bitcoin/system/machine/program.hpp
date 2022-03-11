@@ -29,9 +29,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/machine/number.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace machine {
+namespace libbitcoin
+{
+namespace system
+{
+namespace machine
+{
 
 class BC_API program
 {
@@ -41,15 +44,15 @@ public:
     typedef std::unordered_map<uint8_t, hash_digest> hash_cache;
 
     /// Create an instance with empty stacks, value unused/max (input run).
-    program(const chain::script::ptr& script,
-        const chain::transaction& transaction, uint32_t index,
-        uint32_t forks) noexcept;
+    program(
+        const chain::script::ptr& script, const chain::transaction& transaction,
+        uint32_t index, uint32_t forks) noexcept;
 
     /// Create an instance with initialized stack (witness run, v0 by default).
-    program(const chain::script::ptr& script,
-        const chain::transaction& transaction,
+    program(
+        const chain::script::ptr& script, const chain::transaction& transaction,
         uint32_t index, uint32_t forks, chunk_ptrs&& stack, uint64_t value,
-        chain::script_version version=chain::script_version::zero) noexcept;
+        chain::script_version version = chain::script_version::zero) noexcept;
 
     /// Create using copied tx, input, forks, value, stack (prevout run).
     program(const chain::script::ptr& script, const program& other) noexcept;
@@ -87,8 +90,9 @@ public:
     data_chunk pop() noexcept;
     chunk_ptr pop_ref() noexcept;
     bool pop(int32_t& out_value) noexcept;
-    bool pop(number& out_number,
-        size_t maxiumum_size=chain::max_number_size) noexcept;
+    bool pop(
+        number& out_number,
+        size_t maxiumum_size = chain::max_number_size) noexcept;
     bool pop_binary(number& first, number& second) noexcept;
     bool pop_ternary(number& first, number& second, number& third) noexcept;
     bool pop_position(stack_iterator& out_position) noexcept;
@@ -98,7 +102,8 @@ public:
     void duplicate(size_t index) noexcept;
     void swap(size_t left, size_t right) noexcept;
     void erase(const stack_iterator& position) noexcept;
-    void erase(const stack_iterator& first, const stack_iterator& last) noexcept;
+    void erase(
+        const stack_iterator& first, const stack_iterator& last) noexcept;
 
     /// Primary push/pop optimizations (passive).
     size_t size() const noexcept;
@@ -107,8 +112,8 @@ public:
     bool stack_result(bool clean) const noexcept;
     bool is_stack_overflow() const noexcept;
     bool if_(const chain::operation& op) const noexcept;
-    bool top(number& out_number,
-        size_t maxiumum_size=chain::max_number_size) const noexcept;
+    bool top(number& out_number, size_t maxiumum_size = chain::max_number_size)
+        const noexcept;
     stack_iterator position(size_t index) const noexcept;
     chunk_ptr item(size_t index) const noexcept;
 
@@ -137,11 +142,13 @@ public:
     /// Parameterized overload strips opcodes from returned subscript.
     chain::script::ptr subscript(const chunk_ptrs& endorsements) const noexcept;
 
-    bool prepare(ec_signature& signature, const data_chunk& key,
-        hash_digest& hash, const chunk_ptr& endorsement) const noexcept;
+    bool prepare(
+        ec_signature& signature, const data_chunk& key, hash_digest& hash,
+        const chunk_ptr& endorsement) const noexcept;
 
-    bool prepare(ec_signature& signature, const data_chunk& key,
-        hash_cache& cache, uint8_t& flags, const data_chunk& endorsement,
+    bool prepare(
+        ec_signature& signature, const data_chunk& key, hash_cache& cache,
+        uint8_t& flags, const data_chunk& endorsement,
         const chain::script& sub) const noexcept;
 
 private:
@@ -151,9 +158,10 @@ private:
     static chain::operations create_strip_ops(
         const chunk_ptrs& endorsements) noexcept;
 
-    hash_digest signature_hash(const chain::script& sub,
-        uint8_t flags) const noexcept;
-    void signature_hash(hash_cache& cache, const chain::script& sub,
+    hash_digest signature_hash(
+        const chain::script& sub, uint8_t flags) const noexcept;
+    void signature_hash(
+        hash_cache& cache, const chain::script& sub,
         uint8_t flags) const noexcept;
 
     bool stack_to_bool(bool clean) const noexcept;

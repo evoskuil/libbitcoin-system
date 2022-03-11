@@ -26,12 +26,13 @@
 #include <cstdint>
 #include <bitcoin/system/stream/streamers/interfaces/bytereader.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// A bit reader interface.
-class bitreader
-  : public virtual bytereader
+class bitreader : public virtual bytereader
 {
 public:
     /// Read one bit (high to low).

@@ -28,14 +28,18 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 typedef std::tuple<uint64_t, uint64_t> siphash_key;
 
 BC_API siphash_key to_siphash_key(const half_hash& hash) noexcept;
-BC_API uint64_t siphash(const half_hash& hash, const data_slice& message) noexcept;
-BC_API uint64_t siphash(const siphash_key& key, const data_slice& message) noexcept;
+BC_API uint64_t
+siphash(const half_hash& hash, const data_slice& message) noexcept;
+BC_API uint64_t
+siphash(const siphash_key& key, const data_slice& message) noexcept;
 
 } // namespace system
 } // namespace libbitcoin

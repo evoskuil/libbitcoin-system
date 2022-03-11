@@ -23,8 +23,10 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/exceptions.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Throws overflow_exception on overflow.
 template <typename Integer, if_unsigned_integer<Integer> = true>
@@ -47,8 +49,8 @@ template <typename Integer, if_unsigned_integer<Integer> = true>
 void safe_decrement(Integer& value) noexcept(false);
 
 /// Throws range_exception if From value is above or below To size limits.
-template <typename To, typename From,
-    if_integer<To> = true, if_integer<From> = true>
+template <
+    typename To, typename From, if_integer<To> = true, if_integer<From> = true>
 To safe_cast(From value) noexcept(false);
 
 } // namespace system

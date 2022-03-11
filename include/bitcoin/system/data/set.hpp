@@ -23,13 +23,14 @@
 #include <vector>
 #include <bitcoin/system/data/collection.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Instantiations of this set may not have virtual destructors.
-template<typename Element>
-class set
-  : public std::vector<Element>
+template <typename Element>
+class set : public std::vector<Element>
 {
 public:
     /// For no-fill allocation of the set.

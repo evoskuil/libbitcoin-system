@@ -22,15 +22,17 @@
 #include <type_traits>
 #include <bitcoin/system/constraints.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 template <typename Integer, typename Signed, if_integer<Integer>>
 constexpr Signed to_signed(Integer value) noexcept
 {
     return static_cast<Signed>(value);
 }
-    
+
 template <typename Integer, typename Unsigned, if_integer<Integer>>
 constexpr Unsigned to_unsigned(Integer value) noexcept
 {
@@ -68,18 +70,20 @@ constexpr bool is_greater(Left left, Right right) noexcept
     return left > right;
 }
 
-template <typename Left, typename Right,
-    if_unsigned_integer<Left>, if_signed_integer<Right>>
+template <
+    typename Left, typename Right, if_unsigned_integer<Left>,
+    if_signed_integer<Right>>
 constexpr bool is_greater(Left left, Right right) noexcept
 {
     return is_negative(right) || (left > to_unsigned(right));
 }
 
-template <typename Left, typename Right,
-    if_signed_integer<Left>, if_unsigned_integer<Right>>
+template <
+    typename Left, typename Right, if_signed_integer<Left>,
+    if_unsigned_integer<Right>>
 constexpr bool is_greater(Left left, Right right) noexcept
 {
-     return !is_negative(left) && (right < to_unsigned(left));
+    return !is_negative(left) && (right < to_unsigned(left));
 }
 
 template <typename Left, typename Right, if_same_signed_integer<Left, Right>>
@@ -88,34 +92,38 @@ constexpr bool is_lesser(Left left, Right right) noexcept
     return left < right;
 }
 
-template <typename Left, typename Right,
-    if_signed_integer<Left>, if_unsigned_integer<Right>>
+template <
+    typename Left, typename Right, if_signed_integer<Left>,
+    if_unsigned_integer<Right>>
 constexpr bool is_lesser(Left left, Right right) noexcept
 {
     return is_negative(left) || (to_unsigned(left) < right);
 }
 
-template <typename Left, typename Right,
-    if_unsigned_integer<Left>, if_signed_integer<Right>>
+template <
+    typename Left, typename Right, if_unsigned_integer<Left>,
+    if_signed_integer<Right>>
 constexpr bool is_lesser(Left left, Right right) noexcept
 {
     return !is_negative(right) && (to_unsigned(right) > left);
 }
 
-template<typename Result, typename Left, typename Right,
-    if_integer<Left>, if_integer<Right>>
+template <
+    typename Result, typename Left, typename Right, if_integer<Left>,
+    if_integer<Right>>
 constexpr Result greater(Left left, Right right) noexcept
 {
-    return is_greater(left, right) ? static_cast<Result>(left) :
-        static_cast<Result>(right);
+    return is_greater(left, right) ? static_cast<Result>(left)
+                                   : static_cast<Result>(right);
 }
 
-template<typename Result, typename Left, typename Right,
-    if_integer<Left>, if_integer<Right>>
+template <
+    typename Result, typename Left, typename Right, if_integer<Left>,
+    if_integer<Right>>
 constexpr Result lesser(Left left, Right right) noexcept
 {
-    return is_lesser(left, right) ? static_cast<Result>(left) :
-        static_cast<Result>(right);
+    return is_lesser(left, right) ? static_cast<Result>(left)
+                                  : static_cast<Result>(right);
 }
 
 } // namespace system

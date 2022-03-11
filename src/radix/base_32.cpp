@@ -32,29 +32,24 @@
 // The 5 bit encoding is authoritative as byte encoding is padded.
 // Invalid padding results in a decoding error.
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 constexpr char encode[] = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
-constexpr uint8_t decode[] =
-{
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    15,   0xff, 10,   17,   21,   20,   26,   30,
-    7,    5,    0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 29,   0xff, 24,   13,   25,   9,    8,
-    23,   0xff, 18,   22,   31,   27,   19,   0xff,
-    1,    0,    3,    16,   11,   28,   12,   14,
-    6,    4,    2,    0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 29,   0xff, 24,   13,   25,   9,    8,
-    23,   0xff, 18,   22,   31,   27,   19,   0xff,
-    1,    0,    3,    16,   11,   28,   12,   14,
-    6,    4,    2,    0xff, 0xff, 0xff, 0xff, 0xff
-};
+constexpr uint8_t decode[] = {
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    15,   0xff, 10,   17,   21,   20,   26,   30,   7,    5,    0xff, 0xff,
+    0xff, 0xff, 0xff, 0xff, 0xff, 29,   0xff, 24,   13,   25,   9,    8,
+    23,   0xff, 18,   22,   31,   27,   19,   0xff, 1,    0,    3,    16,
+    11,   28,   12,   14,   6,    4,    2,    0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 29,   0xff, 24,   13,   25,   9,    8,    23,   0xff, 18,   22,
+    31,   27,   19,   0xff, 1,    0,    3,    16,   11,   28,   12,   14,
+    6,    4,    2,    0xff, 0xff, 0xff, 0xff, 0xff};
 
 // encode
 
@@ -64,7 +59,7 @@ std::string encode_base32(const base32_chunk& data) noexcept
     out.reserve(data.size());
 
     // encode[] cannot be out of bounds because expanded bytes are < 32.
-    for (auto value: data)
+    for (auto value : data)
         out.push_back(encode[static_cast<uint8_t>(value)]);
 
     return out;
@@ -86,7 +81,7 @@ bool decode_base32(base32_chunk& out, const std::string& in) noexcept
     out.reserve(in.size());
 
     // decode[] cannot be out of bounds because char are < 256.
-    for (auto character: in)
+    for (auto character : in)
     {
         const auto value = decode[static_cast<uint8_t>(character)];
 
@@ -117,7 +112,7 @@ data_chunk base32_pack(const base32_chunk& unpacked) noexcept
     write::bits::data sink(packed);
 
     // This is how c++ developers do it. :)
-    for (const auto& value: unpacked)
+    for (const auto& value : unpacked)
         sink.write_bits(value.convert_to<uint8_t>(), 5);
 
     sink.flush();

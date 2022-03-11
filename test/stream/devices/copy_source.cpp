@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(copy_source__input_sequence__not_empty__expected)
 
 BOOST_AUTO_TEST_CASE(copy_source__read__nullptr__false)
 {
-    const data_chunk source{ 0x42 };
+    const data_chunk source{0x42};
     copy_source<data_reference> instance(source);
     BOOST_REQUIRE_EQUAL(instance.read(nullptr, 0), -1);
 }
@@ -58,15 +58,15 @@ BOOST_AUTO_TEST_CASE(copy_source__read__nullptr__false)
 BOOST_AUTO_TEST_CASE(copy_source__read__empty__false)
 {
     std::array<char, 0> to;
-    const data_chunk source{ 0x42 };
+    const data_chunk source{0x42};
     copy_source<data_reference> instance(source);
     BOOST_REQUIRE_EQUAL(instance.read(to.data(), 0), -1);
 }
 
 BOOST_AUTO_TEST_CASE(copy_source__read__negative__false)
 {
-    std::array<char, 1> to{ { 0x00 } };
-    const data_chunk source{ 0x42 };
+    std::array<char, 1> to{{0x00}};
+    const data_chunk source{0x42};
     copy_source<data_reference> instance(source);
     BOOST_REQUIRE_EQUAL(instance.read(to.data(), -1), -1);
     BOOST_REQUIRE_EQUAL(to[0], 0x00);
@@ -74,8 +74,8 @@ BOOST_AUTO_TEST_CASE(copy_source__read__negative__false)
 
 BOOST_AUTO_TEST_CASE(copy_source__read__past_end__expected)
 {
-    std::array<char, 1> to{ { 0x00 } };
-    const data_chunk source{ 0x42 };
+    std::array<char, 1> to{{0x00}};
+    const data_chunk source{0x42};
     copy_source<data_reference> instance(source);
     BOOST_REQUIRE_EQUAL(instance.read(to.data(), 2), 1);
     BOOST_REQUIRE_EQUAL(to[0], source[0]);
@@ -92,8 +92,8 @@ BOOST_AUTO_TEST_CASE(copy_source__read__past_end__expected)
 
 BOOST_AUTO_TEST_CASE(copy_source__read__zero__zero)
 {
-    std::array<char, 1> to{ { 0x00 } };
-    const data_chunk source{ 0x42 };
+    std::array<char, 1> to{{0x00}};
+    const data_chunk source{0x42};
     copy_source<data_reference> instance(source);
     BOOST_REQUIRE_EQUAL(instance.read(to.data(), 0), 0);
     BOOST_REQUIRE_EQUAL(to[0], 0x00);
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(copy_source__read__zero__zero)
 BOOST_AUTO_TEST_CASE(copy_source__read__one__expected)
 {
     std::array<char, 1> to;
-    const data_chunk source{ 0x42 };
+    const data_chunk source{0x42};
     copy_source<data_reference> instance(source);
     BOOST_REQUIRE_EQUAL(instance.read(to.data(), 1), 1);
     BOOST_REQUIRE_EQUAL(to[0], source[0]);
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(copy_source__read__multiple__correct_tracking)
     std::array<char, 2> to2;
     std::array<char, 3> to3;
     std::array<char, 42> to0;
-    const data_chunk source{ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
+    const data_chunk source{0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
     copy_source<data_reference> instance(source);
     BOOST_REQUIRE_EQUAL(instance.read(to1.data(), 1), 1);
     BOOST_REQUIRE_EQUAL(to1[0], source[0]);

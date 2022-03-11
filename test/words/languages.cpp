@@ -71,82 +71,69 @@ BOOST_AUTO_TEST_CASE(languages__to_delimiter__non_japanese__space)
     BOOST_REQUIRE_EQUAL(languages::to_delimiter(language::cs), ascii_space);
     BOOST_REQUIRE_EQUAL(languages::to_delimiter(language::pt), ascii_space);
     BOOST_REQUIRE_EQUAL(languages::to_delimiter(language::ko), ascii_space);
-    BOOST_REQUIRE_EQUAL(languages::to_delimiter(language::zh_Hans), ascii_space);
-    BOOST_REQUIRE_EQUAL(languages::to_delimiter(language::zh_Hant), ascii_space);
+    BOOST_REQUIRE_EQUAL(
+        languages::to_delimiter(language::zh_Hans), ascii_space);
+    BOOST_REQUIRE_EQUAL(
+        languages::to_delimiter(language::zh_Hant), ascii_space);
 }
 
 BOOST_AUTO_TEST_CASE(languages__to_delimiter__japanese__ideographic_space)
 {
-    BOOST_REQUIRE_EQUAL(languages::to_delimiter(language::ja), ideographic_space);
+    BOOST_REQUIRE_EQUAL(
+        languages::to_delimiter(language::ja), ideographic_space);
 }
 
 BOOST_AUTO_TEST_CASE(languages__join__korean__space_delimited)
 {
-    const auto expected =
-        std::string(test_words_zh_Hant.word[0]) + ascii_space +
-        test_words_es.word[1] + ascii_space +
-        test_words_zh_Hant.word[2] + ascii_space +
-        test_words_es.word[3];
+    const auto expected = std::string(test_words_zh_Hant.word[0]) + ascii_space
+                          + test_words_es.word[1] + ascii_space
+                          + test_words_zh_Hant.word[2] + ascii_space
+                          + test_words_es.word[3];
 
-    const string_list words
-    {
-        test_words_zh_Hant.word[0],
-        test_words_es.word[1],
-        test_words_zh_Hant.word[2],
-        test_words_es.word[3]
-    };
+    const string_list words{
+        test_words_zh_Hant.word[0], test_words_es.word[1],
+        test_words_zh_Hant.word[2], test_words_es.word[3]};
 
     BOOST_REQUIRE_EQUAL(languages::join(words, language::ko), expected);
 }
 
 BOOST_AUTO_TEST_CASE(languages__join__japanese__ideographic_space_delimited)
 {
-    const auto expected =
-        std::string(test_words_zh_Hant.word[0]) + ideographic_space +
-        test_words_es.word[1] + ideographic_space +
-        test_words_zh_Hant.word[2] + ideographic_space +
-        test_words_es.word[3];
+    const auto expected = std::string(test_words_zh_Hant.word[0])
+                          + ideographic_space + test_words_es.word[1]
+                          + ideographic_space + test_words_zh_Hant.word[2]
+                          + ideographic_space + test_words_es.word[3];
 
-    const string_list words
-    {
-        test_words_zh_Hant.word[0],
-        test_words_es.word[1],
-        test_words_zh_Hant.word[2],
-        test_words_es.word[3]
-    };
+    const string_list words{
+        test_words_zh_Hant.word[0], test_words_es.word[1],
+        test_words_zh_Hant.word[2], test_words_es.word[3]};
 
     BOOST_REQUIRE_EQUAL(languages::join(words, language::ja), expected);
 }
 
 BOOST_AUTO_TEST_CASE(languages__split__korean_ascii_space_delimited__split)
 {
-    const string_list expected
-    {
-        test_words_zh_Hans.word[0],
-        test_words_es.word[1],
-        test_words_zh_Hans.word[2],
-        test_words_es.word[3]
-    };
+    const string_list expected{
+        test_words_zh_Hans.word[0], test_words_es.word[1],
+        test_words_zh_Hans.word[2], test_words_es.word[3]};
 
-    const auto sentence =
-        std::string(test_words_zh_Hans.word[0]) + ascii_space +
-        test_words_es.word[1] + ascii_space +
-        test_words_zh_Hans.word[2] + ascii_space +
-        test_words_es.word[3];
+    const auto sentence = std::string(test_words_zh_Hans.word[0]) + ascii_space
+                          + test_words_es.word[1] + ascii_space
+                          + test_words_zh_Hans.word[2] + ascii_space
+                          + test_words_es.word[3];
 
     BOOST_REQUIRE_EQUAL(languages::split(sentence, language::ko), expected);
 }
 
 // The space character is the only ascii whitespace that is also a separator.
-BOOST_AUTO_TEST_CASE(languages__split__korean_non_separator_whitespace_delimited__unsplit)
+BOOST_AUTO_TEST_CASE(
+    languages__split__korean_non_separator_whitespace_delimited__unsplit)
 {
     const auto sentence =
-        std::string(test_words_zh_Hans.word[0]) + '\t' +
-        test_words_es.word[1] + '\f' +
-        test_words_zh_Hans.word[2] + '\n' +
-        test_words_es.word[3];
+        std::string(test_words_zh_Hans.word[0]) + '\t' + test_words_es.word[1]
+        + '\f' + test_words_zh_Hans.word[2] + '\n' + test_words_es.word[3];
 
-    const string_list expected{ sentence };
+    const string_list expected{sentence};
 
     BOOST_REQUIRE_EQUAL(languages::split(sentence, language::ko), expected);
 }
@@ -154,38 +141,29 @@ BOOST_AUTO_TEST_CASE(languages__split__korean_non_separator_whitespace_delimited
 // Language splitting applies all unicode separator characters.
 BOOST_AUTO_TEST_CASE(languages__split__japanese_ascii_space_delimited__split)
 {
-    const string_list expected
-    {
-        test_words_zh_Hant.word[0],
-        test_words_es.word[1],
-        test_words_zh_Hant.word[2],
-        test_words_es.word[3]
-    };
+    const string_list expected{
+        test_words_zh_Hant.word[0], test_words_es.word[1],
+        test_words_zh_Hant.word[2], test_words_es.word[3]};
 
-    const auto sentence =
-        std::string(test_words_zh_Hans.word[0]) + ascii_space +
-        test_words_es.word[1] + ascii_space +
-        test_words_zh_Hans.word[2] + ascii_space +
-        test_words_es.word[3];
+    const auto sentence = std::string(test_words_zh_Hans.word[0]) + ascii_space
+                          + test_words_es.word[1] + ascii_space
+                          + test_words_zh_Hans.word[2] + ascii_space
+                          + test_words_es.word[3];
 
     BOOST_REQUIRE_EQUAL(languages::split(sentence, language::ja), expected);
 }
 
-BOOST_AUTO_TEST_CASE(languages__split__japanese_ideographic_space_space_delimited__split)
+BOOST_AUTO_TEST_CASE(
+    languages__split__japanese_ideographic_space_space_delimited__split)
 {
-    const string_list expected
-    {
-        test_words_zh_Hans.word[0],
-        test_words_es.word[1],
-        test_words_zh_Hans.word[2],
-        test_words_es.word[3]
-    };
+    const string_list expected{
+        test_words_zh_Hans.word[0], test_words_es.word[1],
+        test_words_zh_Hans.word[2], test_words_es.word[3]};
 
-    const auto sentence =
-        std::string(test_words_zh_Hans.word[0]) + ideographic_space +
-        test_words_es.word[1] + ideographic_space +
-        test_words_zh_Hans.word[2] + ideographic_space +
-        test_words_es.word[3];
+    const auto sentence = std::string(test_words_zh_Hans.word[0])
+                          + ideographic_space + test_words_es.word[1]
+                          + ideographic_space + test_words_zh_Hans.word[2]
+                          + ideographic_space + test_words_es.word[3];
 
     BOOST_REQUIRE_EQUAL(languages::split(sentence, language::ja), expected);
 }
@@ -199,21 +177,22 @@ BOOST_AUTO_TEST_CASE(languages__try_normalize__empty__empty)
 
 BOOST_AUTO_TEST_CASE(languages__try_normalize__lower_ascii__unchanged)
 {
-    const string_list words{ "abc", "def", "xyz" };
+    const string_list words{"abc", "def", "xyz"};
     BOOST_REQUIRE_EQUAL(accessor::try_normalize(words), words);
 }
 
 BOOST_AUTO_TEST_CASE(languages__try_normalize__mixed_ascii__lowered)
 {
-    const string_list words{ "aBc", "DeF", "xYz" };
-    const string_list expected{ "abc", "def", "xyz" };
+    const string_list words{"aBc", "DeF", "xYz"};
+    const string_list expected{"abc", "def", "xyz"};
     BOOST_REQUIRE_EQUAL(accessor::try_normalize(words), expected);
 }
 
-BOOST_AUTO_TEST_CASE(languages__try_normalize__padded_mixed_ascii__lowered_trimmed)
+BOOST_AUTO_TEST_CASE(
+    languages__try_normalize__padded_mixed_ascii__lowered_trimmed)
 {
-    const string_list words{ " aBc ", "  DeF  ", "\t\r\nxYz\f\v" };
-    const string_list expected{ "abc", "def", "xyz" };
+    const string_list words{" aBc ", "  DeF  ", "\t\r\nxYz\f\v"};
+    const string_list expected{"abc", "def", "xyz"};
     BOOST_REQUIRE_EQUAL(accessor::try_normalize(words), expected);
 }
 
@@ -221,18 +200,20 @@ BOOST_AUTO_TEST_CASE(languages__try_normalize__padded_mixed_ascii__lowered_trimm
 
 BOOST_AUTO_TEST_CASE(languages__try_normalize__with_icu__lowered_normalized)
 {
-    string_list words{ base16_string("c3a16261636f"), "XyZ" };
-    const string_list expected{ base16_string("61cc816261636f"), ascii_to_lower(words[1]) };
+    string_list words{base16_string("c3a16261636f"), "XyZ"};
+    const string_list expected{
+        base16_string("61cc816261636f"), ascii_to_lower(words[1])};
     const auto result = accessor::try_normalize(words);
     BOOST_REQUIRE_EQUAL(result, expected);
 }
 
 #else
 
-BOOST_AUTO_TEST_CASE(languages__try_normalize__without_icu__ascii_lowered_not_normalized)
+BOOST_AUTO_TEST_CASE(
+    languages__try_normalize__without_icu__ascii_lowered_not_normalized)
 {
-    string_list words{ base16_string("c3a16261636f"), "XyZ" };
-    const string_list expected{ words[0], ascii_to_lower(words[1]) };
+    string_list words{base16_string("c3a16261636f"), "XyZ"};
+    const string_list expected{words[0], ascii_to_lower(words[1])};
     const auto result = accessor::try_normalize(words);
     BOOST_REQUIRE_EQUAL(result, expected);
 }
@@ -250,10 +231,12 @@ BOOST_AUTO_TEST_CASE(languages__default_construct__always__invalid_expected)
     BOOST_REQUIRE(instance.lingo() == language::none);
 }
 
-BOOST_AUTO_TEST_CASE(languages__copy_construct__always__copies_all_accessor_and_base_values)
+BOOST_AUTO_TEST_CASE(
+    languages__copy_construct__always__copies_all_accessor_and_base_values)
 {
     const auto value = "value";
-    const accessor instance1({ 42, 42, 42 }, { "foo", "foo", "foo" }, language::zh_Hant, value);
+    const accessor instance1(
+        {42, 42, 42}, {"foo", "foo", "foo"}, language::zh_Hant, value);
     const accessor instance2(instance1);
     BOOST_REQUIRE(instance1 && instance2);
     BOOST_REQUIRE_EQUAL(instance1.entropy(), instance2.entropy());
@@ -263,9 +246,10 @@ BOOST_AUTO_TEST_CASE(languages__copy_construct__always__copies_all_accessor_and_
     BOOST_REQUIRE_EQUAL(instance1.value(), value);
 }
 
-BOOST_AUTO_TEST_CASE(languages__values_construct__empty_entropy__invalid_expected)
+BOOST_AUTO_TEST_CASE(
+    languages__values_construct__empty_entropy__invalid_expected)
 {
-    const string_list words{ "foo" };
+    const string_list words{"foo"};
     accessor instance({}, words, language::en);
     BOOST_REQUIRE(!instance);
 
@@ -277,7 +261,7 @@ BOOST_AUTO_TEST_CASE(languages__values_construct__empty_entropy__invalid_expecte
 
 BOOST_AUTO_TEST_CASE(languages__values_construct__empty_words__valid_expected)
 {
-    const data_chunk entropy{ 42, 42 };
+    const data_chunk entropy{42, 42};
     accessor instance(entropy, {}, language::none);
     BOOST_REQUIRE(instance);
 
@@ -289,8 +273,8 @@ BOOST_AUTO_TEST_CASE(languages__values_construct__empty_words__valid_expected)
 
 BOOST_AUTO_TEST_CASE(languages__values_construct__not_empty__valid_expected)
 {
-    const data_chunk entropy{ 42, 42 };
-    const string_list words{ "foo", "bar" };
+    const data_chunk entropy{42, 42};
+    const string_list words{"foo", "bar"};
     accessor instance(entropy, words, language::none);
     BOOST_REQUIRE(instance);
 
@@ -310,25 +294,28 @@ BOOST_AUTO_TEST_CASE(languages__sentence__empty_words__empty)
 
 BOOST_AUTO_TEST_CASE(languages__sentence__words_not_japanese__ascii_delimited)
 {
-    const string_list words{ "foo", "bar" };
+    const string_list words{"foo", "bar"};
     accessor instance({}, words, language::es);
     BOOST_REQUIRE_EQUAL(instance.sentence(), "foo bar");
 }
 
-BOOST_AUTO_TEST_CASE(languages__sentence__words_japanese__ideographic_space_delimited)
+BOOST_AUTO_TEST_CASE(
+    languages__sentence__words_japanese__ideographic_space_delimited)
 {
     const auto expected = std::string("foo") + ideographic_space + "bar";
-    const string_list words{ "foo", "bar" };
+    const string_list words{"foo", "bar"};
     accessor instance({}, words, language::ja);
     BOOST_REQUIRE_EQUAL(instance.sentence(), expected);
 }
 
 // operators
 
-BOOST_AUTO_TEST_CASE(languages__assignment__always__copies_all_accessor_and_base_values)
+BOOST_AUTO_TEST_CASE(
+    languages__assignment__always__copies_all_accessor_and_base_values)
 {
     const auto value = "value";
-    const accessor instance1({ 42, 42, 42 }, { "foo", "foo", "foo" }, language::zh_Hant, value);
+    const accessor instance1(
+        {42, 42, 42}, {"foo", "foo", "foo"}, language::zh_Hant, value);
     const accessor instance2 = instance1;
     BOOST_REQUIRE(instance1 && instance2);
     BOOST_REQUIRE_EQUAL(instance1.entropy(), instance2.entropy());
@@ -341,8 +328,8 @@ BOOST_AUTO_TEST_CASE(languages__assignment__always__copies_all_accessor_and_base
 BOOST_AUTO_TEST_CASE(languages__less_than__same_same_words__expected)
 {
     // Entropy has no effect on less than operator.
-    const string_list words{ "a", "b", "c" };
-    accessor instance1({ 42 }, words, language::none);
+    const string_list words{"a", "b", "c"};
+    accessor instance1({42}, words, language::none);
     accessor instance2({}, words, language::none);
     BOOST_REQUIRE(!(instance1 < instance2));
     BOOST_REQUIRE(!(instance2 < instance1));
@@ -350,10 +337,11 @@ BOOST_AUTO_TEST_CASE(languages__less_than__same_same_words__expected)
     BOOST_REQUIRE(!(instance2 < instance2));
 }
 
-BOOST_AUTO_TEST_CASE(languages__less_than__same_delimited_distinct_words__expected)
+BOOST_AUTO_TEST_CASE(
+    languages__less_than__same_delimited_distinct_words__expected)
 {
-    const string_list words1{ "a", "b", "c" };
-    const string_list words2{ "b", "c" };
+    const string_list words1{"a", "b", "c"};
+    const string_list words2{"b", "c"};
     accessor instance1({}, words1, language::es);
     accessor instance2({}, words2, language::es);
     BOOST_REQUIRE(instance1 < instance2);
@@ -362,10 +350,11 @@ BOOST_AUTO_TEST_CASE(languages__less_than__same_delimited_distinct_words__expect
     BOOST_REQUIRE(!(instance2 < instance2));
 }
 
-BOOST_AUTO_TEST_CASE(languages__less_than__differently_delimited_same_words__expected)
+BOOST_AUTO_TEST_CASE(
+    languages__less_than__differently_delimited_same_words__expected)
 {
     // ideographic_space > ascii_space
-    const string_list words{ "a", "b", "c" };
+    const string_list words{"a", "b", "c"};
     accessor instance1({}, words, language::es);
     accessor instance2({}, words, language::ja);
     BOOST_REQUIRE(instance1 < instance2);
@@ -376,8 +365,8 @@ BOOST_AUTO_TEST_CASE(languages__less_than__differently_delimited_same_words__exp
 
 BOOST_AUTO_TEST_CASE(languages__equality__same__expected)
 {
-    const data_chunk entropy{ 0x01, 0x02, 0x03 };
-    const string_list words{ "a", "b", "c" };
+    const data_chunk entropy{0x01, 0x02, 0x03};
+    const string_list words{"a", "b", "c"};
     accessor instance1(entropy, words, language::es);
     accessor instance2(entropy, words, language::es);
     BOOST_REQUIRE(instance1 == instance2);
@@ -388,9 +377,9 @@ BOOST_AUTO_TEST_CASE(languages__equality__same__expected)
 
 BOOST_AUTO_TEST_CASE(languages__equality__distinct_entropy__expected)
 {
-    const string_list words{ "a", "b", "c" };
+    const string_list words{"a", "b", "c"};
     accessor instance1({}, words, language::es);
-    accessor instance2({ 0x01, 0x02, 0x03 }, words, language::ja);
+    accessor instance2({0x01, 0x02, 0x03}, words, language::ja);
     BOOST_REQUIRE(!(instance1 == instance2));
     BOOST_REQUIRE(!(instance2 == instance1));
     BOOST_REQUIRE(instance1 == instance1);
@@ -399,9 +388,9 @@ BOOST_AUTO_TEST_CASE(languages__equality__distinct_entropy__expected)
 
 BOOST_AUTO_TEST_CASE(languages__equality__distinct_words__expected)
 {
-    const data_chunk entropy{ 0x01, 0x02, 0x03 };
+    const data_chunk entropy{0x01, 0x02, 0x03};
     accessor instance1(entropy, {}, language::es);
-    accessor instance2(entropy, { "a", "b", "c" }, language::ja);
+    accessor instance2(entropy, {"a", "b", "c"}, language::ja);
     BOOST_REQUIRE(!(instance1 == instance2));
     BOOST_REQUIRE(!(instance2 == instance1));
     BOOST_REQUIRE(instance1 == instance1);
@@ -410,8 +399,8 @@ BOOST_AUTO_TEST_CASE(languages__equality__distinct_words__expected)
 
 BOOST_AUTO_TEST_CASE(languages__equality__distinct_language__expected)
 {
-    const data_chunk entropy{ 0x01, 0x02, 0x03 };
-    const string_list words{ "a", "b", "c" };
+    const data_chunk entropy{0x01, 0x02, 0x03};
+    const string_list words{"a", "b", "c"};
     accessor instance1(entropy, words, language::es);
     accessor instance2(entropy, words, language::ja);
     BOOST_REQUIRE(!(instance1 == instance2));
@@ -422,9 +411,9 @@ BOOST_AUTO_TEST_CASE(languages__equality__distinct_language__expected)
 
 BOOST_AUTO_TEST_CASE(languages__inequality__distinct_entropy__expected)
 {
-    const string_list words{ "a", "b", "c" };
+    const string_list words{"a", "b", "c"};
     accessor instance2({}, words, language::ja);
-    accessor instance1({ 0x01, 0x02, 0x03 }, words, language::ja);
+    accessor instance1({0x01, 0x02, 0x03}, words, language::ja);
     BOOST_REQUIRE(instance1 != instance2);
     BOOST_REQUIRE(instance2 != instance1);
     BOOST_REQUIRE(!(instance1 != instance1));
@@ -433,9 +422,9 @@ BOOST_AUTO_TEST_CASE(languages__inequality__distinct_entropy__expected)
 
 BOOST_AUTO_TEST_CASE(languages__inequality__distinct_words__expected)
 {
-    const data_chunk entropy{ 0x01, 0x02, 0x03 };
+    const data_chunk entropy{0x01, 0x02, 0x03};
     accessor instance1(entropy, {}, language::ja);
-    accessor instance2(entropy, { "a", "b", "c" }, language::ja);
+    accessor instance2(entropy, {"a", "b", "c"}, language::ja);
     BOOST_REQUIRE(instance1 != instance2);
     BOOST_REQUIRE(instance2 != instance1);
     BOOST_REQUIRE(!(instance1 != instance1));
@@ -444,8 +433,8 @@ BOOST_AUTO_TEST_CASE(languages__inequality__distinct_words__expected)
 
 BOOST_AUTO_TEST_CASE(languages__inequality__distinct_language__expected)
 {
-    const data_chunk entropy{ 0x01, 0x02, 0x03 };
-    const string_list words{ "a", "b", "c" };
+    const data_chunk entropy{0x01, 0x02, 0x03};
+    const string_list words{"a", "b", "c"};
     accessor instance1(entropy, words, language::es);
     accessor instance2(entropy, words, language::ja);
     BOOST_REQUIRE(instance1 != instance2);

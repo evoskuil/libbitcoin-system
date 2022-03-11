@@ -21,16 +21,20 @@
 
 #include <bitcoin/system/constraints.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// left + right after cast of each to Result type.
-template <typename Result, typename Left, typename Right,
+template <
+    typename Result, typename Left, typename Right,
     if_same_signed_integer<Left, Right> = true>
 constexpr Result add(Left left, Right right) noexcept;
 
 /// left - right after cast of each to Result type.
-template <typename Result, typename Left, typename Right,
+template <
+    typename Result, typename Left, typename Right,
     if_same_signed_integer<Left, Right> = true>
 constexpr Result subtract(Left left, Right right) noexcept;
 

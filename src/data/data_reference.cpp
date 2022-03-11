@@ -22,31 +22,32 @@
 #include <bitcoin/system/data/data_chunk.hpp>
 #include <bitcoin/system/data/data_slice.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
-data_reference::data_reference() noexcept
-  : data_slice()
+data_reference::data_reference() noexcept : data_slice()
 {
 }
 
 data_reference::data_reference(const data_reference& other) noexcept
-  : data_slice(other)
+    : data_slice(other)
 {
 }
 
 data_reference::data_reference(const data_slice& data) noexcept
-  : data_slice(data)
+    : data_slice(data)
 {
 }
 
 data_reference::data_reference(const std::string& text) noexcept
-  : data_slice(text)
+    : data_slice(text)
 {
 }
 
 data_reference::data_reference(const data_chunk& data) noexcept
-  : data_slice(data)
+    : data_slice(data)
 {
 }
 

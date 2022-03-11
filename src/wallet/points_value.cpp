@@ -23,14 +23,18 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/wallet/point_value.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // static
 // ----------------------------------------------------------------------------
 
-void points_value::greedy(points_value& out, const points_value& unspent,
+void points_value::greedy(
+    points_value& out, const points_value& unspent,
     uint64_t minimum_value) noexcept
 {
     out.points.clear();
@@ -49,23 +53,22 @@ void points_value::greedy(points_value& out, const points_value& unspent,
     // Copy the points list for safe manipulation.
     auto points = unspent.points;
 
-    const auto below = [minimum_value](
-        const point_value& point) noexcept
-        {
-            return point.value() < minimum_value;
-        };
+    const auto below = [minimum_value](const point_value& point) noexcept
+    {
+        return point.value() < minimum_value;
+    };
 
-    const auto lesser = [](const point_value& left,
-        const point_value& right) noexcept
-        {
-            return left.value() < right.value();
-        };
+    const auto lesser =
+        [](const point_value& left, const point_value& right) noexcept
+    {
+        return left.value() < right.value();
+    };
 
-    const auto greater = [](const point_value& left,
-        const point_value& right) noexcept
-        {
-            return left.value() > right.value();
-        };
+    const auto greater =
+        [](const point_value& left, const point_value& right) noexcept
+    {
+        return left.value() > right.value();
+    };
 
     // Reorder list between values that exceed minimum and those that do not.
     const auto sufficient = std::partition(points.begin(), points.end(), below);
@@ -83,7 +86,7 @@ void points_value::greedy(points_value& out, const points_value& unspent,
     std::sort(points.begin(), points.end(), greater);
 
     // This is naive, will not necessarily find the smallest combination.
-    for (const auto& point: points)
+    for (const auto& point : points)
     {
         out.points.push_back(point);
 
@@ -92,41 +95,43 @@ void points_value::greedy(points_value& out, const points_value& unspent,
     }
 }
 
-void points_value::individual(points_value& out, const points_value& unspent,
+void points_value::individual(
+    points_value& out, const points_value& unspent,
     uint64_t minimum_value) noexcept
 {
     out.points.clear();
     out.points.reserve(unspent.points.size());
 
     // Select all individual points that satisfy the minimum.
-    for (const auto& point: unspent.points)
+    for (const auto& point : unspent.points)
         if (point.value() >= minimum_value)
             out.points.push_back(point);
 
     out.points.shrink_to_fit();
 
-    const auto lesser = [](const point_value& left,
-        const point_value& right) noexcept
-        {
-            return left.value() < right.value();
-        };
+    const auto lesser =
+        [](const point_value& left, const point_value& right) noexcept
+    {
+        return left.value() < right.value();
+    };
 
     // Return in ascending order by value.
     std::sort(out.points.begin(), out.points.end(), lesser);
 }
 
-void points_value::select(points_value& out, const points_value& unspent,
-    uint64_t minimum_value, selection option) noexcept
+void points_value::select(
+    points_value& out, const points_value& unspent, uint64_t minimum_value,
+    selection option) noexcept
 {
     switch (option)
     {
-        case selection::individual:
-            individual(out, unspent, minimum_value);
-            break;
-        case selection::greedy:
-        default:
-            greedy(out, unspent, minimum_value);
-            break;
+    case selection::individual:
+        individual(out, unspent, minimum_value);
+        break;
+    case selection::greedy:
+    default:
+        greedy(out, unspent, minimum_value);
+        break;
     }
 }
 

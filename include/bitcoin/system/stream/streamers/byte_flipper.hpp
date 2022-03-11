@@ -25,8 +25,10 @@
 #include <bitcoin/system/stream/streamers/byte_writer.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/byteflipper.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Suppress multiple inheritance warnings.
 // The only multiple inheritance conflict is destructors and bool/!.
@@ -37,14 +39,13 @@ namespace system {
 
 /// A byte reader/writer that accepts an iostream.
 template <typename IOStream = std::iostream>
-class byte_flipper
-  : public byte_reader<IOStream>,
-    public byte_writer<IOStream>,
-    public virtual byteflipper
+class byte_flipper : public byte_reader<IOStream>,
+                     public byte_writer<IOStream>,
+                     public virtual byteflipper
 {
 public:
     byte_flipper(IOStream& stream) noexcept
-      : byte_reader<IOStream>(stream), byte_writer<IOStream>(stream)
+        : byte_reader<IOStream>(stream), byte_writer<IOStream>(stream)
     {
         // Base constructions only capture references.
         // There are two references to the iostream:

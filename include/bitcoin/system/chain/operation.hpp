@@ -31,9 +31,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 class BC_API operation
 {
@@ -159,14 +162,16 @@ private:
     friend class script;
 
     static operation from_data(reader& source) noexcept;
-    static operation from_push_data(const chunk_ptr& data, bool minimal) noexcept;
+    static operation from_push_data(
+        const chunk_ptr& data, bool minimal) noexcept;
     static operation from_string(const std::string& mnemonic) noexcept;
 
     static chunk_ptr no_data() noexcept;
     static chunk_ptr any_data() noexcept;
     static bool count_op(reader& source) noexcept;
     static uint32_t read_data_size(opcode code, reader& source) noexcept;
-    static opcode opcode_from_data(const data_chunk& push_data, bool minimal) noexcept;
+    static opcode opcode_from_data(
+        const data_chunk& push_data, bool minimal) noexcept;
 
     // Operation should not be stored as shared (adds 16 bytes).
     // copy: 8 + 2 * 64 + 1 = 18 bytes (vs. 16 when shared).
@@ -186,7 +191,7 @@ DECLARE_JSON_VALUE_CONVERTORS(operation::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::operation>
 {
     size_t operator()(const bc::system::chain::operation& value) const noexcept

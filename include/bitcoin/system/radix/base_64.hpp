@@ -23,8 +23,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /**
  * Encode data as base64.
@@ -44,4 +46,3 @@ BC_API bool decode_base64(data_chunk& out, const std::string& in) noexcept;
 } // namespace libbitcoin
 
 #endif
-

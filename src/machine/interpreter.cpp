@@ -29,9 +29,12 @@
 #include <bitcoin/system/machine/program.hpp>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace machine {
+namespace libbitcoin
+{
+namespace system
+{
+namespace machine
+{
 
 using namespace system::chain;
 
@@ -55,15 +58,15 @@ interpreter::result interpreter::op_nop(program& program, opcode) noexcept
     ////return op_unevaluated(code);
 }
 
-interpreter::result interpreter::op_push_number(program& program,
-    uint8_t value) noexcept
+interpreter::result interpreter::op_push_number(
+    program& program, uint8_t value) noexcept
 {
-    program.push_move({ value });
+    program.push_move({value});
     return error::op_success;
 }
 
-interpreter::result interpreter::op_push_size(program& program,
-    const operation& op) noexcept
+interpreter::result interpreter::op_push_size(
+    program& program, const operation& op) noexcept
 {
     static constexpr auto op_75 = static_cast<uint8_t>(opcode::push_size_75);
 
@@ -74,8 +77,8 @@ interpreter::result interpreter::op_push_size(program& program,
     return error::op_success;
 }
 
-interpreter::result interpreter::op_push_data(program& program,
-    chunk_ptr&& data, uint32_t size_limit) noexcept
+interpreter::result interpreter::op_push_data(
+    program& program, chunk_ptr&& data, uint32_t size_limit) noexcept
 {
     if (data->size() > size_limit)
         return error::op_push_data;
@@ -185,7 +188,7 @@ interpreter::result interpreter::op_return(program& program) noexcept
 {
     if (program.is_enabled(forks::nops_rule))
         return op_unevaluated(opcode::op_return);
-        
+
     return error::op_not_implemented;
 }
 
@@ -482,8 +485,8 @@ interpreter::result interpreter::op_equal_verify(program& program) noexcept
     if (program.size() < 2)
         return error::op_equal_verify1;
 
-    return (program.pop() == program.pop()) ? error::op_success :
-        error::op_equal_verify2;
+    return (program.pop() == program.pop()) ? error::op_success
+                                            : error::op_equal_verify2;
 }
 
 interpreter::result interpreter::op_add1(program& program) noexcept
@@ -666,8 +669,7 @@ interpreter::result interpreter::op_num_equal_verify(program& program) noexcept
     if (!program.pop_binary(first, second))
         return error::op_num_equal_verify1;
 
-    return (first == second) ? error::op_success :
-        error::op_num_equal_verify2;
+    return (first == second) ? error::op_success : error::op_num_equal_verify2;
 }
 
 interpreter::result interpreter::op_num_not_equal(program& program) noexcept
@@ -700,7 +702,8 @@ interpreter::result interpreter::op_greater_than(program& program) noexcept
     return error::op_success;
 }
 
-interpreter::result interpreter::op_less_than_or_equal(program& program) noexcept
+interpreter::result interpreter::op_less_than_or_equal(
+    program& program) noexcept
 {
     number first, second;
     if (!program.pop_binary(first, second))
@@ -804,11 +807,11 @@ interpreter::result interpreter::op_hash256(program& program) noexcept
     return error::op_success;
 }
 
-interpreter::result interpreter::op_codeseparator(program& program,
-    const operation& op) noexcept
+interpreter::result interpreter::op_codeseparator(
+    program& program, const operation& op) noexcept
 {
-    return program.set_subscript(op) ? error::op_success :
-        error::op_code_separator;
+    return program.set_subscript(op) ? error::op_success
+                                     : error::op_code_separator;
 }
 
 // In signing mode, prepare_signature converts key from a private key to
@@ -843,8 +846,9 @@ interpreter::result interpreter::op_check_sig_verify(program& program) noexcept
         return error::op_check_sig_verify_parse;
 
     // TODO: for signing mode - make key mutable and return above.
-    return system::verify_signature(*key, hash, sig) ?
-        error::op_success : error::op_check_sig_verify5;
+    return system::verify_signature(*key, hash, sig)
+               ? error::op_success
+               : error::op_check_sig_verify5;
 }
 
 interpreter::result interpreter::op_check_sig(program& program) noexcept
@@ -906,7 +910,7 @@ interpreter::result interpreter::op_check_multisig_verify(
     // Keys may be empty, endorsements is an ordered subset of corresponding
     // keys, all endorsements must be verified against a key. Under bip66,
     // op_check_multisig fails if any parsed endorsement is not strict DER.
-    for (const auto& key: keys)
+    for (const auto& key : keys)
     {
         // All signatures are valid (empty does not increment the iterator).
         if (endorsement == endorsements.end())
@@ -926,8 +930,8 @@ interpreter::result interpreter::op_check_multisig_verify(
         }
     }
 
-    return endorsement != endorsements.end() ?
-        error::op_check_multisig_verify9 : error::op_success;
+    return endorsement != endorsements.end() ? error::op_check_multisig_verify9
+                                             : error::op_success;
 }
 
 interpreter::result interpreter::op_check_multisig(program& program) noexcept
@@ -973,8 +977,8 @@ interpreter::result interpreter::op_check_locktime_verify(
         return error::op_check_locktime_verify4;
 
     // BIP65: the stack locktime is greater than the tx locktime.
-    return (locktime > tx_locktime) ? error::op_check_locktime_verify5 :
-        error::op_success;
+    return (locktime > tx_locktime) ? error::op_check_locktime_verify5
+                                    : error::op_success;
 }
 
 interpreter::result interpreter::op_check_sequence_verify(
@@ -1011,318 +1015,319 @@ interpreter::result interpreter::op_check_sequence_verify(
         return error::op_check_sequence_verify4;
 
     // BIP112: the stack sequence type differs from that of tx input.
-    if (get_right(sequence, relative_locktime_time_locked_bit) !=
-        get_right(tx_sequence, relative_locktime_time_locked_bit))
+    if (get_right(sequence, relative_locktime_time_locked_bit)
+        != get_right(tx_sequence, relative_locktime_time_locked_bit))
         return error::op_check_sequence_verify5;
 
     // BIP112: the unmasked stack sequence is greater than that of tx sequence.
-    return (mask_left(sequence, relative_locktime_mask_left)) >
-        (mask_left(tx_sequence, relative_locktime_mask_left)) ?
-        error::op_check_sequence_verify6 : error::op_success;
+    return (mask_left(sequence, relative_locktime_mask_left))
+                   > (mask_left(tx_sequence, relative_locktime_mask_left))
+               ? error::op_check_sequence_verify6
+               : error::op_success;
 }
 
 // private:
 // It is expected that the compiler will produce a very efficient jump table.
-interpreter::result interpreter::run_op(const operation& op,
-    program& program) noexcept
+interpreter::result interpreter::run_op(
+    const operation& op, program& program) noexcept
 {
     const auto code = op.code();
 
     switch (code)
     {
-        case opcode::push_size_0:
-        case opcode::push_size_1:
-        case opcode::push_size_2:
-        case opcode::push_size_3:
-        case opcode::push_size_4:
-        case opcode::push_size_5:
-        case opcode::push_size_6:
-        case opcode::push_size_7:
-        case opcode::push_size_8:
-        case opcode::push_size_9:
-        case opcode::push_size_10:
-        case opcode::push_size_11:
-        case opcode::push_size_12:
-        case opcode::push_size_13:
-        case opcode::push_size_14:
-        case opcode::push_size_15:
-        case opcode::push_size_16:
-        case opcode::push_size_17:
-        case opcode::push_size_18:
-        case opcode::push_size_19:
-        case opcode::push_size_20:
-        case opcode::push_size_21:
-        case opcode::push_size_22:
-        case opcode::push_size_23:
-        case opcode::push_size_24:
-        case opcode::push_size_25:
-        case opcode::push_size_26:
-        case opcode::push_size_27:
-        case opcode::push_size_28:
-        case opcode::push_size_29:
-        case opcode::push_size_30:
-        case opcode::push_size_31:
-        case opcode::push_size_32:
-        case opcode::push_size_33:
-        case opcode::push_size_34:
-        case opcode::push_size_35:
-        case opcode::push_size_36:
-        case opcode::push_size_37:
-        case opcode::push_size_38:
-        case opcode::push_size_39:
-        case opcode::push_size_40:
-        case opcode::push_size_41:
-        case opcode::push_size_42:
-        case opcode::push_size_43:
-        case opcode::push_size_44:
-        case opcode::push_size_45:
-        case opcode::push_size_46:
-        case opcode::push_size_47:
-        case opcode::push_size_48:
-        case opcode::push_size_49:
-        case opcode::push_size_50:
-        case opcode::push_size_51:
-        case opcode::push_size_52:
-        case opcode::push_size_53:
-        case opcode::push_size_54:
-        case opcode::push_size_55:
-        case opcode::push_size_56:
-        case opcode::push_size_57:
-        case opcode::push_size_58:
-        case opcode::push_size_59:
-        case opcode::push_size_60:
-        case opcode::push_size_61:
-        case opcode::push_size_62:
-        case opcode::push_size_63:
-        case opcode::push_size_64:
-        case opcode::push_size_65:
-        case opcode::push_size_66:
-        case opcode::push_size_67:
-        case opcode::push_size_68:
-        case opcode::push_size_69:
-        case opcode::push_size_70:
-        case opcode::push_size_71:
-        case opcode::push_size_72:
-        case opcode::push_size_73:
-        case opcode::push_size_74:
-        case opcode::push_size_75:
-            return op_push_size(program, op);
-        case opcode::push_one_size:
-            return op_push_data(program, op.data_ptr(), max_uint8);
-        case opcode::push_two_size:
-            return op_push_data(program, op.data_ptr(), max_uint16);
-        case opcode::push_four_size:
-            return op_push_data(program, op.data_ptr(), max_uint32);
-        case opcode::push_negative_1:
-            return op_push_number(program, numbers::negative_1);
-        case opcode::reserved_80:
-            return op_unevaluated(code);
-        case opcode::push_positive_1:
-            return op_push_number(program, numbers::positive_1);
-        case opcode::push_positive_2:
-            return op_push_number(program, numbers::positive_2);
-        case opcode::push_positive_3:
-            return op_push_number(program, numbers::positive_3);
-        case opcode::push_positive_4:
-            return op_push_number(program, numbers::positive_4);
-        case opcode::push_positive_5:
-            return op_push_number(program, numbers::positive_5);
-        case opcode::push_positive_6:
-            return op_push_number(program, numbers::positive_6);
-        case opcode::push_positive_7:
-            return op_push_number(program, numbers::positive_7);
-        case opcode::push_positive_8:
-            return op_push_number(program, numbers::positive_8);
-        case opcode::push_positive_9:
-            return op_push_number(program, numbers::positive_9);
-        case opcode::push_positive_10:
-            return op_push_number(program, numbers::positive_10);
-        case opcode::push_positive_11:
-            return op_push_number(program, numbers::positive_11);
-        case opcode::push_positive_12:
-            return op_push_number(program, numbers::positive_12);
-        case opcode::push_positive_13:
-            return op_push_number(program, numbers::positive_13);
-        case opcode::push_positive_14:
-            return op_push_number(program, numbers::positive_14);
-        case opcode::push_positive_15:
-            return op_push_number(program, numbers::positive_15);
-        case opcode::push_positive_16:
-            return op_push_number(program, numbers::positive_16);
-        case opcode::nop:
-            return op_nop(code);
-        case opcode::op_ver:
-            return op_ver(program);
-        case opcode::if_:
-            return op_if(program);
-        case opcode::notif:
-            return op_notif(program);
-        case opcode::op_verif:
-            return op_verif(program);
-        case opcode::op_vernotif:
-            return op_vernotif(program);
-        case opcode::else_:
-            return op_else(program);
-        case opcode::endif:
-            return op_endif(program);
-        case opcode::verify:
-            return op_verify(program);
-        case opcode::op_return:
-            return op_return(program);
-        case opcode::toaltstack:
-            return op_to_alt_stack(program);
-        case opcode::fromaltstack:
-            return op_from_alt_stack(program);
-        case opcode::drop2:
-            return op_drop2(program);
-        case opcode::dup2:
-            return op_dup2(program);
-        case opcode::dup3:
-            return op_dup3(program);
-        case opcode::over2:
-            return op_over2(program);
-        case opcode::rot2:
-            return op_rot2(program);
-        case opcode::swap2:
-            return op_swap2(program);
-        case opcode::ifdup:
-            return op_if_dup(program);
-        case opcode::depth:
-            return op_depth(program);
-        case opcode::drop:
-            return op_drop(program);
-        case opcode::dup:
-            return op_dup(program);
-        case opcode::nip:
-            return op_nip(program);
-        case opcode::over:
-            return op_over(program);
-        case opcode::pick:
-            return op_pick(program);
-        case opcode::roll:
-            return op_roll(program);
-        case opcode::rot:
-            return op_rot(program);
-        case opcode::swap:
-            return op_swap(program);
-        case opcode::tuck:
-            return op_tuck(program);
-        case opcode::op_cat:
-            return op_cat(program);
-        case opcode::op_substr:
-            return op_substr(program);
-        case opcode::op_left:
-            return op_left(program);
-        case opcode::op_right:
-            return op_right(program);
-        case opcode::size:
-            return op_size(program);
-        case opcode::op_invert:
-            return op_invert(program);
-        case opcode::op_and:
-            return op_and(program);
-        case opcode::op_or:
-            return op_or(program);
-        case opcode::op_xor:
-            return op_xor(program);
-        case opcode::equal:
-            return op_equal(program);
-        case opcode::equalverify:
-            return op_equal_verify(program);
-        case opcode::reserved_137:
-            return op_unevaluated(code);
-        case opcode::reserved_138:
-            return op_unevaluated(code);
-        case opcode::add1:
-            return op_add1(program);
-        case opcode::sub1:
-            return op_sub1(program);
-        case opcode::op_mul2:
-            return op_mul2(program);
-        case opcode::op_div2:
-            return op_div2(program);
-        case opcode::negate:
-            return op_negate(program);
-        case opcode::abs:
-            return op_abs(program);
-        case opcode::not_:
-            return op_not(program);
-        case opcode::nonzero:
-            return op_nonzero(program);
-        case opcode::add:
-            return op_add(program);
-        case opcode::sub:
-            return op_sub(program);
-        case opcode::op_mul:
-            return op_mul(program);
-        case opcode::op_div:
-            return op_div(program);
-        case opcode::op_mod:
-            return op_mod(program);
-        case opcode::op_lshift:
-            return op_lshift(program);
-        case opcode::op_rshift:
-            return op_rshift(program);
-        case opcode::booland:
-            return op_bool_and(program);
-        case opcode::boolor:
-            return op_bool_or(program);
-        case opcode::numequal:
-            return op_num_equal(program);
-        case opcode::numequalverify:
-            return op_num_equal_verify(program);
-        case opcode::numnotequal:
-            return op_num_not_equal(program);
-        case opcode::lessthan:
-            return op_less_than(program);
-        case opcode::greaterthan:
-            return op_greater_than(program);
-        case opcode::lessthanorequal:
-            return op_less_than_or_equal(program);
-        case opcode::greaterthanorequal:
-            return op_greater_than_or_equal(program);
-        case opcode::min:
-            return op_min(program);
-        case opcode::max:
-            return op_max(program);
-        case opcode::within:
-            return op_within(program);
-        case opcode::ripemd160:
-            return op_ripemd160(program);
-        case opcode::sha1:
-            return op_sha1(program);
-        case opcode::sha256:
-            return op_sha256(program);
-        case opcode::hash160:
-            return op_hash160(program);
-        case opcode::hash256:
-            return op_hash256(program);
-        case opcode::codeseparator:
-            return op_codeseparator(program, op);
-        case opcode::checksig:
-            return op_check_sig(program);
-        case opcode::checksigverify:
-            return op_check_sig_verify(program);
-        case opcode::checkmultisig:
-            return op_check_multisig(program);
-        case opcode::checkmultisigverify:
-            return op_check_multisig_verify(program);
-        case opcode::nop1:
-            return op_nop(program, code);
-        case opcode::checklocktimeverify:
-            return op_check_locktime_verify(program);
-        case opcode::checksequenceverify:
-            return op_check_sequence_verify(program);
-        case opcode::nop4:
-        case opcode::nop5:
-        case opcode::nop6:
-        case opcode::nop7:
-        case opcode::nop8:
-        case opcode::nop9:
-        case opcode::nop10:
-            return op_nop(program, code);
-        default:
-            return op_unevaluated(code);
+    case opcode::push_size_0:
+    case opcode::push_size_1:
+    case opcode::push_size_2:
+    case opcode::push_size_3:
+    case opcode::push_size_4:
+    case opcode::push_size_5:
+    case opcode::push_size_6:
+    case opcode::push_size_7:
+    case opcode::push_size_8:
+    case opcode::push_size_9:
+    case opcode::push_size_10:
+    case opcode::push_size_11:
+    case opcode::push_size_12:
+    case opcode::push_size_13:
+    case opcode::push_size_14:
+    case opcode::push_size_15:
+    case opcode::push_size_16:
+    case opcode::push_size_17:
+    case opcode::push_size_18:
+    case opcode::push_size_19:
+    case opcode::push_size_20:
+    case opcode::push_size_21:
+    case opcode::push_size_22:
+    case opcode::push_size_23:
+    case opcode::push_size_24:
+    case opcode::push_size_25:
+    case opcode::push_size_26:
+    case opcode::push_size_27:
+    case opcode::push_size_28:
+    case opcode::push_size_29:
+    case opcode::push_size_30:
+    case opcode::push_size_31:
+    case opcode::push_size_32:
+    case opcode::push_size_33:
+    case opcode::push_size_34:
+    case opcode::push_size_35:
+    case opcode::push_size_36:
+    case opcode::push_size_37:
+    case opcode::push_size_38:
+    case opcode::push_size_39:
+    case opcode::push_size_40:
+    case opcode::push_size_41:
+    case opcode::push_size_42:
+    case opcode::push_size_43:
+    case opcode::push_size_44:
+    case opcode::push_size_45:
+    case opcode::push_size_46:
+    case opcode::push_size_47:
+    case opcode::push_size_48:
+    case opcode::push_size_49:
+    case opcode::push_size_50:
+    case opcode::push_size_51:
+    case opcode::push_size_52:
+    case opcode::push_size_53:
+    case opcode::push_size_54:
+    case opcode::push_size_55:
+    case opcode::push_size_56:
+    case opcode::push_size_57:
+    case opcode::push_size_58:
+    case opcode::push_size_59:
+    case opcode::push_size_60:
+    case opcode::push_size_61:
+    case opcode::push_size_62:
+    case opcode::push_size_63:
+    case opcode::push_size_64:
+    case opcode::push_size_65:
+    case opcode::push_size_66:
+    case opcode::push_size_67:
+    case opcode::push_size_68:
+    case opcode::push_size_69:
+    case opcode::push_size_70:
+    case opcode::push_size_71:
+    case opcode::push_size_72:
+    case opcode::push_size_73:
+    case opcode::push_size_74:
+    case opcode::push_size_75:
+        return op_push_size(program, op);
+    case opcode::push_one_size:
+        return op_push_data(program, op.data_ptr(), max_uint8);
+    case opcode::push_two_size:
+        return op_push_data(program, op.data_ptr(), max_uint16);
+    case opcode::push_four_size:
+        return op_push_data(program, op.data_ptr(), max_uint32);
+    case opcode::push_negative_1:
+        return op_push_number(program, numbers::negative_1);
+    case opcode::reserved_80:
+        return op_unevaluated(code);
+    case opcode::push_positive_1:
+        return op_push_number(program, numbers::positive_1);
+    case opcode::push_positive_2:
+        return op_push_number(program, numbers::positive_2);
+    case opcode::push_positive_3:
+        return op_push_number(program, numbers::positive_3);
+    case opcode::push_positive_4:
+        return op_push_number(program, numbers::positive_4);
+    case opcode::push_positive_5:
+        return op_push_number(program, numbers::positive_5);
+    case opcode::push_positive_6:
+        return op_push_number(program, numbers::positive_6);
+    case opcode::push_positive_7:
+        return op_push_number(program, numbers::positive_7);
+    case opcode::push_positive_8:
+        return op_push_number(program, numbers::positive_8);
+    case opcode::push_positive_9:
+        return op_push_number(program, numbers::positive_9);
+    case opcode::push_positive_10:
+        return op_push_number(program, numbers::positive_10);
+    case opcode::push_positive_11:
+        return op_push_number(program, numbers::positive_11);
+    case opcode::push_positive_12:
+        return op_push_number(program, numbers::positive_12);
+    case opcode::push_positive_13:
+        return op_push_number(program, numbers::positive_13);
+    case opcode::push_positive_14:
+        return op_push_number(program, numbers::positive_14);
+    case opcode::push_positive_15:
+        return op_push_number(program, numbers::positive_15);
+    case opcode::push_positive_16:
+        return op_push_number(program, numbers::positive_16);
+    case opcode::nop:
+        return op_nop(code);
+    case opcode::op_ver:
+        return op_ver(program);
+    case opcode::if_:
+        return op_if(program);
+    case opcode::notif:
+        return op_notif(program);
+    case opcode::op_verif:
+        return op_verif(program);
+    case opcode::op_vernotif:
+        return op_vernotif(program);
+    case opcode::else_:
+        return op_else(program);
+    case opcode::endif:
+        return op_endif(program);
+    case opcode::verify:
+        return op_verify(program);
+    case opcode::op_return:
+        return op_return(program);
+    case opcode::toaltstack:
+        return op_to_alt_stack(program);
+    case opcode::fromaltstack:
+        return op_from_alt_stack(program);
+    case opcode::drop2:
+        return op_drop2(program);
+    case opcode::dup2:
+        return op_dup2(program);
+    case opcode::dup3:
+        return op_dup3(program);
+    case opcode::over2:
+        return op_over2(program);
+    case opcode::rot2:
+        return op_rot2(program);
+    case opcode::swap2:
+        return op_swap2(program);
+    case opcode::ifdup:
+        return op_if_dup(program);
+    case opcode::depth:
+        return op_depth(program);
+    case opcode::drop:
+        return op_drop(program);
+    case opcode::dup:
+        return op_dup(program);
+    case opcode::nip:
+        return op_nip(program);
+    case opcode::over:
+        return op_over(program);
+    case opcode::pick:
+        return op_pick(program);
+    case opcode::roll:
+        return op_roll(program);
+    case opcode::rot:
+        return op_rot(program);
+    case opcode::swap:
+        return op_swap(program);
+    case opcode::tuck:
+        return op_tuck(program);
+    case opcode::op_cat:
+        return op_cat(program);
+    case opcode::op_substr:
+        return op_substr(program);
+    case opcode::op_left:
+        return op_left(program);
+    case opcode::op_right:
+        return op_right(program);
+    case opcode::size:
+        return op_size(program);
+    case opcode::op_invert:
+        return op_invert(program);
+    case opcode::op_and:
+        return op_and(program);
+    case opcode::op_or:
+        return op_or(program);
+    case opcode::op_xor:
+        return op_xor(program);
+    case opcode::equal:
+        return op_equal(program);
+    case opcode::equalverify:
+        return op_equal_verify(program);
+    case opcode::reserved_137:
+        return op_unevaluated(code);
+    case opcode::reserved_138:
+        return op_unevaluated(code);
+    case opcode::add1:
+        return op_add1(program);
+    case opcode::sub1:
+        return op_sub1(program);
+    case opcode::op_mul2:
+        return op_mul2(program);
+    case opcode::op_div2:
+        return op_div2(program);
+    case opcode::negate:
+        return op_negate(program);
+    case opcode::abs:
+        return op_abs(program);
+    case opcode::not_:
+        return op_not(program);
+    case opcode::nonzero:
+        return op_nonzero(program);
+    case opcode::add:
+        return op_add(program);
+    case opcode::sub:
+        return op_sub(program);
+    case opcode::op_mul:
+        return op_mul(program);
+    case opcode::op_div:
+        return op_div(program);
+    case opcode::op_mod:
+        return op_mod(program);
+    case opcode::op_lshift:
+        return op_lshift(program);
+    case opcode::op_rshift:
+        return op_rshift(program);
+    case opcode::booland:
+        return op_bool_and(program);
+    case opcode::boolor:
+        return op_bool_or(program);
+    case opcode::numequal:
+        return op_num_equal(program);
+    case opcode::numequalverify:
+        return op_num_equal_verify(program);
+    case opcode::numnotequal:
+        return op_num_not_equal(program);
+    case opcode::lessthan:
+        return op_less_than(program);
+    case opcode::greaterthan:
+        return op_greater_than(program);
+    case opcode::lessthanorequal:
+        return op_less_than_or_equal(program);
+    case opcode::greaterthanorequal:
+        return op_greater_than_or_equal(program);
+    case opcode::min:
+        return op_min(program);
+    case opcode::max:
+        return op_max(program);
+    case opcode::within:
+        return op_within(program);
+    case opcode::ripemd160:
+        return op_ripemd160(program);
+    case opcode::sha1:
+        return op_sha1(program);
+    case opcode::sha256:
+        return op_sha256(program);
+    case opcode::hash160:
+        return op_hash160(program);
+    case opcode::hash256:
+        return op_hash256(program);
+    case opcode::codeseparator:
+        return op_codeseparator(program, op);
+    case opcode::checksig:
+        return op_check_sig(program);
+    case opcode::checksigverify:
+        return op_check_sig_verify(program);
+    case opcode::checkmultisig:
+        return op_check_multisig(program);
+    case opcode::checkmultisigverify:
+        return op_check_multisig_verify(program);
+    case opcode::nop1:
+        return op_nop(program, code);
+    case opcode::checklocktimeverify:
+        return op_check_locktime_verify(program);
+    case opcode::checksequenceverify:
+        return op_check_sequence_verify(program);
+    case opcode::nop4:
+    case opcode::nop5:
+    case opcode::nop6:
+    case opcode::nop7:
+    case opcode::nop8:
+    case opcode::nop9:
+    case opcode::nop10:
+        return op_nop(program, code);
+    default:
+        return op_unevaluated(code);
     }
 }
 
@@ -1335,7 +1340,7 @@ code interpreter::run(program& program) noexcept
     if (program.is_invalid())
         return error::invalid_script;
 
-    for (const auto& op: program)
+    for (const auto& op : program)
     {
         // Enforce push data limit (520) [0.3.6+].
         if (op.is_oversized())
@@ -1363,8 +1368,8 @@ code interpreter::run(program& program) noexcept
     }
 
     // Guard against unclosed evaluation scope.
-    return program.closed() ? error::script_success :
-        error::invalid_stack_scope;
+    return program.closed() ? error::script_success
+                            : error::invalid_stack_scope;
 }
 
 } // namespace machine

@@ -35,8 +35,8 @@ parameter::~parameter()
 // 100% component coverage, common scenarios.
 // A required argument may only be preceded by required arguments.
 // Requiredness may be in error if the metadata is inconsistent.
-void parameter::initialize(const po::option_description& option,
-    const argument_list& arguments)
+void parameter::initialize(
+    const po::option_description& option, const argument_list& arguments)
 {
     set_position(position(option, arguments));
     set_args_limit(arguments_limit(position(), option, arguments));
@@ -49,8 +49,8 @@ void parameter::initialize(const po::option_description& option,
 }
 
 // 100% component coverage, all three scenarios (long, short, both)
-int parameter::position(const po::option_description& option,
-    const argument_list& arguments) const
+int parameter::position(
+    const po::option_description& option, const argument_list& arguments) const
 {
     return static_cast<int>(find_pair_position(arguments, option.long_name()));
 }
@@ -59,16 +59,16 @@ int parameter::position(const po::option_description& option,
 char parameter::short_name(const po::option_description& option) const
 {
     const auto name = split(option.format_name()).front();
-    const auto is_short_name = 
-        name[0] == option_prefix_char &&
-        name[1] != option_prefix_char;
+    const auto is_short_name =
+        name[0] == option_prefix_char && name[1] != option_prefix_char;
 
     return is_short_name ? name[1] : no_short_name;
 }
 
 // 100% component coverage
-unsigned parameter::arguments_limit(int position,
-    const po::option_description& option, const argument_list& arguments) const
+unsigned parameter::arguments_limit(
+    int position, const po::option_description& option,
+    const argument_list& arguments) const
 {
     if (position == parameter::not_positional)
         return option.semantic()->max_tokens();

@@ -24,9 +24,12 @@
 #include <bitcoin/system/crypto/crypto.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for a bitcoin 256 bit hash.
 class BC_API hash256
@@ -44,8 +47,8 @@ public:
     operator const hash_digest&() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, hash256& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const hash256& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const hash256& argument) noexcept;
 
 private:
     hash_digest value_;

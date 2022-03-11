@@ -26,9 +26,12 @@
 #include <bitcoin/system/crypto/crypto.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper to convert between a base58-string:number and a
 /// vector of chain::output.

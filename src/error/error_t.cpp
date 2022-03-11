@@ -21,16 +21,18 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/error/macros.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace error {
-    
-DEFINE_ERROR_T_MESSAGE_MAP(error)
+namespace libbitcoin
 {
-    { success, "success" },
-    { unknown, "unknown error" },
-    { not_found, "object does not exist" },
-    { not_implemented, "feature not implemented" }
+namespace system
+{
+namespace error
+{
+
+DEFINE_ERROR_T_MESSAGE_MAP(error){
+    {success, "success"},
+    {unknown, "unknown error"},
+    {not_found, "object does not exist"},
+    {not_implemented, "feature not implemented"}
     ////{ error_last, "unmapped code" }
 };
 

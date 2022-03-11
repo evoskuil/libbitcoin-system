@@ -30,13 +30,15 @@
 #include <bitcoin/system/machine/machine.hpp>
 #include <bitcoin/system/unicode/unicode.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // Gotta set something when invalid minimal result, test is_valid.
 static constexpr auto any_invalid = opcode::op_xor;
-
 
 // static
 chunk_ptr operation::no_data() noexcept
@@ -49,83 +51,78 @@ chunk_ptr operation::no_data() noexcept
 chunk_ptr operation::any_data() noexcept
 {
     // Push data is not possible with an invalid code, combination is invalid.
-    static const auto any = to_shared<data_chunk>({ 0x42 });
+    static const auto any = to_shared<data_chunk>({0x42});
     return any;
 }
 
 // Constructors.
 // ----------------------------------------------------------------------------
 
-operation::operation() noexcept
-  : operation(any_invalid, any_data(), false)
+operation::operation() noexcept : operation(any_invalid, any_data(), false)
 {
 }
 
 // This is provided only for interface consistency.
-operation::operation(operation&& other) noexcept
-  : operation(other)
+operation::operation(operation&& other) noexcept : operation(other)
 {
 }
 
 operation::operation(const operation& other) noexcept
-  : operation(other.code_, other.data_, other.underflow_)
+    : operation(other.code_, other.data_, other.underflow_)
 {
 }
 
 // If code is push data the data member will be inconsistent (empty).
-operation::operation(opcode code) noexcept
-  : operation(code, no_data(), false)
+operation::operation(opcode code) noexcept : operation(code, no_data(), false)
 {
 }
 
 operation::operation(data_chunk&& push_data, bool minimal) noexcept
-  : operation(from_push_data(to_shared(std::move(push_data)), minimal))
+    : operation(from_push_data(to_shared(std::move(push_data)), minimal))
 {
 }
 
 operation::operation(const data_chunk& push_data, bool minimal) noexcept
-  : operation(from_push_data(to_shared(push_data), minimal))
+    : operation(from_push_data(to_shared(push_data), minimal))
 {
 }
 
 operation::operation(chunk_ptr push_data, bool minimal) noexcept
-  : operation(from_push_data(push_data, minimal))
+    : operation(from_push_data(push_data, minimal))
 {
 }
 
 operation::operation(const data_slice& op_data) noexcept
-  : operation(stream::in::copy(op_data))
+    : operation(stream::in::copy(op_data))
 {
 }
 
 operation::operation(std::istream&& stream) noexcept
-  : operation(read::bytes::istream(stream))
+    : operation(read::bytes::istream(stream))
 {
 }
 
 operation::operation(std::istream& stream) noexcept
-  : operation(read::bytes::istream(stream))
+    : operation(read::bytes::istream(stream))
 {
 }
 
-operation::operation(reader&& source) noexcept
-  : operation(from_data(source))
+operation::operation(reader&& source) noexcept : operation(from_data(source))
 {
 }
 
-operation::operation(reader& source) noexcept
-  : operation(from_data(source))
+operation::operation(reader& source) noexcept : operation(from_data(source))
 {
 }
 
 operation::operation(const std::string& mnemonic) noexcept
-  : operation(from_string(mnemonic))
+    : operation(from_string(mnemonic))
 {
 }
 
 // protected
 operation::operation(opcode code, chunk_ptr push_data, bool underflow) noexcept
-  : code_(code), data_(push_data), underflow_(underflow)
+    : code_(code), data_(push_data), underflow_(underflow)
 {
 }
 
@@ -150,9 +147,8 @@ operation& operation::operator=(const operation& other) noexcept
 bool operation::operator==(const operation& other) const noexcept
 {
     // Ccompare data values not pointers.
-    return (code_ == other.code_)
-        && (*data_ == *other.data_)
-        && (underflow_ == other.underflow_);
+    return (code_ == other.code_) && (*data_ == *other.data_)
+           && (underflow_ == other.underflow_);
 }
 
 bool operation::operator!=(const operation& other) const noexcept
@@ -208,12 +204,12 @@ operation operation::from_data(reader& source) noexcept
     }
 
     // All byte vectors are deserializable, stream indicates own failure.
-    return { code, push, underflow };
+    return {code, push, underflow};
 }
 
 // static/private
-operation operation::from_push_data(const chunk_ptr& data,
-    bool minimal) noexcept
+operation operation::from_push_data(
+    const chunk_ptr& data, bool minimal) noexcept
 {
     const auto code = opcode_from_data(*data, minimal);
 
@@ -221,7 +217,7 @@ operation operation::from_push_data(const chunk_ptr& data,
     // Revert data if (minimal) opcode_from_data produced a numeric encoding.
     const auto push = is_payload(code) ? data : no_data();
 
-    return { code, push, false };
+    return {code, push, false};
 }
 
 inline bool is_push_token(const std::string& token) noexcept
@@ -250,8 +246,9 @@ inline string_list split_push_token(const std::string& token) noexcept
     return split(remove_token_delimiters(token), ".", false, false);
 }
 
-static bool opcode_from_data_prefix(opcode& out_code,
-    const std::string& prefix, const data_chunk& push_data) noexcept
+static bool opcode_from_data_prefix(
+    opcode& out_code, const std::string& prefix,
+    const data_chunk& push_data) noexcept
 {
     constexpr auto op_75 = static_cast<uint8_t>(opcode::push_size_75);
     const auto size = push_data.size();
@@ -280,8 +277,8 @@ static bool opcode_from_data_prefix(opcode& out_code,
     return false;
 }
 
-static bool data_from_decimal(data_chunk& out_data,
-    const std::string& token) noexcept
+static bool data_from_decimal(
+    data_chunk& out_data, const std::string& token) noexcept
 {
     // Deserialization to a number can convert random text to zero.
     if (!is_ascii_numeric(token))
@@ -317,8 +314,8 @@ operation operation::from_string(const std::string& mnemonic) noexcept
         else if (parts.size() == 2)
         {
             // Extract operation using explicit data size decoding.
-            valid = decode_base16(chunk, parts[1]) &&
-                opcode_from_data_prefix(code, parts[0], chunk);
+            valid = decode_base16(chunk, parts[1])
+                    && opcode_from_data_prefix(code, parts[0], chunk);
         }
     }
     else if (is_text_token(mnemonic))
@@ -351,7 +348,7 @@ operation operation::from_string(const std::string& mnemonic) noexcept
     if (!valid)
         return {};
 
-    return { code, to_shared(std::move(chunk)), underflow };
+    return {code, to_shared(std::move(chunk)), underflow};
 }
 
 // Serialization.
@@ -387,16 +384,16 @@ void operation::to_data(writer& sink) const noexcept
 
         switch (code_)
         {
-            case opcode::push_one_size:
-                sink.write_byte(static_cast<uint8_t>(size));
-                break;
-            case opcode::push_two_size:
-                sink.write_2_bytes_little_endian(static_cast<uint16_t>(size));
-                break;
-            case opcode::push_four_size:
-                sink.write_4_bytes_little_endian(static_cast<uint32_t>(size));
-                break;
-            default:
+        case opcode::push_one_size:
+            sink.write_byte(static_cast<uint8_t>(size));
+            break;
+        case opcode::push_two_size:
+            sink.write_2_bytes_little_endian(static_cast<uint16_t>(size));
+            break;
+        case opcode::push_four_size:
+            sink.write_4_bytes_little_endian(static_cast<uint32_t>(size));
+            break;
+        default:
             break;
         }
 
@@ -407,8 +404,8 @@ void operation::to_data(writer& sink) const noexcept
 // To String.
 // ----------------------------------------------------------------------------
 
-static std::string opcode_to_prefix(opcode code,
-    const data_chunk& data) noexcept
+static std::string opcode_to_prefix(
+    opcode code, const data_chunk& data) noexcept
 {
     // If opcode is minimal for a size-based encoding, do not set a prefix.
     if (code == operation::opcode_from_size(data.size()))
@@ -416,14 +413,14 @@ static std::string opcode_to_prefix(opcode code,
 
     switch (code)
     {
-        case opcode::push_one_size:
-            return "1.";
-        case opcode::push_two_size:
-            return "2.";
-        case opcode::push_four_size:
-            return "4.";
-        default:
-            return "0.";
+    case opcode::push_one_size:
+        return "1.";
+    case opcode::push_two_size:
+        return "2.";
+    case opcode::push_four_size:
+        return "4.";
+    default:
+        return "0.";
     }
 }
 
@@ -476,14 +473,14 @@ size_t operation::serialized_size() const noexcept
 
     switch (code_)
     {
-        case opcode::push_one_size:
-            return op_size + sizeof(uint8_t) + size;
-        case opcode::push_two_size:
-            return op_size + sizeof(uint16_t) + size;
-        case opcode::push_four_size:
-            return op_size + sizeof(uint32_t) + size;
-        default:
-            return op_size + size;
+    case opcode::push_one_size:
+        return op_size + sizeof(uint8_t) + size;
+    case opcode::push_two_size:
+        return op_size + sizeof(uint16_t) + size;
+    case opcode::push_four_size:
+        return op_size + sizeof(uint32_t) + size;
+    default:
+        return op_size + size;
     }
 }
 
@@ -510,15 +507,15 @@ uint32_t operation::read_data_size(opcode code, reader& source) noexcept
 
     switch (code)
     {
-        case opcode::push_one_size:
-            return source.read_byte();
-        case opcode::push_two_size:
-            return source.read_2_bytes_little_endian();
-        case opcode::push_four_size:
-            return source.read_4_bytes_little_endian();
-        default:
-            const auto byte = static_cast<uint8_t>(code);
-            return byte <= op_75 ? byte : 0;
+    case opcode::push_one_size:
+        return source.read_byte();
+    case opcode::push_two_size:
+        return source.read_2_bytes_little_endian();
+    case opcode::push_four_size:
+        return source.read_4_bytes_little_endian();
+    default:
+        const auto byte = static_cast<uint8_t>(code);
+        return byte <= op_75 ? byte : 0;
     }
 }
 
@@ -554,8 +551,7 @@ opcode operation::minimal_opcode_from_data(const data_chunk& data) noexcept
         if (value == numbers::positive_0)
             return opcode::push_size_0;
 
-        if (value >= numbers::positive_1 &&
-            value <= numbers::positive_16)
+        if (value >= numbers::positive_1 && value <= numbers::positive_16)
             return opcode_from_positive(value);
     }
 
@@ -569,18 +565,19 @@ opcode operation::nominal_opcode_from_data(const data_chunk& data) noexcept
 }
 
 // static/private
-opcode operation::opcode_from_data(const data_chunk& data,
-    bool minimal) noexcept
+opcode operation::opcode_from_data(
+    const data_chunk& data, bool minimal) noexcept
 {
-    return minimal ? minimal_opcode_from_data(data) :
-        nominal_opcode_from_data(data);
+    return minimal ? minimal_opcode_from_data(data)
+                   : nominal_opcode_from_data(data);
 }
 
 opcode operation::opcode_from_version(uint8_t value) noexcept
 {
     BC_ASSERT(value <= numbers::positive_16);
-    return (value == numbers::positive_0) ? opcode::push_size_0 :
-        operation::opcode_from_positive(value);
+    return (value == numbers::positive_0)
+               ? opcode::push_size_0
+               : operation::opcode_from_positive(value);
 }
 
 opcode operation::opcode_from_positive(uint8_t value) noexcept
@@ -656,29 +653,29 @@ bool operation::is_invalid(opcode code) noexcept
 {
     switch (code)
     {
-        // Demoted to invalid by [0.3.6] soft fork.
-        case opcode::op_verif:
-        case opcode::op_vernotif:
+    // Demoted to invalid by [0.3.6] soft fork.
+    case opcode::op_verif:
+    case opcode::op_vernotif:
 
-        // Demoted to invalid by [0.3.10] soft fork.
-        case opcode::op_cat:
-        case opcode::op_substr:
-        case opcode::op_left:
-        case opcode::op_right:
-        case opcode::op_invert:
-        case opcode::op_and:
-        case opcode::op_or:
-        case opcode::op_xor:
-        case opcode::op_mul2:
-        case opcode::op_div2:
-        case opcode::op_mul:
-        case opcode::op_div:
-        case opcode::op_mod:
-        case opcode::op_lshift:
-        case opcode::op_rshift:
-            return true;
-        default:
-            return false;
+    // Demoted to invalid by [0.3.10] soft fork.
+    case opcode::op_cat:
+    case opcode::op_substr:
+    case opcode::op_left:
+    case opcode::op_right:
+    case opcode::op_invert:
+    case opcode::op_and:
+    case opcode::op_or:
+    case opcode::op_xor:
+    case opcode::op_mul2:
+    case opcode::op_div2:
+    case opcode::op_mul:
+    case opcode::op_div:
+    case opcode::op_mod:
+    case opcode::op_lshift:
+    case opcode::op_rshift:
+        return true;
+    default:
+        return false;
     }
 }
 
@@ -758,17 +755,17 @@ bool operation::is_reserved(opcode code) noexcept
 
     switch (code)
     {
-        // Demoted to reserved by [0.3.6] soft fork.
-        case opcode::op_ver:
-        case opcode::op_return:
+    // Demoted to reserved by [0.3.6] soft fork.
+    case opcode::op_ver:
+    case opcode::op_return:
 
-        // Unimplemented.
-        case opcode::reserved_80:
-        case opcode::reserved_137:
-        case opcode::reserved_138:
-            return true;
-        default:
-            return static_cast<uint8_t>(code) > op_185;
+    // Unimplemented.
+    case opcode::reserved_80:
+    case opcode::reserved_137:
+    case opcode::reserved_138:
+        return true;
+    default:
+        return static_cast<uint8_t>(code) > op_185;
     }
 }
 
@@ -777,13 +774,13 @@ bool operation::is_conditional(opcode code) noexcept
 {
     switch (code)
     {
-        case opcode::if_:
-        case opcode::notif:
-        case opcode::else_:
-        case opcode::endif:
-            return true;
-        default:
-            return false;
+    case opcode::if_:
+    case opcode::notif:
+    case opcode::else_:
+    case opcode::endif:
+        return true;
+    default:
+        return false;
     }
 }
 
@@ -883,25 +880,27 @@ bool operation::is_underflow() const noexcept
 
 namespace json = boost::json;
 
-operation tag_invoke(json::value_to_tag<operation>,
-    const json::value& value) noexcept
+operation tag_invoke(
+    json::value_to_tag<operation>, const json::value& value) noexcept
 {
-    return operation{ std::string(value.get_string().c_str()) };
+    return operation{std::string(value.get_string().c_str())};
 }
 
-void tag_invoke(json::value_from_tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag, json::value& value,
     const operation& operation) noexcept
 {
     value = operation.to_string(forks::all_rules);
 }
 
-operation::ptr tag_invoke(json::value_to_tag<operation::ptr>,
-    const json::value& value) noexcept
+operation::ptr tag_invoke(
+    json::value_to_tag<operation::ptr>, const json::value& value) noexcept
 {
     return to_shared(tag_invoke(json::value_to_tag<operation>{}, value));
 }
 
-void tag_invoke(json::value_from_tag tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag tag, json::value& value,
     const operation::ptr& operation) noexcept
 {
     tag_invoke(tag, value, *operation);

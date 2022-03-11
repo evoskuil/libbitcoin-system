@@ -25,15 +25,17 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for base2 encoded data.
 class BC_API base2
 {
 public:
-
     base2() noexcept;
     base2(const base2& other) noexcept;
     base2(const binary& value) noexcept;
@@ -45,8 +47,8 @@ public:
     operator const binary&() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, base2& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const base2& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const base2& argument) noexcept;
 
 private:
     binary value_;

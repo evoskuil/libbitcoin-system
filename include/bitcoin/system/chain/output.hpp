@@ -30,9 +30,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 class BC_API output
 {
@@ -97,8 +100,8 @@ public:
     bool is_dust(uint64_t minimum_output_value) const noexcept;
 
 protected:
-    output(uint64_t value, const chain::script::ptr& script,
-        bool valid) noexcept;
+    output(
+        uint64_t value, const chain::script::ptr& script, bool valid) noexcept;
 
 private:
     static output from_data(reader& source) noexcept;
@@ -123,7 +126,7 @@ DECLARE_JSON_VALUE_CONVERTORS(output::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::output>
 {
     size_t operator()(const bc::system::chain::output& value) const noexcept

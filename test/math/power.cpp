@@ -306,9 +306,12 @@ BOOST_AUTO_TEST_CASE(power__ceilinged_log2_uintx__zero__undefined)
 
 BOOST_AUTO_TEST_CASE(power__ceilinged_log2_uintx__maximums__sizeof_maximum)
 {
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(uintx(max_uint8)), to_bits(sizeof(uint8_t)));
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(uintx(max_uint16)), to_bits(sizeof(uint16_t)));
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(uintx(max_uint32)), to_bits(sizeof(uint32_t)));
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(uintx(max_uint8)), to_bits(sizeof(uint8_t)));
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(uintx(max_uint16)), to_bits(sizeof(uint16_t)));
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(uintx(max_uint32)), to_bits(sizeof(uint32_t)));
 }
 
 // Also mixing in signed and unsigned types.
@@ -383,14 +386,42 @@ BOOST_AUTO_TEST_CASE(power__ceilinged_log2_uintx__powers_of_2__expected)
     BOOST_REQUIRE_EQUAL(ceilinged_log2(uintx((1ull << 32) + 1)), 33u);
     BOOST_REQUIRE_EQUAL(ceilinged_log2(uintx((1ull << 32) + 0)), 32u);
     BOOST_REQUIRE_EQUAL(ceilinged_log2(uintx((1ull << 63) + 1)), 64u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<uintx>(base16_array("ffffffffffffffff"))), 64u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<32>(base16_array("010000000000000000"))), 64u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<32>(base16_array("ffffffffffffffffffffffffffffffff"))), 128u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<32>(base16_array("0100000000000000000000000000000000"))), 128u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<64>(base16_array("f000000000000000000000000000000000000000000000000000000000000000"))), 256u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<65>(base16_array("010000000000000000000000000000000000000000000000000000000000000000"))), 256u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<128>(base16_array("f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))), 512u);
-    BOOST_REQUIRE_EQUAL(ceilinged_log2(from_big_endian<129>(base16_array("0100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))), 512u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(
+            from_big_endian<uintx>(base16_array("ffffffffffffffff"))),
+        64u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(from_big_endian<32>(base16_array("010000000000000000"))),
+        64u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(from_big_endian<32>(
+            base16_array("ffffffffffffffffffffffffffffffff"))),
+        128u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(from_big_endian<32>(
+            base16_array("0100000000000000000000000000000000"))),
+        128u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(from_big_endian<64>(
+            base16_array("f0000000000000000000000000000000000000000000000000000"
+                         "00000000000"))),
+        256u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(from_big_endian<65>(
+            base16_array("01000000000000000000000000000000000000000000000000000"
+                         "0000000000000"))),
+        256u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(from_big_endian<128>(base16_array(
+            "f00000000000000000000000000000000000000000000000000000000000000000"
+            "00000000000000000000000000000000000000000000000000000000000000"))),
+        512u);
+    BOOST_REQUIRE_EQUAL(
+        ceilinged_log2(from_big_endian<129>(
+            base16_array("01000000000000000000000000000000000000000000000000000"
+                         "00000000000000000000000000000000000000000000000000000"
+                         "000000000000000000000000"))),
+        512u);
 }
 
 BOOST_AUTO_TEST_CASE(power__ceilinged_log2_uintx__pow2__identity)
@@ -420,9 +451,12 @@ BOOST_AUTO_TEST_CASE(power__floored_log2__negative__undefined)
 
 BOOST_AUTO_TEST_CASE(power__floored_log2__maximums__sizeof_maximum_minus_one)
 {
-    BOOST_REQUIRE_EQUAL(floored_log2(max_uint8), sub1(to_bits(sizeof(uint8_t))));
-    BOOST_REQUIRE_EQUAL(floored_log2(max_uint16), sub1(to_bits(sizeof(uint16_t))));
-    BOOST_REQUIRE_EQUAL(floored_log2(max_uint32), sub1(to_bits(sizeof(uint32_t))));
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(max_uint8), sub1(to_bits(sizeof(uint8_t))));
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(max_uint16), sub1(to_bits(sizeof(uint16_t))));
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(max_uint32), sub1(to_bits(sizeof(uint32_t))));
 }
 
 // Also mixing in signed and unsigned types.
@@ -515,11 +549,15 @@ BOOST_AUTO_TEST_CASE(power__floored_log2_uintx__zero__undefined)
     BOOST_REQUIRE_EQUAL(floored_log2(uint256_t(0)), 0u);
 }
 
-BOOST_AUTO_TEST_CASE(power__floored_log2_uintx__maximums__sizeof_maximum_minus_one)
+BOOST_AUTO_TEST_CASE(
+    power__floored_log2_uintx__maximums__sizeof_maximum_minus_one)
 {
-    BOOST_REQUIRE_EQUAL(floored_log2(uintx(max_uint8)), sub1(to_bits(sizeof(uint8_t))));
-    BOOST_REQUIRE_EQUAL(floored_log2(uintx(max_uint16)), sub1(to_bits(sizeof(uint16_t))));
-    BOOST_REQUIRE_EQUAL(floored_log2(uintx(max_uint32)), sub1(to_bits(sizeof(uint32_t))));
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(uintx(max_uint8)), sub1(to_bits(sizeof(uint8_t))));
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(uintx(max_uint16)), sub1(to_bits(sizeof(uint16_t))));
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(uintx(max_uint32)), sub1(to_bits(sizeof(uint32_t))));
 }
 
 BOOST_AUTO_TEST_CASE(power__floored_log2_uintx__powers_of_2__expected)
@@ -592,14 +630,41 @@ BOOST_AUTO_TEST_CASE(power__floored_log2_uintx__powers_of_2__expected)
     BOOST_REQUIRE_EQUAL(floored_log2(uintx((1ull << 32) + 0)), 32u);
     BOOST_REQUIRE_EQUAL(floored_log2(uintx((1ull << 32) + 1)), 32u);
     BOOST_REQUIRE_EQUAL(floored_log2(uintx((1ull << 63) + 1)), 63u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<uintx>(base16_array("ffffffffffffffff"))), 63u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<32>(base16_array("010000000000000000"))), 64u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<32>(base16_array("ffffffffffffffffffffffffffffffff"))), 127u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<32>(base16_array("0100000000000000000000000000000000"))), 128u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<64>(base16_array("f000000000000000000000000000000000000000000000000000000000000000"))), 255u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<65>(base16_array("010000000000000000000000000000000000000000000000000000000000000000"))), 256u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<128>(base16_array("f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))), 511u);
-    BOOST_REQUIRE_EQUAL(floored_log2(from_big_endian<129>(base16_array("0100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))), 512u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<uintx>(base16_array("ffffffffffffffff"))),
+        63u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<32>(base16_array("010000000000000000"))),
+        64u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<32>(
+            base16_array("ffffffffffffffffffffffffffffffff"))),
+        127u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<32>(
+            base16_array("0100000000000000000000000000000000"))),
+        128u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<64>(
+            base16_array("f0000000000000000000000000000000000000000000000000000"
+                         "00000000000"))),
+        255u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<65>(
+            base16_array("01000000000000000000000000000000000000000000000000000"
+                         "0000000000000"))),
+        256u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<128>(base16_array(
+            "f00000000000000000000000000000000000000000000000000000000000000000"
+            "00000000000000000000000000000000000000000000000000000000000000"))),
+        511u);
+    BOOST_REQUIRE_EQUAL(
+        floored_log2(from_big_endian<129>(
+            base16_array("01000000000000000000000000000000000000000000000000000"
+                         "00000000000000000000000000000000000000000000000000000"
+                         "000000000000000000000000"))),
+        512u);
 }
 
 BOOST_AUTO_TEST_CASE(power__floored_log2_uintx__pow2__identity)

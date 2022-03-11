@@ -24,29 +24,28 @@
 #include <bitcoin/system/config/base16.hpp>
 #include <bitcoin/system/exceptions.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 using namespace boost::program_options;
 
-header::header() noexcept
-  : value_()
+header::header() noexcept : value_()
 {
 }
 
-header::header(const chain::header& value) noexcept
-  : value_(value)
+header::header(const chain::header& value) noexcept : value_(value)
 {
 }
 
-header::header(const header& other) noexcept
-  : header(other.value_)
+header::header(const header& other) noexcept : header(other.value_)
 {
 }
 
-header::header(const std::string& hexcode)
-  : value_()
+header::header(const std::string& hexcode) : value_()
 {
     std::stringstream(hexcode) >> *this;
 }

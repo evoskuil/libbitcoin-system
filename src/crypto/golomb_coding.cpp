@@ -32,12 +32,15 @@
 // Avoid in header, circular dependency with stream to crypto.
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace golomb {
+namespace libbitcoin
+{
+namespace system
+{
+namespace golomb
+{
 
-static void encode(bitwriter& sink, uint64_t value,
-    uint8_t modulo_exponent) noexcept
+static void encode(
+    bitwriter& sink, uint64_t value, uint8_t modulo_exponent) noexcept
 {
     const uint64_t quotient = value >> modulo_exponent;
     for (uint64_t index = 0; index < quotient; index++)
@@ -57,23 +60,24 @@ static uint64_t decode(bitreader& source, uint8_t modulo_exponent) noexcept
     return ((quotient << modulo_exponent) + remainder);
 }
 
-static uint64_t hash_to_range(const data_slice& item, uint64_t bound,
-    const siphash_key& key) noexcept
+static uint64_t hash_to_range(
+    const data_slice& item, uint64_t bound, const siphash_key& key) noexcept
 {
     const auto product = uint128_t(siphash(key, item)) * uint128_t(bound);
     return (product >> width<uint64_t>()).convert_to<uint64_t>();
 }
 
-static std::vector<uint64_t> hashed_set_construct(const data_stack& items,
-    uint64_t set_size, uint64_t target_false_positive_rate,
-    const siphash_key& key) noexcept
+static std::vector<uint64_t> hashed_set_construct(
+    const data_stack& items, uint64_t set_size,
+    uint64_t target_false_positive_rate, const siphash_key& key) noexcept
 {
     const auto bound = safe_multiply(target_false_positive_rate, set_size);
     static default_allocator<uint64_t> no_fill_allocator{};
     std::vector<uint64_t> hashes(no_fill_allocator);
     hashes.resize(items.size());
 
-    std::transform(items.begin(), items.end(), hashes.begin(),
+    std::transform(
+        items.begin(), items.end(), hashes.begin(),
         [&](const data_chunk& item) noexcept
         {
             return hash_to_range(item, bound, key);
@@ -85,29 +89,32 @@ static std::vector<uint64_t> hashed_set_construct(const data_stack& items,
 // Golomb-coded set construction
 // ----------------------------------------------------------------------------
 
-static void construct(bitwriter& sink, const data_stack& items, uint8_t bits,
+static void construct(
+    bitwriter& sink, const data_stack& items, uint8_t bits,
     const siphash_key& entropy, uint64_t target_false_positive_rate) noexcept
 {
-    const auto set = hashed_set_construct(items, items.size(),
-        target_false_positive_rate, entropy);
+    const auto set = hashed_set_construct(
+        items, items.size(), target_false_positive_rate, entropy);
 
     uint64_t previous = 0;
-    for (auto value: set)
+    for (auto value : set)
     {
         encode(sink, value - previous, bits);
         previous = value;
     };
 }
 
-data_chunk construct(const data_stack& items, uint8_t bits,
-    const half_hash& entropy, uint64_t target_false_positive_rate) noexcept
+data_chunk construct(
+    const data_stack& items, uint8_t bits, const half_hash& entropy,
+    uint64_t target_false_positive_rate) noexcept
 {
-    return construct(items, bits, to_siphash_key(entropy),
-        target_false_positive_rate);
+    return construct(
+        items, bits, to_siphash_key(entropy), target_false_positive_rate);
 }
 
-data_chunk construct(const data_stack& items, uint8_t bits,
-    const siphash_key& entropy, uint64_t target_false_positive_rate) noexcept
+data_chunk construct(
+    const data_stack& items, uint8_t bits, const siphash_key& entropy,
+    uint64_t target_false_positive_rate) noexcept
 {
     data_chunk result;
     stream::out::data stream(result);
@@ -116,14 +123,17 @@ data_chunk construct(const data_stack& items, uint8_t bits,
     return result;
 }
 
-void construct(std::ostream& stream, const data_stack& items, uint8_t bits,
+void construct(
+    std::ostream& stream, const data_stack& items, uint8_t bits,
     const half_hash& entropy, uint64_t target_false_positive_rate) noexcept
 {
-    construct(stream, items, bits, to_siphash_key(entropy),
+    construct(
+        stream, items, bits, to_siphash_key(entropy),
         target_false_positive_rate);
 }
 
-void construct(std::ostream& stream, const data_stack& items, uint8_t bits,
+void construct(
+    std::ostream& stream, const data_stack& items, uint8_t bits,
     const siphash_key& entropy, uint64_t target_false_positive_rate) noexcept
 {
     write::bits::ostream sink(stream);
@@ -134,8 +144,9 @@ void construct(std::ostream& stream, const data_stack& items, uint8_t bits,
 // Single element match
 // ----------------------------------------------------------------------------
 
-static bool match(const data_chunk& target, bitreader& compressed_set,
-    uint64_t set_size, const siphash_key& entropy, uint8_t bits,
+static bool match(
+    const data_chunk& target, bitreader& compressed_set, uint64_t set_size,
+    const siphash_key& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
     const auto bound = target_false_positive_rate * set_size;
@@ -158,52 +169,59 @@ static bool match(const data_chunk& target, bitreader& compressed_set,
     return false;
 }
 
-bool match(const data_chunk& target, const data_chunk& compressed_set,
+bool match(
+    const data_chunk& target, const data_chunk& compressed_set,
     uint64_t set_size, const half_hash& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
-    return match(target, compressed_set, set_size, to_siphash_key(entropy),
-        bits, target_false_positive_rate);
+    return match(
+        target, compressed_set, set_size, to_siphash_key(entropy), bits,
+        target_false_positive_rate);
 }
 
-bool match(const data_chunk& target, const data_chunk& compressed_set,
+bool match(
+    const data_chunk& target, const data_chunk& compressed_set,
     uint64_t set_size, const siphash_key& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
     stream::in::copy source(compressed_set);
-    return match(target, source, set_size, entropy, bits,
+    return match(
+        target, source, set_size, entropy, bits, target_false_positive_rate);
+}
+
+bool match(
+    const data_chunk& target, std::istream& compressed_set, uint64_t set_size,
+    const half_hash& entropy, uint8_t bits,
+    uint64_t target_false_positive_rate) noexcept
+{
+    return match(
+        target, compressed_set, set_size, to_siphash_key(entropy), bits,
         target_false_positive_rate);
 }
 
-bool match(const data_chunk& target, std::istream& compressed_set,
-    uint64_t set_size, const half_hash& entropy, uint8_t bits,
-    uint64_t target_false_positive_rate) noexcept
-{
-    return match(target, compressed_set, set_size, to_siphash_key(entropy),
-        bits, target_false_positive_rate);
-}
-
-bool match(const data_chunk& target, std::istream& compressed_set,
-    uint64_t set_size, const siphash_key& entropy, uint8_t bits,
+bool match(
+    const data_chunk& target, std::istream& compressed_set, uint64_t set_size,
+    const siphash_key& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
     read::bits::istream reader(compressed_set);
-    return match(target, reader, set_size, entropy, bits,
-        target_false_positive_rate);
+    return match(
+        target, reader, set_size, entropy, bits, target_false_positive_rate);
 }
 
 // Intersection match
 // ----------------------------------------------------------------------------
 
-static bool match(const data_stack& targets, bitreader& compressed_set,
-    uint64_t set_size, const siphash_key& entropy, uint8_t bits,
+static bool match(
+    const data_stack& targets, bitreader& compressed_set, uint64_t set_size,
+    const siphash_key& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
     if (targets.empty())
         return false;
 
-    const auto set = hashed_set_construct(targets, set_size,
-        target_false_positive_rate, entropy);
+    const auto set = hashed_set_construct(
+        targets, set_size, target_false_positive_rate, entropy);
 
     uint64_t range = 0;
     auto it = set.begin();
@@ -225,38 +243,44 @@ static bool match(const data_stack& targets, bitreader& compressed_set,
     return false;
 }
 
-bool match(const data_stack& targets, const data_chunk& compressed_set,
+bool match(
+    const data_stack& targets, const data_chunk& compressed_set,
     uint64_t set_size, const half_hash& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
-    return match(targets, compressed_set, set_size, to_siphash_key(entropy),
-        bits, target_false_positive_rate);
+    return match(
+        targets, compressed_set, set_size, to_siphash_key(entropy), bits,
+        target_false_positive_rate);
 }
 
-bool match(const data_stack& targets, const data_chunk& compressed_set,
+bool match(
+    const data_stack& targets, const data_chunk& compressed_set,
     uint64_t set_size, const siphash_key& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
     stream::in::copy source(compressed_set);
-    return match(targets, source, set_size, entropy, bits,
+    return match(
+        targets, source, set_size, entropy, bits, target_false_positive_rate);
+}
+
+bool match(
+    const data_stack& targets, std::istream& compressed_set, uint64_t set_size,
+    const half_hash& entropy, uint8_t bits,
+    uint64_t target_false_positive_rate) noexcept
+{
+    return match(
+        targets, compressed_set, set_size, to_siphash_key(entropy), bits,
         target_false_positive_rate);
 }
 
-bool match(const data_stack& targets, std::istream& compressed_set,
-    uint64_t set_size, const half_hash& entropy, uint8_t bits,
-    uint64_t target_false_positive_rate) noexcept
-{
-    return match(targets, compressed_set, set_size, to_siphash_key(entropy),
-        bits, target_false_positive_rate);
-}
-
-bool match(const data_stack& targets, std::istream& compressed_set,
-    uint64_t set_size, const siphash_key& entropy, uint8_t bits,
+bool match(
+    const data_stack& targets, std::istream& compressed_set, uint64_t set_size,
+    const siphash_key& entropy, uint8_t bits,
     uint64_t target_false_positive_rate) noexcept
 {
     read::bits::istream reader(compressed_set);
-    return match(targets, reader, set_size, entropy, bits,
-        target_false_positive_rate);
+    return match(
+        targets, reader, set_size, entropy, bits, target_false_positive_rate);
 }
 
 } // namespace golomb

@@ -27,8 +27,10 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 constexpr uint8_t pad = 0x00;
 
@@ -45,34 +47,32 @@ bool binary::is_base2(const std::string& text) noexcept
 // constructors
 // ----------------------------------------------------------------------------
 
-binary::binary() noexcept
-  : bits_(0), bytes_()
+binary::binary() noexcept : bits_(0), bytes_()
 {
 }
 
 binary::binary(binary&& other) noexcept
-  : bits_(other.bits_), bytes_(std::move(other.bytes_))
+    : bits_(other.bits_), bytes_(std::move(other.bytes_))
 {
 }
 
 binary::binary(const binary& other) noexcept
-  : bits_(other.bits_), bytes_(other.bytes_)
+    : bits_(other.bits_), bytes_(other.bytes_)
 {
 }
 
-binary::binary(const std::string& bits) noexcept
-  : binary(from_string(bits))
+binary::binary(const std::string& bits) noexcept : binary(from_string(bits))
 {
 }
 
 binary::binary(size_t bits, const data_slice& data) noexcept
-  : binary(from_data(bits, data.to_chunk()))
+    : binary(from_data(bits, data.to_chunk()))
 {
 }
 
 // private
 binary::binary(data_chunk&& bytes, size_t bits) noexcept
-  : bits_(bits), bytes_(bytes)
+    : bits_(bits), bytes_(bytes)
 {
 }
 
@@ -84,10 +84,10 @@ binary binary::from_data(size_t bits, data_chunk&& data) noexcept
     data.resize(ceilinged_divide(bits, byte_bits), pad);
 
     if (!data.empty())
-        mask_right_into(data.back(),
-            absolute(ceilinged_modulo(bits, byte_bits)));
+        mask_right_into(
+            data.back(), absolute(ceilinged_modulo(bits, byte_bits)));
 
-    return { std::move(data), bits };
+    return {std::move(data), bits};
 }
 
 binary binary::from_string(const std::string bits) noexcept
@@ -99,11 +99,11 @@ binary binary::from_string(const std::string bits) noexcept
     data_chunk data(ceilinged_divide(length, byte_bits), pad);
     write::bits::copy writer(data);
 
-    for (const auto bit: bits)
+    for (const auto bit : bits)
         writer.write_bit(bit == '1');
 
     writer.flush();
-    return { std::move(data), length };
+    return {std::move(data), length};
 }
 
 // methods

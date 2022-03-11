@@ -31,15 +31,17 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // constructors
 // ----------------------------------------------------------------------------
 
 template <typename OStream>
 bit_writer<OStream>::bit_writer(OStream& sink) noexcept
-  : byte_writer<OStream>(sink), byte_(byte_writer<OStream>::pad()), offset_(0)
+    : byte_writer<OStream>(sink), byte_(byte_writer<OStream>::pad()), offset_(0)
 {
 }
 
@@ -80,8 +82,8 @@ void bit_writer<OStream>::write_bits(uint64_t value, size_t bits) noexcept
 // ----------------------------------------------------------------------------
 
 template <typename OStream>
-void bit_writer<OStream>::do_write_bytes(const uint8_t* data,
-    size_t size) noexcept
+void bit_writer<OStream>::do_write_bytes(
+    const uint8_t* data, size_t size) noexcept
 {
     // Suboptimal because shifts each bit and writes single bytes, but simple.
     for (size_t byte = 0; byte < size; ++byte)

@@ -23,35 +23,37 @@
 #include <vector>
 #include <bitcoin/system/chain/chain.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // Constructors.
 //-------------------------------------------------------------------------
 
-point_value::point_value() noexcept
-  : point(), value_(0)
+point_value::point_value() noexcept : point(), value_(0)
 {
 }
 
 point_value::point_value(point_value&& other) noexcept
-  : value_(other.value_), point(std::move(other))
+    : value_(other.value_), point(std::move(other))
 {
 }
 
 point_value::point_value(const point_value& other) noexcept
-  : point(other), value_(other.value_)
+    : point(other), value_(other.value_)
 {
 }
 
 point_value::point_value(point&& instance, uint64_t value) noexcept
-  : point(std::move(instance)), value_(value)
+    : point(std::move(instance)), value_(value)
 {
 }
 
 point_value::point_value(const point& instance, uint64_t value) noexcept
-  : point(instance), value_(value)
+    : point(instance), value_(value)
 {
 }
 
@@ -67,8 +69,8 @@ point_value& point_value::operator=(point_value other) noexcept
 
 bool point_value::operator==(const point_value& other) const noexcept
 {
-    return static_cast<point>(*this) == static_cast<point>(other) &&
-        (value_ == other.value_);
+    return static_cast<point>(*this) == static_cast<point>(other)
+           && (value_ == other.value_);
 }
 
 bool point_value::operator!=(const point_value& other) const noexcept

@@ -40,8 +40,10 @@ const auto intersection_pt_electrum_cs = 2;
 const auto intersection_pt_electrum_pt = 185;
 
 // These are not "reversed" as with typical bitcoin hash presentations.
-const auto identity_en = base16_array("430ce8fc15a42a6097782a10144d1277e2596b7591be338254a257dfcf1f57d6");
-const auto identity_pt = base16_array("43da9ad5a079483e224bcdd61cd1728a68c2b2647f0f1b87832dbaab5e159a12");
+const auto identity_en = base16_array(
+    "430ce8fc15a42a6097782a10144d1277e2596b7591be338254a257dfcf1f57d6");
+const auto identity_pt = base16_array(
+    "43da9ad5a079483e224bcdd61cd1728a68c2b2647f0f1b87832dbaab5e159a12");
 
 // count
 
@@ -49,7 +51,8 @@ BOOST_AUTO_TEST_CASE(catalogs_electrum_v1__count__all__expected)
 {
     // Any new dictionary must be added below to guarantee lack of normalization.
     // Failure to do so may lead to invalid seed generation, which is very bad.
-    BOOST_REQUIRE_MESSAGE(electrum_v1::catalogs::count() == dictionary_count, "new dictionary");
+    BOOST_REQUIRE_MESSAGE(
+        electrum_v1::catalogs::count() == dictionary_count, "new dictionary");
 }
 
 // identity
@@ -99,24 +102,37 @@ BOOST_AUTO_TEST_CASE(catalogs_electrum_v1__normal__normal_words__true)
 
 BOOST_AUTO_TEST_CASE(catalogs_electrum_v1__intersections__en__expected)
 {
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::en, electrum_v1::en), dictionary_size);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::en, electrum_v1::pt), intersection_en_pt);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::en, electrum_v1::en), dictionary_size);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::en, electrum_v1::pt), intersection_en_pt);
 }
 
 BOOST_AUTO_TEST_CASE(catalogs_electrum_v1__intersections__pt__expected)
 {
     ////BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum_v1::en), intersection_en_pt);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum_v1::pt), dictionary_size);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::pt, electrum_v1::pt), dictionary_size);
 }
 
 BOOST_AUTO_TEST_CASE(catalogs_electrum_v1__intersections__en_electrum__expected)
 {
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::en, electrum::en), intersection_en_electrum_en);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::en, electrum::es), intersection_en_electrum_es);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::en, electrum::en),
+        intersection_en_electrum_en);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::en, electrum::es),
+        intersection_en_electrum_es);
     BOOST_REQUIRE(!intersects(electrum_v1::en, electrum::it));
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::en, electrum::fr), intersection_en_electrum_fr);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::en, electrum::cs), intersection_en_electrum_cs);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::en, electrum::pt), intersection_en_electrum_pt);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::en, electrum::fr),
+        intersection_en_electrum_fr);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::en, electrum::cs),
+        intersection_en_electrum_cs);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::en, electrum::pt),
+        intersection_en_electrum_pt);
     BOOST_REQUIRE(!intersects(electrum_v1::en, electrum::ja));
     BOOST_REQUIRE(!intersects(electrum_v1::en, electrum::ko));
     BOOST_REQUIRE(!intersects(electrum_v1::en, electrum::zh_Hans));
@@ -125,12 +141,24 @@ BOOST_AUTO_TEST_CASE(catalogs_electrum_v1__intersections__en_electrum__expected)
 
 BOOST_AUTO_TEST_CASE(catalogs_electrum_v1__intersections__pt_electrum__expected)
 {
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum::en), intersection_pt_electrum_en);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum::es), intersection_pt_electrum_es);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum::it), intersection_pt_electrum_it);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum::fr), intersection_pt_electrum_fr);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum::cs), intersection_pt_electrum_cs);
-    BOOST_REQUIRE_EQUAL(intersection(electrum_v1::pt, electrum::pt), intersection_pt_electrum_pt);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::pt, electrum::en),
+        intersection_pt_electrum_en);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::pt, electrum::es),
+        intersection_pt_electrum_es);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::pt, electrum::it),
+        intersection_pt_electrum_it);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::pt, electrum::fr),
+        intersection_pt_electrum_fr);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::pt, electrum::cs),
+        intersection_pt_electrum_cs);
+    BOOST_REQUIRE_EQUAL(
+        intersection(electrum_v1::pt, electrum::pt),
+        intersection_pt_electrum_pt);
     BOOST_REQUIRE(!intersects(electrum_v1::pt, electrum::ja));
     BOOST_REQUIRE(!intersects(electrum_v1::pt, electrum::ko));
     BOOST_REQUIRE(!intersects(electrum_v1::pt, electrum::zh_Hans));

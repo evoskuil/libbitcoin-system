@@ -22,8 +22,10 @@
 #include <string>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Character tests.
 BC_API bool is_ascii_character(char32_t point) noexcept;

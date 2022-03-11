@@ -23,8 +23,10 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/constraints.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Offsets that exceed value bit width are undefined:
 
@@ -66,27 +68,27 @@ constexpr Value bit_right(size_t offset) noexcept;
 
 /// Extract a bit from value, offset relative to highest order bit.
 template <typename Value, if_integer<Value> = true>
-constexpr bool get_left(Value value, size_t offset=zero) noexcept;
+constexpr bool get_left(Value value, size_t offset = zero) noexcept;
 
 /// Extract a bit from value, offset relative to lowest order bit.
 template <typename Value, if_integer<Value> = true>
-constexpr bool get_right(Value value, size_t offset=zero) noexcept;
+constexpr bool get_right(Value value, size_t offset = zero) noexcept;
 
 /// Set a bit in target, offset relative to highest order bit.
 template <typename Value, if_integer<Value> = true>
-constexpr Value set_left(const Value& target, size_t offset=zero,
-    bool state=true) noexcept;
+constexpr Value set_left(
+    const Value& target, size_t offset = zero, bool state = true) noexcept;
 template <typename Value, if_integer<Value> = true>
-inline void set_left_into(Value& target, size_t offset=zero,
-    bool state=true) noexcept;
+inline void set_left_into(
+    Value& target, size_t offset = zero, bool state = true) noexcept;
 
 /// Set a bit in target, offset relative to lowest order bit.
 template <typename Value, if_integer<Value> = true>
-constexpr Value set_right(const Value& target, size_t offset=zero,
-    bool state=true) noexcept;
+constexpr Value set_right(
+    const Value& target, size_t offset = zero, bool state = true) noexcept;
 template <typename Value, if_integer<Value> = true>
-inline void set_right_into(Value& target, size_t offset=zero,
-    bool state=true) noexcept;
+inline void set_right_into(
+    Value& target, size_t offset = zero, bool state = true) noexcept;
 
 /// A set of bitmasks with high order count of bits unset.
 template <typename Value, if_unsigned_integer<Value> = true>
@@ -137,20 +139,20 @@ inline void rotate_right_into(Value& value, size_t shift) noexcept;
 /// Shift the bits of Value to the left by amount 'shift'.
 /// Set 'overflow' to false to modulo shift by Value width.
 template <typename Value, if_unsigned_integer<Value> = true>
-constexpr Value shift_left(const Value& value, size_t shift,
-    bool overflow=true) noexcept;
+constexpr Value shift_left(
+    const Value& value, size_t shift, bool overflow = true) noexcept;
 template <typename Value, if_unsigned_integer<Value> = true>
-inline void shift_left_into(Value& value, size_t shift,
-    bool overflow=true) noexcept;
+inline void shift_left_into(
+    Value& value, size_t shift, bool overflow = true) noexcept;
 
 /// Shift the bits of Value to the right by amount 'shift'.
 /// Set 'overflow' to false to modulo shift by Value width.
 template <typename Value, if_unsigned_integer<Value> = true>
-constexpr Value shift_right(const Value& value, size_t shift,
-    bool overflow=true) noexcept;
+constexpr Value shift_right(
+    const Value& value, size_t shift, bool overflow = true) noexcept;
 template <typename Value, if_unsigned_integer<Value> = true>
-inline void shift_right_into(Value& value, size_t shift,
-    bool overflow=true) noexcept;
+inline void shift_right_into(
+    Value& value, size_t shift, bool overflow = true) noexcept;
 
 } // namespace system
 } // namespace libbitcoin

@@ -23,10 +23,10 @@
 #include <mutex>
 #include <string>
 #ifdef _MSC_VER
-    #include <limits>
-    #include <windows.h>
+#include <limits>
+#include <windows.h>
 #else
-    #include <mutex>
+#include <mutex>
 #endif
 #include <boost/locale.hpp>
 #include <bitcoin/system/constants.hpp>
@@ -37,8 +37,10 @@
 #include <bitcoin/system/unicode/code_points.hpp>
 #include <bitcoin/system/unicode/conversion.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Avoid codecvt as it is deprecated in c++17.
 using namespace boost::locale;
@@ -46,8 +48,8 @@ using namespace boost::locale;
 // Local helpers.
 // ----------------------------------------------------------------------------
 
-constexpr bool is_contained(char32_t value,
-    const char32_interval& interval) noexcept
+constexpr bool is_contained(
+    char32_t value, const char32_interval& interval) noexcept
 {
     return interval.first <= value && value <= interval.second;
 }
@@ -65,22 +67,22 @@ static NORM_FORM to_win32_normal_form(norm_type form) noexcept
 {
     switch (form)
     {
-        case norm_type::norm_nfkd:
-            return NormalizationKD;
-        case norm_type::norm_nfkc:
-            return NormalizationKC;
-        case norm_type::norm_nfd:
-            return NormalizationD;
+    case norm_type::norm_nfkd:
+        return NormalizationKD;
+    case norm_type::norm_nfkc:
+        return NormalizationKC;
+    case norm_type::norm_nfd:
+        return NormalizationD;
 
-        // NFC is the boost::locale default and this is the full enumeration.
-        case norm_type::norm_nfc:
-        default:
-            return NormalizationC;
+    // NFC is the boost::locale default and this is the full enumeration.
+    case norm_type::norm_nfc:
+    default:
+        return NormalizationC;
     }
 }
 
-static bool normal_form(std::string& out, const std::string& in,
-    norm_type form) noexcept
+static bool normal_form(
+    std::string& out, const std::string& in, norm_type form) noexcept
 {
 #ifndef WITH_ICU
     return false;
@@ -182,8 +184,8 @@ static bool get_backend_manager(localization_backend_manager& out) noexcept
         const auto all = out.get_all_backends();
 
         // Guards backend_manager.select(BC_LOCALE_BACKEND) silent failure.
-        initialized = std::find(all.cbegin(), all.cend(),
-            icu_backend_name) != all.cend();
+        initialized =
+            std::find(all.cbegin(), all.cend(), icu_backend_name) != all.cend();
     };
 
     // One time verifier of the localization backend manager.
@@ -191,8 +193,8 @@ static bool get_backend_manager(localization_backend_manager& out) noexcept
     return initialized;
 }
 
-static bool normal_form(std::string& out, const std::string& in,
-    norm_type form) noexcept
+static bool normal_form(
+    std::string& out, const std::string& in, norm_type form) noexcept
 {
 #ifndef WITH_ICU
     return false;
@@ -347,7 +349,8 @@ bool is_chinese_japanese_or_korean(char32_t point) noexcept
     if (!is_unicode(point))
         return false;
 
-    for (size_t index = 0; index < char32_chinese_japanese_korean_count; ++index)
+    for (size_t index = 0; index < char32_chinese_japanese_korean_count;
+         ++index)
         if (is_contained(point, char32_chinese_japanese_korean[index]))
             return true;
 
@@ -360,10 +363,12 @@ bool has_whitespace(const std::string& value) noexcept
         return false;
 
     const auto points = to_utf32(value);
-    return std::any_of(points.begin(), points.end(), [](char32_t character)
-    {
-        return is_whitespace(character);
-    });
+    return std::any_of(
+        points.begin(), points.end(),
+        [](char32_t character)
+        {
+            return is_whitespace(character);
+        });
 }
 
 std::string to_non_combining_form(const std::string& value) noexcept
@@ -374,7 +379,8 @@ std::string to_non_combining_form(const std::string& value) noexcept
     // utf32 ensures each word is a single unicode character.
     auto points = to_utf32(value);
 
-    points.erase(std::remove_if(points.begin(), points.end(), is_combining),
+    points.erase(
+        std::remove_if(points.begin(), points.end(), is_combining),
         points.end());
 
     return to_utf8(points);
@@ -388,7 +394,8 @@ std::string to_non_diacritic_form(const std::string& value) noexcept
     // utf32 ensures each word is a single unicode character.
     auto points = to_utf32(value);
 
-    points.erase(std::remove_if(points.begin(), points.end(), is_diacritic),
+    points.erase(
+        std::remove_if(points.begin(), points.end(), is_diacritic),
         points.end());
 
     return to_utf8(points);
@@ -408,15 +415,15 @@ std::string to_compressed_form(const std::string& value) noexcept
         return normalized;
 
     // Copy the first character to output.
-    std::u32string compressed{ points.front() };
+    std::u32string compressed{points.front()};
 
     // Remove a single ascii whitespace between CJK characters.
     // Front and back cannot be between two characters, so skip them.
     for (size_t point = 1; point < sub1(points.size()); point++)
     {
-        if (!(is_ascii_whitespace(points[point]) &&
-            is_chinese_japanese_or_korean(points[sub1(point)]) &&
-            is_chinese_japanese_or_korean(points[add1(point)])))
+        if (!(is_ascii_whitespace(points[point])
+              && is_chinese_japanese_or_korean(points[sub1(point)])
+              && is_chinese_japanese_or_korean(points[add1(point)])))
         {
             compressed += points[point];
         }

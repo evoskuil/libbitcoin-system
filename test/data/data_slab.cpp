@@ -69,13 +69,13 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__array_empty__empty)
 
 BOOST_AUTO_TEST_CASE(data_slab__construct__pointers_empty__empty)
 {
-    std::string value{ "foobar" };
+    std::string value{"foobar"};
     BOOST_REQUIRE(data_slab(&value[0], &value[0]).empty());
 }
 
 BOOST_AUTO_TEST_CASE(data_slab__construct__pointers_reversed__empty)
 {
-    std::string value{ "foobar" };
+    std::string value{"foobar"};
     BOOST_REQUIRE(data_slab(&value[5], &value[0]).empty());
 }
 
@@ -88,20 +88,19 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__iterators_empty__empty)
 
 BOOST_AUTO_TEST_CASE(data_slab__construct__iterators_reversed__empty)
 {
-    data_chunk value{ 'f', 'o', 'o', 'b', 'a', 'r' };
+    data_chunk value{'f', 'o', 'o', 'b', 'a', 'r'};
     const data_slab slab(value.end(), value.begin());
     BOOST_REQUIRE(slab.empty());
 }
 
 // test vector (careful to not mutate in tests).
 const auto size = 6u;
-std::string string{ "foobar" };
-data_chunk data{ 'f', 'o', 'o', 'b', 'a', 'r' };
-data_array<size> byte{ { 'f', 'o', 'o', 'b', 'a', 'r' } };
-std::array<char, size> char_array{ { 'f', 'o', 'o', 'b', 'a', 'r' } };
-data_array<8> negative_byte{ { 'b', 'a', 'a', 'd', 'f', '0', '0', 'd' } };
+std::string string{"foobar"};
+data_chunk data{'f', 'o', 'o', 'b', 'a', 'r'};
+data_array<size> byte{{'f', 'o', 'o', 'b', 'a', 'r'}};
+std::array<char, size> char_array{{'f', 'o', 'o', 'b', 'a', 'r'}};
+data_array<8> negative_byte{{'b', 'a', 'a', 'd', 'f', '0', '0', 'd'}};
 auto encoded = encode_base16(string);
-
 
 // copy construct
 
@@ -124,9 +123,9 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__copy__expected)
 BOOST_AUTO_TEST_CASE(data_slab__construct__text__expected)
 {
     // negative vector
-    std::string negative_string{ "baadf00d" };
-    data_chunk negative_data{ 'b', 'a', 'a', 'd', 'f', '0', '0', 'd' };
-    data_array<8> negative_byte{ { 'b', 'a', 'a', 'd', 'f', '0', '0', 'd' } };
+    std::string negative_string{"baadf00d"};
+    data_chunk negative_data{'b', 'a', 'a', 'd', 'f', '0', '0', 'd'};
+    data_array<8> negative_byte{{'b', 'a', 'a', 'd', 'f', '0', '0', 'd'}};
 
     // construct(string reference)
     const data_slab slab(string);
@@ -142,7 +141,7 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__text__expected)
     BOOST_REQUIRE_EQUAL(*slab.begin(), 'f');
     BOOST_REQUIRE_EQUAL(static_cast<data_chunk>(slab).front(), 'f');
     BOOST_REQUIRE_EQUAL(static_cast<data_array<size>>(slab).front(), 'f');
-    
+
     // end
     BOOST_REQUIRE_EQUAL(slab.back(), 'r');
     BOOST_REQUIRE_EQUAL(slab[sub1(size)], 'r');
@@ -214,7 +213,7 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__array__expected)
     BOOST_REQUIRE_EQUAL(slab0.encoded(), encoded);
 
     // construct(data_array)
-    const data_slab slab1{ byte };
+    const data_slab slab1{byte};
     BOOST_REQUIRE(!slab1.empty());
     BOOST_REQUIRE_EQUAL(slab1.size(), size);
     BOOST_REQUIRE_EQUAL(slab1.encoded(), encoded);
@@ -222,7 +221,7 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__array__expected)
     // Array construction is non-ambiguous.
     // Unnecessary copy construction.
     // construct(data_array)
-    const data_slab slab3({ byte });
+    const data_slab slab3({byte});
     BOOST_REQUIRE(!slab3.empty());
     BOOST_REQUIRE_EQUAL(slab3.size(), size);
     BOOST_REQUIRE_EQUAL(slab3.encoded(), encoded);
@@ -243,7 +242,7 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__pointers__expected)
     BOOST_REQUIRE_EQUAL(slab1.encoded(), encoded);
 
     // construct(pointers)
-    const data_slab slab2 = { byte.data(), std::next(byte.data(), size) };
+    const data_slab slab2 = {byte.data(), std::next(byte.data(), size)};
     BOOST_REQUIRE(!slab2.empty());
     BOOST_REQUIRE_EQUAL(slab2.size(), size);
     BOOST_REQUIRE_EQUAL(slab2.encoded(), encoded);
@@ -258,7 +257,7 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__iterators__expected)
     BOOST_REQUIRE_EQUAL(slab1.encoded(), encoded);
 
     // construct(iterators)
-    const data_slab slab2 = { string.begin(), string.end() };
+    const data_slab slab2 = {string.begin(), string.end()};
     BOOST_REQUIRE(!slab2.empty());
     BOOST_REQUIRE_EQUAL(slab2.size(), size);
     BOOST_REQUIRE_EQUAL(slab2.encoded(), encoded);
@@ -268,7 +267,7 @@ BOOST_AUTO_TEST_CASE(data_slab__construct__iterators__expected)
 
 BOOST_AUTO_TEST_CASE(data_slab__resize__empty__false)
 {
-    data_array<0> empty{ {} };
+    data_array<0> empty{{}};
     data_slab slab(empty);
     BOOST_REQUIRE(!slab.resize(0));
     BOOST_REQUIRE(!slab.resize(42));
@@ -276,7 +275,7 @@ BOOST_AUTO_TEST_CASE(data_slab__resize__empty__false)
 
 BOOST_AUTO_TEST_CASE(data_slab__resize__downsize__true_expected)
 {
-    data_array<6> data{ { 'f', 'o', 'o', 'b', 'a', 'r' } };
+    data_array<6> data{{'f', 'o', 'o', 'b', 'a', 'r'}};
     data_slab slab(data);
     BOOST_REQUIRE(slab.resize(3));
     BOOST_REQUIRE_EQUAL(slab.to_string(), "foo");
@@ -284,7 +283,7 @@ BOOST_AUTO_TEST_CASE(data_slab__resize__downsize__true_expected)
 
 BOOST_AUTO_TEST_CASE(data_slab__resize__upsize__false_expected)
 {
-    data_array<6> data{ { 'f', 'o', 'o', 'b', 'a', 'r' } };
+    data_array<6> data{{'f', 'o', 'o', 'b', 'a', 'r'}};
     data_slab slab(data);
     BOOST_REQUIRE(!slab.resize(6));
     BOOST_REQUIRE(!slab.resize(7));

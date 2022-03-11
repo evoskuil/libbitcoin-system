@@ -31,10 +31,13 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
-    
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
+
 class transaction;
 
 class BC_API witness
@@ -99,9 +102,10 @@ public:
     static bool is_push_size(const chunk_ptrs& stack) noexcept;
     static bool is_reserved_pattern(const chunk_ptrs& stack) noexcept;
 
-    bool extract_sigop_script(script& out_script,
-        const script& program_script) const noexcept;
-    bool extract_script(script& out_script, chunk_ptrs& out_stack,
+    bool extract_sigop_script(
+        script& out_script, const script& program_script) const noexcept;
+    bool extract_script(
+        script& out_script, chunk_ptrs& out_stack,
         const script& program_script) const noexcept;
 
 private:
@@ -128,7 +132,7 @@ DECLARE_JSON_VALUE_CONVERTORS(witness::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::witness>
 {
     size_t operator()(const bc::system::chain::witness& value) const noexcept

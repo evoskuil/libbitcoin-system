@@ -26,8 +26,10 @@
 #include <bitcoin/system/data/data_slice.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Byte storage types.
 typedef std::vector<uint8_t> data_chunk;
@@ -45,12 +47,12 @@ BC_API data_chunk to_chunk(const data_slice& bytes) noexcept;
 
 /// Concatenate several data slices into a single data_chunk.
 /// extra_reserve reserves but does not allocate additional bytes.
-BC_API data_chunk build_chunk(const data_loaf& slices,
-    size_t extra_reserve=0) noexcept;
+BC_API data_chunk
+build_chunk(const data_loaf& slices, size_t extra_reserve = 0) noexcept;
 
 /// Concatenate two data_slices into a single data chunk.
-BC_API data_chunk splice(const data_slice& left,
-    const data_slice& right) noexcept;
+BC_API data_chunk
+splice(const data_slice& left, const data_slice& right) noexcept;
 
 } // namespace system
 } // namespace libbitcoin

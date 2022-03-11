@@ -39,9 +39,12 @@ BOOST_AUTO_TEST_CASE(dictionary__identifier__empty__expected)
     BOOST_REQUIRE(dictionary<0>(language::pt, {}).identifier() == language::pt);
     BOOST_REQUIRE(dictionary<0>(language::ja, {}).identifier() == language::ja);
     BOOST_REQUIRE(dictionary<0>(language::ko, {}).identifier() == language::ko);
-    BOOST_REQUIRE(dictionary<0>(language::zh_Hans, {}).identifier() == language::zh_Hans);
-    BOOST_REQUIRE(dictionary<0>(language::zh_Hant, {}).identifier() == language::zh_Hant);
-    BOOST_REQUIRE(dictionary<0>(language::none, {}).identifier() == language::none);
+    BOOST_REQUIRE(
+        dictionary<0>(language::zh_Hans, {}).identifier() == language::zh_Hans);
+    BOOST_REQUIRE(
+        dictionary<0>(language::zh_Hant, {}).identifier() == language::zh_Hant);
+    BOOST_REQUIRE(
+        dictionary<0>(language::none, {}).identifier() == language::none);
 }
 
 BOOST_AUTO_TEST_CASE(dictionary__name__empty__expected)
@@ -76,7 +79,7 @@ BOOST_AUTO_TEST_CASE(dictionary__at1__indexes__expected)
 
 BOOST_AUTO_TEST_CASE(dictionary__at2__indexes__expected)
 {
-    const auto words = instance.at({ 0, 2, 4, 6, 8, 10 });
+    const auto words = instance.at({0, 2, 4, 6, 8, 10});
     BOOST_REQUIRE_EQUAL(words[0], test_words_es.word[0]);
     BOOST_REQUIRE_EQUAL(words[1], test_words_es.word[2]);
     BOOST_REQUIRE_EQUAL(words[2], test_words_es.word[4]);
@@ -103,14 +106,8 @@ BOOST_AUTO_TEST_CASE(dictionary__index1__words__expected)
 BOOST_AUTO_TEST_CASE(dictionary__index2__words__expected)
 {
     const auto indexes = instance.index(
-    {
-        test_words_es.word[0],
-        test_words_es.word[2],
-        test_words_es.word[4],
-        test_words_es.word[6],
-        test_words_es.word[8],
-        ""
-    });
+        {test_words_es.word[0], test_words_es.word[2], test_words_es.word[4],
+         test_words_es.word[6], test_words_es.word[8], ""});
     BOOST_REQUIRE_EQUAL(indexes[0], 0);
     BOOST_REQUIRE_EQUAL(indexes[1], 2);
     BOOST_REQUIRE_EQUAL(indexes[2], 4);
@@ -144,25 +141,15 @@ BOOST_AUTO_TEST_CASE(dictionary__contains1__empty__false)
 BOOST_AUTO_TEST_CASE(dictionary__contains2__valid_words__true)
 {
     BOOST_REQUIRE(instance.contains(
-    {
-        test_words_es.word[0],
-        test_words_es.word[2],
-        test_words_es.word[4],
-        test_words_es.word[6],
-        test_words_es.word[8]
-    }));
+        {test_words_es.word[0], test_words_es.word[2], test_words_es.word[4],
+         test_words_es.word[6], test_words_es.word[8]}));
 }
 
 BOOST_AUTO_TEST_CASE(dictionary__contains2__invalid_word__false)
 {
     BOOST_REQUIRE(!instance.contains(
-    {
-        test_words_es.word[0],
-        test_words_es.word[2],
-        "foo",
-        test_words_es.word[6],
-        test_words_es.word[8]
-    }));
+        {test_words_es.word[0], test_words_es.word[2], "foo",
+         test_words_es.word[6], test_words_es.word[8]}));
 }
 
 BOOST_AUTO_TEST_CASE(dictionary__contains2__empty__true)

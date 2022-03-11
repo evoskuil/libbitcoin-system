@@ -24,9 +24,12 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper to convert between text and an point.
 class BC_API point
@@ -42,8 +45,8 @@ public:
     operator const chain::point&() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, point& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const point& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const point& argument) noexcept;
 
 private:
     chain::point value_;

@@ -25,22 +25,25 @@
 #include <bitcoin/system/wallet/addresses/stealth_address.hpp>
 #include <bitcoin/system/wallet/keys/stealth.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // TODO: use to factory and make address_ and spend_public_ const.
-stealth_receiver::stealth_receiver(const ec_secret& scan_private,
-    const ec_secret& spend_private, const binary& filter,
-    uint8_t version) noexcept
-  : version_(version), scan_private_(scan_private),
-    spend_private_(spend_private)
+stealth_receiver::stealth_receiver(
+    const ec_secret& scan_private, const ec_secret& spend_private,
+    const binary& filter, uint8_t version) noexcept
+    : version_(version), scan_private_(scan_private),
+      spend_private_(spend_private)
 {
     ec_compressed scan_public;
-    if (secret_to_public(scan_public, scan_private_) &&
-        secret_to_public(spend_public_, spend_private_))
+    if (secret_to_public(scan_public, scan_private_)
+        && secret_to_public(spend_public_, spend_private_))
     {
-        address_ = { filter, scan_public, { spend_public_ } };
+        address_ = {filter, scan_public, {spend_public_}};
     }
 }
 
@@ -50,28 +53,31 @@ stealth_receiver::operator bool() const noexcept
 }
 
 // Will be invalid if construct fails.
-const wallet::stealth_address& stealth_receiver::stealth_address() const noexcept
+const wallet::stealth_address& stealth_receiver::stealth_address()
+    const noexcept
 {
     return address_;
 }
 
-bool stealth_receiver::derive_address(payment_address& out_address,
+bool stealth_receiver::derive_address(
+    payment_address& out_address,
     const ec_compressed& ephemeral_public) const noexcept
 {
     ec_compressed receiver_public;
-    if (!uncover_stealth(receiver_public, ephemeral_public, scan_private_,
-        spend_public_))
+    if (!uncover_stealth(
+            receiver_public, ephemeral_public, scan_private_, spend_public_))
         return false;
 
-    out_address = { receiver_public, version_ };
+    out_address = {receiver_public, version_};
     return true;
 }
 
-bool stealth_receiver::derive_private(ec_secret& out_private,
+bool stealth_receiver::derive_private(
+    ec_secret& out_private,
     const ec_compressed& ephemeral_public) const noexcept
 {
-    return uncover_stealth(out_private, ephemeral_public, scan_private_,
-        spend_private_);
+    return uncover_stealth(
+        out_private, ephemeral_public, scan_private_, spend_private_);
 }
 
 } // namespace wallet

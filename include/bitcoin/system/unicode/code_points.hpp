@@ -25,8 +25,10 @@
 #include <utility>
 #include <vector>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 typedef std::vector<std::string> string_list;
 typedef std::pair<char32_t, char32_t> char32_interval;
@@ -57,8 +59,8 @@ extern const char32_t char32_whitespace[char32_whitespace_count];
 constexpr size_t char32_diacritics_count = 197;
 constexpr size_t char32_chinese_japanese_korean_count = 29;
 extern const char32_interval char32_diacritics[char32_diacritics_count];
-extern const char32_interval char32_chinese_japanese_korean[
-    char32_chinese_japanese_korean_count];
+extern const char32_interval
+    char32_chinese_japanese_korean[char32_chinese_japanese_korean_count];
 
 /// Python's generated Unicode combining class index.
 constexpr size_t combining_index_count = 342;

@@ -25,8 +25,10 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/math/sign.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // throw is not constexpr at least through C++20.
 

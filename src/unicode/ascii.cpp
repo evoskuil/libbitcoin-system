@@ -25,8 +25,10 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/unicode/normalization.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // char32_t functions.
 
@@ -95,17 +97,19 @@ std::string ascii_to_upper(const std::string& text) noexcept
 
 bool has_ascii_whitespace(const std::string& text) noexcept
 {
-    return std::any_of(text.begin(), text.end(), [](char character) noexcept
-    {
-        return is_ascii_whitespace(character);
-    });
+    return std::any_of(
+        text.begin(), text.end(),
+        [](char character) noexcept
+        {
+            return is_ascii_whitespace(character);
+        });
 }
 
 bool has_mixed_ascii_case(const std::string& text) noexcept
 {
     auto lower = false;
     auto upper = false;
-    
+
     const auto set_lower_and_upper = [&](char character) noexcept
     {
         lower |= ('a' <= character && character <= 'z');

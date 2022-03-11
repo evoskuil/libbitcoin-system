@@ -42,4 +42,3 @@
 #include <bitcoin/system/crypto/siphash.hpp>
 
 #endif
-

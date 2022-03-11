@@ -23,21 +23,22 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 base2::base2() noexcept
 {
 }
 
-base2::base2(const binary& value) noexcept
-  : value_(value)
+base2::base2(const binary& value) noexcept : value_(value)
 {
 }
 
-base2::base2(const base2& other) noexcept
-  : base2(other.value_)
+base2::base2(const base2& other) noexcept : base2(other.value_)
 {
 }
 

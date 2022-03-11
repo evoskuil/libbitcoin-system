@@ -22,8 +22,10 @@
 #include <string>
 #include <boost/locale.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 template <typename CharOut, typename CharIn>
 static std::basic_string<CharOut> to_utf(
@@ -53,7 +55,8 @@ static std::vector<std::basic_string<CharOut>> to_utf(
     const std::vector<std::basic_string<CharIn>>& in) noexcept
 {
     std::vector<std::basic_string<CharOut>> out(in.size());
-    std::transform(in.begin(), in.end(), out.begin(),
+    std::transform(
+        in.begin(), in.end(), out.begin(),
         [](const std::basic_string<CharIn>& word) noexcept
         {
             return to_utf<CharOut>(word);
@@ -65,7 +68,7 @@ static std::vector<std::basic_string<CharOut>> to_utf(
 // char32_t is the only 1:1 char encoding.
 std::string to_utf8(char32_t point) noexcept
 {
-    return to_utf8(std::u32string{ point });
+    return to_utf8(std::u32string{point});
 }
 
 std::string to_utf8(const std::wstring& text) noexcept

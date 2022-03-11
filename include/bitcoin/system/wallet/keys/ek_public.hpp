@@ -24,9 +24,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/wallet/keys/encrypted_keys.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// Use to pass an encrypted public key.
 class BC_API ek_public
@@ -44,8 +47,8 @@ public:
     bool operator!=(const ek_public& other) const noexcept;
     ek_public& operator=(const ek_public& other) noexcept;
     friend std::istream& operator>>(std::istream& in, ek_public& to);
-    friend std::ostream& operator<<(std::ostream& out,
-        const ek_public& of) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& out, const ek_public& of) noexcept;
 
     /// Cast operators.
     operator bool() const noexcept;

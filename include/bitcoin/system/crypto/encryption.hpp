@@ -23,8 +23,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// The secret for aes256 block cypher.
 constexpr uint8_t aes256_key_size = 32;

@@ -26,8 +26,10 @@
 #include <bitcoin/system/math/division.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 enum tiff_header : uint16_t
 {
@@ -110,28 +112,34 @@ enum pad : uint16_t
 };
 
 // Offset calculations.
-constexpr auto directory0_offset = sizeof(tiff_header::big_endian) +
-    sizeof(tiff_header::magic_number) + sizeof(offset);
-constexpr auto entry0_offset = directory0_offset +
-    sizeof(directory_header::entry_count);
-constexpr auto entry_size = sizeof(field_tag) + sizeof(field_type) +
-    sizeof(field_value_count) + sizeof(offset);
-constexpr auto x_resolution_offset = entry0_offset +
-    directory_header::entry_count * entry_size + 
-    sizeof(offset::terminator) + sizeof(pad::zero);
-constexpr auto y_resolution_offset = x_resolution_offset + sizeof(offset) +
-    sizeof(offset);
-constexpr auto strip0_offset = y_resolution_offset + sizeof(offset) +
-    sizeof(offset) + sizeof(arbitrary_data_delimiter);
+constexpr auto directory0_offset = sizeof(tiff_header::big_endian)
+                                   + sizeof(tiff_header::magic_number)
+                                   + sizeof(offset);
+constexpr auto entry0_offset =
+    directory0_offset + sizeof(directory_header::entry_count);
+constexpr auto entry_size = sizeof(field_tag) + sizeof(field_type)
+                            + sizeof(field_value_count) + sizeof(offset);
+constexpr auto x_resolution_offset =
+    entry0_offset + directory_header::entry_count * entry_size
+    + sizeof(offset::terminator) + sizeof(pad::zero);
+constexpr auto y_resolution_offset =
+    x_resolution_offset + sizeof(offset) + sizeof(offset);
+constexpr auto strip0_offset = y_resolution_offset + sizeof(offset)
+                               + sizeof(offset)
+                               + sizeof(arbitrary_data_delimiter);
 
 // Offset values must be on word boundaries.
-static_assert(directory0_offset % sizeof(offset) == 0,
+static_assert(
+    directory0_offset % sizeof(offset) == 0,
     "TIFF directory must begin on a word boundary.");
-static_assert(x_resolution_offset % sizeof(offset) == 0,
+static_assert(
+    x_resolution_offset % sizeof(offset) == 0,
     "TIFF offset value must begin on a word boundary (x resolutions).");
-static_assert(y_resolution_offset % sizeof(offset) == 0,
+static_assert(
+    y_resolution_offset % sizeof(offset) == 0,
     "TIFF offset value must begin on a word boundary (y resolutions).");
-static_assert(strip0_offset % sizeof(offset) == 0,
+static_assert(
+    strip0_offset % sizeof(offset) == 0,
     "TIFF offset value must begin on a word boundary (strip).");
 
 // Public symbol used to parse file for image stream.
@@ -139,8 +147,8 @@ uint32_t tiff::image_offset = strip0_offset;
 size_t tiff::max_image_bytes = max_uint32;
 
 // TODO: accept and return stream.
-bool tiff::to_image(std::ostream& out, const data_chunk& data,
-    uint16_t width) noexcept
+bool tiff::to_image(
+    std::ostream& out, const data_chunk& data, uint16_t width) noexcept
 {
     // Empty image is not valid TIFF.
     if (width == 0u || data.empty())
@@ -170,7 +178,7 @@ bool tiff::to_image(std::ostream& out, const data_chunk& data,
     // These sentinals are symmetrical, so order does not matter.
     // But all writes with endianness below must conform to this setting.
     writer.write_2_bytes_big_endian(tiff_header::big_endian);
-    
+
     // An arbitrary delimeter, always 42.
     writer.write_2_bytes_big_endian(tiff_header::magic_number);
 

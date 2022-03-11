@@ -30,12 +30,14 @@
 #include <bitcoin/system/data/data_slice.hpp>
 #include <bitcoin/system/data/memory.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 inline one_byte to_array(uint8_t byte) noexcept
 {
-    return { { byte } };
+    return {{byte}};
 }
 
 template <size_t Size>
@@ -50,7 +52,8 @@ data_stack to_stack(const std::vector<data_array<Size>>& values) noexcept
 {
     data_stack chunks(no_fill_byte_allocator);
     chunks.resize(values.size());
-    std::transform(values.begin(), values.end(), chunks.begin(),
+    std::transform(
+        values.begin(), values.end(), chunks.begin(),
         [](const data_array<Size>& value)
         {
             return to_chunk(value);
@@ -64,7 +67,7 @@ data_array<Size> build_array(const data_loaf& slices) noexcept
 {
     data_array<Size> out;
     auto position = out.begin();
-    for (const auto& slice: slices)
+    for (const auto& slice : slices)
     {
         const auto unfilled = std::distance(position, out.end());
         const auto remaining = static_cast<ptrdiff_t>(slice.size());
@@ -82,8 +85,7 @@ data_array<Size> build_array(const data_loaf& slices) noexcept
 template <class Target>
 Target& extend(Target& target, const data_slice& extension) noexcept
 {
-    target.insert(std::end(target), std::begin(extension),
-        std::end(extension));
+    target.insert(std::end(target), std::begin(extension), std::end(extension));
 
     return target;
 }
@@ -92,42 +94,47 @@ Target& extend(Target& target, const data_slice& extension) noexcept
 template <class Target, class Extension>
 Target& extend(Target& target, Extension&& extension) noexcept
 {
-    target.insert(std::end(target),
-        std::make_move_iterator(std::begin(extension)),
+    target.insert(
+        std::end(target), std::make_move_iterator(std::begin(extension)),
         std::make_move_iterator(std::end(extension)));
 
     return target;
 }
 
-template <size_t Start, size_t End, size_t Size,
-    if_not_greater<Start, Size>, if_not_greater<End, Size>,
-    if_not_lesser<End, Start>>
+template <
+    size_t Start, size_t End, size_t Size, if_not_greater<Start, Size>,
+    if_not_greater<End, Size>, if_not_lesser<End, Start>>
 data_array<End - Start> slice(const data_array<Size>& bytes) noexcept
 {
     data_array<End - Start> out;
-    std::copy(std::next(bytes.begin(), Start), std::next(bytes.begin(), End),
+    std::copy(
+        std::next(bytes.begin(), Start), std::next(bytes.begin(), End),
         out.begin());
     return out;
 }
 
 template <size_t Left, size_t Right>
-data_array<Left + Right> splice(const data_array<Left>& left,
-    const data_array<Right>& right) noexcept
+data_array<Left + Right> splice(
+    const data_array<Left>& left, const data_array<Right>& right) noexcept
 {
     data_array<Left + Right> out;
-    std::copy(right.begin(), right.end(),
+    std::copy(
+        right.begin(), right.end(),
         std::copy(left.begin(), left.end(), out.begin()));
 
     return out;
 }
 
 template <size_t Left, size_t Middle, size_t Right>
-data_array<Left + Middle + Right> splice(const data_array<Left>& left,
-    const data_array<Middle>& middle, const data_array<Right>& right) noexcept
+data_array<Left + Middle + Right> splice(
+    const data_array<Left>& left, const data_array<Middle>& middle,
+    const data_array<Right>& right) noexcept
 {
     data_array<Left + Middle + Right> out;
-    std::copy(right.begin(), right.end(),
-        std::copy(middle.begin(), middle.end(),
+    std::copy(
+        right.begin(), right.end(),
+        std::copy(
+            middle.begin(), middle.end(),
             std::copy(left.begin(), left.end(), out.begin())));
 
     return out;
@@ -143,18 +150,20 @@ split_parts<to_half(Size)> split(const data_array<Size>& bytes) noexcept
     return out;
 }
 
-template <size_t Size, size_t Size1, size_t Size2,
-    if_not_lesser<Size1, Size>, if_not_lesser<Size2, Size>>
-data_array<Size> xor_data(const data_array<Size1>& bytes1,
-    const data_array<Size2>& bytes2) noexcept
+template <
+    size_t Size, size_t Size1, size_t Size2, if_not_lesser<Size1, Size>,
+    if_not_lesser<Size2, Size>>
+data_array<Size> xor_data(
+    const data_array<Size1>& bytes1, const data_array<Size2>& bytes2) noexcept
 {
     return xor_offset<Size, zero, zero>(bytes1, bytes2);
 }
 
-template <size_t Size, size_t Offset1, size_t Offset2, size_t Size1, size_t Size2,
+template <
+    size_t Size, size_t Offset1, size_t Offset2, size_t Size1, size_t Size2,
     if_not_lesser<Size1, Offset1 + Size>, if_not_lesser<Size2, Offset2 + Size>>
-data_array<Size> xor_offset(const data_array<Size1>& bytes1,
-    const data_array<Size2>& bytes2) noexcept
+data_array<Size> xor_offset(
+    const data_array<Size1>& bytes1, const data_array<Size2>& bytes2) noexcept
 {
     data_array<Size> out;
     for (size_t index = 0; index < Size; index++)

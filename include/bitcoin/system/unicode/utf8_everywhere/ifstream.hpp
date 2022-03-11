@@ -23,18 +23,20 @@
 #include <boost/filesystem.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Use bc::system::ifstream in place of std::ifstream.
 /// This provides unicode and long path translation for Win32.
-class BC_API ifstream
-  : public std::ifstream
+class BC_API ifstream : public std::ifstream
 {
 public:
     /// This also opens the file.
-    ifstream(const boost::filesystem::path& path,
-        std::ifstream::openmode mode=std::ifstream::in);
+    ifstream(
+        const boost::filesystem::path& path,
+        std::ifstream::openmode mode = std::ifstream::in);
 };
 
 } // namespace system

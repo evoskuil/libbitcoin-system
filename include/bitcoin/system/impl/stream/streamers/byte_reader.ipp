@@ -34,8 +34,10 @@
 #include <bitcoin/system/serial/serial.hpp>
 #include <bitcoin/system/stream/streamers/byte_writer.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // All public methods must rely on protected for stream state except validity.
 
@@ -44,7 +46,7 @@ namespace system {
 
 template <typename IStream>
 byte_reader<IStream>::byte_reader(IStream& source) noexcept
-  : stream_(source), remaining_(std::numeric_limits<size_t>::max())
+    : stream_(source), remaining_(std::numeric_limits<size_t>::max())
 {
 }
 
@@ -118,14 +120,14 @@ uint64_t byte_reader<IStream>::read_variable() noexcept
 
     switch (value)
     {
-        case varint_eight_bytes:
-            return read_8_bytes_little_endian();
-        case varint_four_bytes:
-            return read_4_bytes_little_endian();
-        case varint_two_bytes:
-            return read_2_bytes_little_endian();
-        default:
-            return value;
+    case varint_eight_bytes:
+        return read_8_bytes_little_endian();
+    case varint_four_bytes:
+        return read_4_bytes_little_endian();
+    case varint_two_bytes:
+        return read_2_bytes_little_endian();
+    default:
+        return value;
     }
 }
 
@@ -246,7 +248,7 @@ data_chunk byte_reader<IStream>::read_bytes(size_t size) noexcept
 
     // This allows caller read an invalid stream without allocation.
     if (!valid())
-        return{};
+        return {};
 
     data_chunk out(no_fill_byte_allocator);
     out.resize(size);
@@ -415,7 +417,8 @@ void byte_reader<IStream>::do_read_bytes(uint8_t* buffer, size_t size) noexcept
 
     // Read past stream end invalidates stream unless size exceeds maximum.
     BC_ASSERT(size <= maximum());
-    stream_.read(reinterpret_cast<char*>(buffer),
+    stream_.read(
+        reinterpret_cast<char*>(buffer),
         static_cast<typename IStream::pos_type>(size));
 
     validate();
@@ -437,7 +440,7 @@ void byte_reader<IStream>::do_rewind_bytes(size_t size) noexcept
 {
     // Given that the stream size is unknown to the reader, the limit may be
     // arbitrarily high. This prevents an overflow if sum exceeds max_size_t.
-    // max_size_t is presumed to exceed the range of IStream::pos_type, in 
+    // max_size_t is presumed to exceed the range of IStream::pos_type, in
     // which case this constraint does not affect the limiting behavior.
     remaining_ = ceilinged_add(remaining_, size);
 

@@ -23,14 +23,18 @@
 #include <bitcoin/system/stream/stream.hpp>
 #include <bitcoin/system/wallet/keys/ec_private.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 static constexpr uint8_t max_recovery_id = 3;
 static constexpr uint8_t magic_compressed = 31;
 static constexpr uint8_t magic_uncompressed = 27;
-static constexpr uint8_t magic_differential = magic_compressed - magic_uncompressed;
+static constexpr uint8_t magic_differential =
+    magic_compressed - magic_uncompressed;
 static_assert(magic_differential > max_recovery_id, "oops!");
 static_assert(max_uint8 - max_recovery_id >= magic_uncompressed, "oops!");
 
@@ -48,15 +52,11 @@ hash_digest hash_message(const data_slice& message) noexcept
     return sha256_hash(sha256);
 }
 
-static bool recover(short_hash& out_hash, bool compressed,
-    const ec_signature& compact, uint8_t recovery_id,
-    const hash_digest& message_digest) noexcept
+static bool recover(
+    short_hash& out_hash, bool compressed, const ec_signature& compact,
+    uint8_t recovery_id, const hash_digest& message_digest) noexcept
 {
-    const recoverable_signature recoverable
-    {
-        compact,
-        recovery_id
-    };
+    const recoverable_signature recoverable{compact, recovery_id};
 
     if (compressed)
     {
@@ -76,8 +76,8 @@ static bool recover(short_hash& out_hash, bool compressed,
     return true;
 }
 
-bool recovery_id_to_magic(uint8_t& out_magic, uint8_t recovery_id,
-    bool compressed) noexcept
+bool recovery_id_to_magic(
+    uint8_t& out_magic, uint8_t recovery_id, bool compressed) noexcept
 {
     if (recovery_id > max_recovery_id)
         return false;
@@ -88,12 +88,12 @@ bool recovery_id_to_magic(uint8_t& out_magic, uint8_t recovery_id,
     return true;
 }
 
-bool magic_to_recovery_id(uint8_t& out_recovery_id, bool& out_compressed,
-    uint8_t magic) noexcept
+bool magic_to_recovery_id(
+    uint8_t& out_recovery_id, bool& out_compressed, uint8_t magic) noexcept
 {
     // Magic less offsets cannot exceed recovery id range [0, max_recovery_id].
-    if (magic < magic_uncompressed ||
-        magic > magic_compressed + max_recovery_id)
+    if (magic < magic_uncompressed
+        || magic > magic_compressed + max_recovery_id)
         return false;
 
     // Subtract smaller sentinel (guarded above).
@@ -109,21 +109,25 @@ bool magic_to_recovery_id(uint8_t& out_recovery_id, bool& out_compressed,
     return true;
 }
 
-bool sign_message(message_signature& out_signature, const data_slice& message,
+bool sign_message(
+    message_signature& out_signature, const data_slice& message,
     const ec_private& secret) noexcept
 {
     return sign_message(out_signature, message, secret, secret.compressed());
 }
 
-bool sign_message(message_signature& out_signature, const data_slice& message,
+bool sign_message(
+    message_signature& out_signature, const data_slice& message,
     const std::string& wif) noexcept
 {
     ec_private secret(wif);
-    return (secret &&
-        sign_message(out_signature, message, secret, secret.compressed()));
+    return (
+        secret
+        && sign_message(out_signature, message, secret, secret.compressed()));
 }
 
-bool sign_message(message_signature& out_signature, const data_slice& message,
+bool sign_message(
+    message_signature& out_signature, const data_slice& message,
     const ec_secret& secret, bool compressed) noexcept
 {
     recoverable_signature recoverable;
@@ -138,7 +142,8 @@ bool sign_message(message_signature& out_signature, const data_slice& message,
     return true;
 }
 
-bool verify_message(const data_slice& message, const payment_address& address,
+bool verify_message(
+    const data_slice& message, const payment_address& address,
     const message_signature& signature) noexcept
 {
     const auto magic = signature.front();
@@ -151,8 +156,8 @@ bool verify_message(const data_slice& message, const payment_address& address,
 
     short_hash hash;
     const auto message_digest = hash_message(message);
-    return recover(hash, compressed, compact, recovery_id, message_digest) &&
-        (hash == address.hash());
+    return recover(hash, compressed, compact, recovery_id, message_digest)
+           && (hash == address.hash());
 }
 
 } // namespace wallet

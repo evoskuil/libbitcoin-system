@@ -23,8 +23,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 BC_API bool is_base58(const char ch) noexcept;
 BC_API bool is_base58(const std::string& text) noexcept;
@@ -40,7 +42,7 @@ bool decode_base58(data_array<Size>& out, const std::string& in) noexcept;
  * Converts a base58 string literal to a data array.
  */
 template <size_t Size>
-data_array<Size * 733 / 1000> base58_array(const char(&string)[Size]) noexcept;
+data_array<Size * 733 / 1000> base58_array(const char (&string)[Size]) noexcept;
 
 /**
  * Encode data as base58.
@@ -60,4 +62,3 @@ BC_API bool decode_base58(data_chunk& out, const std::string& in) noexcept;
 #include <bitcoin/system/impl/radix/base_58.ipp>
 
 #endif
-

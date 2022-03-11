@@ -34,8 +34,10 @@
 #include <bitcoin/system/serial/serial.hpp>
 #include <bitcoin/system/stream/streamers/byte_reader.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // All public methods must rely on protected for stream state except validity.
 
@@ -43,8 +45,7 @@ namespace system {
 // ----------------------------------------------------------------------------
 
 template <typename OStream>
-byte_writer<OStream>::byte_writer(OStream& sink) noexcept
-  : stream_(sink)
+byte_writer<OStream>::byte_writer(OStream& sink) noexcept : stream_(sink)
 {
 }
 
@@ -178,8 +179,8 @@ void byte_writer<OStream>::write_bytes(const data_slice& data) noexcept
 }
 
 template <typename OStream>
-void byte_writer<OStream>::write_bytes(const uint8_t* data,
-    size_t size) noexcept
+void byte_writer<OStream>::write_bytes(
+    const uint8_t* data, size_t size) noexcept
 {
     do_write_bytes(data, size);
 }
@@ -196,8 +197,8 @@ void byte_writer<OStream>::write_string(const std::string& value) noexcept
 }
 
 template <typename OStream>
-void byte_writer<OStream>::write_string_buffer(const std::string& value,
-    size_t size) noexcept
+void byte_writer<OStream>::write_string_buffer(
+    const std::string& value, size_t size) noexcept
 {
     const auto length = std::min(size, value.size());
 
@@ -245,14 +246,15 @@ bool byte_writer<OStream>::operator!() const noexcept
 // These may only call non-virtual (private) methods (due to overriding).
 
 template <typename OStream>
-void byte_writer<OStream>::do_write_bytes(const uint8_t* data,
-    size_t size) noexcept
+void byte_writer<OStream>::do_write_bytes(
+    const uint8_t* data, size_t size) noexcept
 {
     // It is not generally more efficient to call stream_.put() for one byte.
 
     // Write past stream start invalidates stream unless size exceeds maximum.
     BC_ASSERT(size <= maximum());
-    stream_.write(reinterpret_cast<const char*>(data),
+    stream_.write(
+        reinterpret_cast<const char*>(data),
         static_cast<typename OStream::pos_type>(size));
 
     validate();

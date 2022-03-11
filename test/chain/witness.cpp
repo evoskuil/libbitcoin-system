@@ -32,20 +32,10 @@ BOOST_AUTO_TEST_CASE(witness_test)
 
 BOOST_AUTO_TEST_CASE(witness___json__conversions__expected)
 {
-    const std::string text
-    {
-        "\"[424344] [454647] [48494a]\""
-    };
+    const std::string text{"\"[424344] [454647] [48494a]\""};
 
-    const chain::witness instance
-    {
-        data_stack
-        {
-            { 0x42, 0x43, 0x44 },
-            { 0x45, 0x46, 0x47 },
-            { 0x48, 0x49, 0x4a }
-        }
-    };
+    const chain::witness instance{
+        data_stack{{0x42, 0x43, 0x44}, {0x45, 0x46, 0x47}, {0x48, 0x49, 0x4a}}};
 
     const auto value = json::value_from(instance);
 

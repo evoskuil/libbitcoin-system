@@ -40,7 +40,8 @@ using namespace bc::system::wallet;
 
 BOOST_AUTO_TEST_CASE(mnemonic__contained_by__invalid__none)
 {
-    BOOST_REQUIRE(mnemonic::contained_by({ "bogus" }, language::none) == language::none);
+    BOOST_REQUIRE(
+        mnemonic::contained_by({"bogus"}, language::none) == language::none);
 }
 
 BOOST_AUTO_TEST_CASE(mnemonic__contained_by__ambiguous__expected)
@@ -48,25 +49,36 @@ BOOST_AUTO_TEST_CASE(mnemonic__contained_by__ambiguous__expected)
     // contained_by returns the first matching language.
     // The only ambiguous set is en-fr (100 words).
     // So an en match should be explicitly tested against fr.
-    BOOST_REQUIRE(mnemonic::contained_by(ambiguous_en_fr, language::none) == language::en);
-    BOOST_REQUIRE(mnemonic::contained_by(ambiguous_en_fr, language::en) == language::en);
-    BOOST_REQUIRE(mnemonic::contained_by(ambiguous_en_fr, language::fr) == language::fr);
+    BOOST_REQUIRE(
+        mnemonic::contained_by(ambiguous_en_fr, language::none)
+        == language::en);
+    BOOST_REQUIRE(
+        mnemonic::contained_by(ambiguous_en_fr, language::en) == language::en);
+    BOOST_REQUIRE(
+        mnemonic::contained_by(ambiguous_en_fr, language::fr) == language::fr);
 }
 
 BOOST_AUTO_TEST_CASE(mnemonic__contained_by__redundant__expected)
 {
     // contained_by returns the first matching language.
     // The only redundant set is zh_Hans-zh_Hant (1275 words).
-    BOOST_REQUIRE(mnemonic::contained_by(redundant_hans_hant, language::none) == language::zh_Hans);
-    BOOST_REQUIRE(mnemonic::contained_by(redundant_hans_hant, language::zh_Hans) == language::zh_Hans);
-    BOOST_REQUIRE(mnemonic::contained_by(redundant_hans_hant, language::zh_Hant) == language::zh_Hant);
+    BOOST_REQUIRE(
+        mnemonic::contained_by(redundant_hans_hant, language::none)
+        == language::zh_Hans);
+    BOOST_REQUIRE(
+        mnemonic::contained_by(redundant_hans_hant, language::zh_Hans)
+        == language::zh_Hans);
+    BOOST_REQUIRE(
+        mnemonic::contained_by(redundant_hans_hant, language::zh_Hant)
+        == language::zh_Hant);
 }
 
 BOOST_AUTO_TEST_CASE(mnemonic__contained_by__contained__expected)
 {
     const auto words = vectors_en[23].words();
     BOOST_REQUIRE(mnemonic::contained_by(words, language::en) == language::en);
-    BOOST_REQUIRE(mnemonic::contained_by(words, language::none) == language::en);
+    BOOST_REQUIRE(
+        mnemonic::contained_by(words, language::none) == language::en);
 }
 
 // is_valid_dictionary
@@ -403,8 +415,10 @@ BOOST_AUTO_TEST_CASE(mnemonic__to_key__network__expected)
 {
     const mnemonic instance(words12);
     BOOST_REQUIRE(instance);
-    BOOST_REQUIRE(starts_with(instance.to_key("foo", btc_mainnet_p2kh).encoded(), "xprv"));
-    BOOST_REQUIRE(starts_with(instance.to_key("bar", btc_testnet_p2kh).encoded(), "tprv"));
+    BOOST_REQUIRE(starts_with(
+        instance.to_key("foo", btc_mainnet_p2kh).encoded(), "xprv"));
+    BOOST_REQUIRE(starts_with(
+        instance.to_key("bar", btc_testnet_p2kh).encoded(), "tprv"));
 }
 
 // to_seed
@@ -467,7 +481,7 @@ BOOST_AUTO_TEST_CASE(mnemonic__inequality__always__expected)
 
 BOOST_AUTO_TEST_CASE(mnemonic__deserialize__valid_whitespace__expected_trimmed)
 {
-    std::istringstream in{ join(words12) };
+    std::istringstream in{join(words12)};
     mnemonic instance;
     in >> instance;
     BOOST_REQUIRE(instance);
@@ -476,7 +490,7 @@ BOOST_AUTO_TEST_CASE(mnemonic__deserialize__valid_whitespace__expected_trimmed)
 
 BOOST_AUTO_TEST_CASE(emnemonic__deserialize__invalid__invalid)
 {
-    std::istringstream in{ "foobar" };
+    std::istringstream in{"foobar"};
     mnemonic instance;
     in >> instance;
     BOOST_REQUIRE(!instance);
@@ -527,21 +541,24 @@ BOOST_AUTO_TEST_CASE(mnemonic__verify_vectors__denormalization__expected)
 
 BOOST_AUTO_TEST_CASE(mnemonic__verify_vectors__en_whitespace__single_ascii)
 {
-    for (const auto& vector: vectors_en)
+    for (const auto& vector : vectors_en)
     {
         // Only delimited by ascii_space and no other unicode whitespace.
-        const auto words = split(vector.mnemonic, { ascii_space }, unicode_whitespace);
+        const auto words =
+            split(vector.mnemonic, {ascii_space}, unicode_whitespace);
         BOOST_REQUIRE_EQUAL(join(words, ascii_space), vector.mnemonic);
         BOOST_REQUIRE(words.size() >= 12u);
     }
 }
 
-BOOST_AUTO_TEST_CASE(mnemonic__verify_vectors__ja_whitespace__single_ideographic)
+BOOST_AUTO_TEST_CASE(
+    mnemonic__verify_vectors__ja_whitespace__single_ideographic)
 {
-    for (const auto& vector: vectors_ja)
+    for (const auto& vector : vectors_ja)
     {
         // Only delimited by ideographic_space and no other unicode whitespace.
-        const auto words = split(vector.mnemonic, { ideographic_space }, unicode_whitespace);
+        const auto words =
+            split(vector.mnemonic, {ideographic_space}, unicode_whitespace);
         BOOST_REQUIRE_EQUAL(join(words, ideographic_space), vector.mnemonic);
         BOOST_REQUIRE(words.size() >= 12u);
     }
@@ -549,17 +566,18 @@ BOOST_AUTO_TEST_CASE(mnemonic__verify_vectors__ja_whitespace__single_ideographic
 
 BOOST_AUTO_TEST_CASE(mnemonic__verify_vectors__keys__match_hd_keys)
 {
-    for (const auto& vector: vectors_ja)
+    for (const auto& vector : vectors_ja)
     {
         // The seed is hex encoded input to BIP32 key generation.
         // The key is constructed from BIP32 encoding, e.g. "xprv..."
-        BOOST_REQUIRE_EQUAL(hd_private(to_chunk(vector.seed())), vector.hd_key());
+        BOOST_REQUIRE_EQUAL(
+            hd_private(to_chunk(vector.seed())), vector.hd_key());
     }
 }
 
 BOOST_AUTO_TEST_CASE(mnemonic__construct_entropy__vectors_en__expected)
 {
-    for (const auto& vector: vectors_en)
+    for (const auto& vector : vectors_en)
     {
         const mnemonic instance(vector.entropy());
         BOOST_REQUIRE(instance);
@@ -567,13 +585,14 @@ BOOST_AUTO_TEST_CASE(mnemonic__construct_entropy__vectors_en__expected)
         BOOST_REQUIRE_EQUAL(instance.entropy(), vector.entropy());
         BOOST_REQUIRE_EQUAL(instance.sentence(), vector.sentence());
         BOOST_REQUIRE_EQUAL(instance.words(), vector.words());
-        BOOST_REQUIRE_EQUAL(instance.to_key(vector.passphrase), vector.hd_key());
+        BOOST_REQUIRE_EQUAL(
+            instance.to_key(vector.passphrase), vector.hd_key());
     }
 }
 
 BOOST_AUTO_TEST_CASE(mnemonic__construct_sentence__vectors_en__expected)
 {
-    for (const auto& vector: vectors_en)
+    for (const auto& vector : vectors_en)
     {
         const mnemonic instance(vector.mnemonic);
         BOOST_REQUIRE(instance);
@@ -581,13 +600,14 @@ BOOST_AUTO_TEST_CASE(mnemonic__construct_sentence__vectors_en__expected)
         BOOST_REQUIRE_EQUAL(instance.entropy(), vector.entropy());
         BOOST_REQUIRE_EQUAL(instance.sentence(), vector.sentence());
         BOOST_REQUIRE_EQUAL(instance.words(), vector.words());
-        BOOST_REQUIRE_EQUAL(instance.to_key(vector.passphrase), vector.hd_key());
+        BOOST_REQUIRE_EQUAL(
+            instance.to_key(vector.passphrase), vector.hd_key());
     }
 }
 
 BOOST_AUTO_TEST_CASE(mnemonic__construct_entropy__vectors_ja__expected)
 {
-    for (const auto& vector: vectors_ja)
+    for (const auto& vector : vectors_ja)
     {
         const mnemonic instance(vector.entropy(), language::ja);
         BOOST_REQUIRE(instance);
@@ -596,9 +616,11 @@ BOOST_AUTO_TEST_CASE(mnemonic__construct_entropy__vectors_ja__expected)
 #ifdef WITH_ICU
         // Passphrases are all non-ascii, but 22 of 24 mnemonics are
         // denormalized, so this will fail when WITH_ICU is undefined.
-        BOOST_REQUIRE_EQUAL(instance.sentence(), vector.sentence(ideographic_space));
+        BOOST_REQUIRE_EQUAL(
+            instance.sentence(), vector.sentence(ideographic_space));
         BOOST_REQUIRE_EQUAL(instance.words(), vector.words());
-        BOOST_REQUIRE_EQUAL(instance.to_key(vector.passphrase), vector.hd_key());
+        BOOST_REQUIRE_EQUAL(
+            instance.to_key(vector.passphrase), vector.hd_key());
 #endif
     }
 }
@@ -608,15 +630,17 @@ BOOST_AUTO_TEST_CASE(mnemonic__construct_sentence__vectors_ja__expected)
 #ifdef WITH_ICU
     // Passphrases are all ascii, but 22 of 24 mnemonics are denormalized, so this
     // will fail when WITH_ICU is undefined.
-    for (const auto& vector: vectors_ja)
+    for (const auto& vector : vectors_ja)
     {
         const mnemonic instance(vector.mnemonic);
         BOOST_REQUIRE(instance);
         BOOST_REQUIRE(instance.lingo() == language::ja);
         BOOST_REQUIRE_EQUAL(instance.entropy(), vector.entropy());
-        BOOST_REQUIRE_EQUAL(instance.sentence(), vector.sentence(ideographic_space));
+        BOOST_REQUIRE_EQUAL(
+            instance.sentence(), vector.sentence(ideographic_space));
         BOOST_REQUIRE_EQUAL(instance.words(), vector.words());
-        BOOST_REQUIRE_EQUAL(instance.to_key(vector.passphrase), vector.hd_key());
+        BOOST_REQUIRE_EQUAL(
+            instance.to_key(vector.passphrase), vector.hd_key());
     }
 #endif
 }

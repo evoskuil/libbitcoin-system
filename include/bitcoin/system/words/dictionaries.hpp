@@ -28,14 +28,17 @@
 #include <bitcoin/system/words/dictionary.hpp>
 #include <bitcoin/system/words/language.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
 
 // Search container for a set of dictionaries with POD word lists.
 // POD dictionaries wrapper with per dictionary O(n) search and O(1) index.
 // Search order is guaranteed, always returns first match.
-template<size_t Count, size_t Size>
+template <size_t Count, size_t Size>
 class dictionaries
 {
 public:
@@ -45,10 +48,16 @@ public:
     typedef std::array<dictionary<Size>, Count> list;
 
     /// The number of dictionaries.
-    static constexpr size_t count() noexcept { return Count; };
+    static constexpr size_t count() noexcept
+    {
+        return Count;
+    };
 
     /// The number of words in each dictionary (all are the same size).
-    static constexpr size_t size() noexcept { return Size; };
+    static constexpr size_t size() noexcept
+    {
+        return Size;
+    };
 
     /// Constructor.
     dictionaries(const list& dictionaries) noexcept;
@@ -88,16 +97,18 @@ public:
     /// If any other language is specified the search is limited to it.
     /// Dictionary order is not preserved in the case of conflicts.
     /// BIP39 zh_Hans and zh_Hant dictionaries have 1275 overlapping words.
-    language contains(const std::string& word,
-        language identifier=language::none) const noexcept;
+    language contains(
+        const std::string& word,
+        language identifier = language::none) const noexcept;
 
     /// The language that contains all specified words, or language::none.
     /// If language::none is specified all dictionaries are searched.
     /// If any other language is specified the search is limited to it.
     /// Dictionary order is not preserved in the case of conflicts.
     /// BIP39 zh_Hans and zh_Hant dictionaries have 1275 overlapping words.
-    language contains(const string_list& words,
-        language identifier=language::none) const noexcept;
+    language contains(
+        const string_list& words,
+        language identifier = language::none) const noexcept;
 
 private:
     // Obtain an iterator to the specified dictionary.

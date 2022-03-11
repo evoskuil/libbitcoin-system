@@ -38,9 +38,12 @@
 #include <bitcoin/system/error/error.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 class transaction;
 
@@ -107,8 +110,8 @@ public:
     /// Consensus patterns.
     static bool is_push_only(const operations& ops) noexcept;
     static bool is_relaxed_push(const operations& ops) noexcept;
-    static bool is_coinbase_pattern(const operations& ops,
-        size_t height) noexcept;
+    static bool is_coinbase_pattern(
+        const operations& ops, size_t height) noexcept;
     static bool is_commitment_pattern(const operations& ops) noexcept;
     static bool is_witness_program_pattern(const operations& ops) noexcept;
 
@@ -120,8 +123,7 @@ public:
     static bool is_pay_key_hash_pattern(const operations& ops) noexcept;
     static bool is_pay_script_hash_pattern(const operations& ops) noexcept;
     static bool is_pay_witness_pattern(const operations& ops) noexcept;
-    static bool is_pay_witness_key_hash_pattern(
-        const operations& ops) noexcept;
+    static bool is_pay_witness_key_hash_pattern(const operations& ops) noexcept;
     static bool is_pay_witness_script_hash_pattern(
         const operations& ops) noexcept;
 
@@ -136,20 +138,18 @@ public:
     static bool is_sign_script_hash_pattern(const operations& ops) noexcept;
 
     /// Stack factories.
-    static operations to_pay_null_data_pattern(
-        const data_slice& data) noexcept;
+    static operations to_pay_null_data_pattern(const data_slice& data) noexcept;
     static operations to_pay_public_key_pattern(
         const data_slice& point) noexcept;
-    static operations to_pay_key_hash_pattern(
-        const short_hash& hash) noexcept;
+    static operations to_pay_key_hash_pattern(const short_hash& hash) noexcept;
     static operations to_pay_script_hash_pattern(
         const short_hash& hash) noexcept;
-    static operations to_pay_multisig_pattern(uint8_t signatures,
-        const compressed_list& points) noexcept;
-    static operations to_pay_multisig_pattern(uint8_t signatures,
-        const data_stack& points) noexcept;
-    static  operations to_pay_witness_pattern(uint8_t version,
-        const data_slice& data) noexcept;
+    static operations to_pay_multisig_pattern(
+        uint8_t signatures, const compressed_list& points) noexcept;
+    static operations to_pay_multisig_pattern(
+        uint8_t signatures, const data_stack& points) noexcept;
+    static operations to_pay_witness_pattern(
+        uint8_t version, const data_slice& data) noexcept;
     static operations to_pay_witness_key_hash_pattern(
         const short_hash& hash) noexcept;
     static operations to_pay_witness_script_hash_pattern(
@@ -199,7 +199,7 @@ DECLARE_JSON_VALUE_CONVERTORS(script::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::script>
 {
     size_t operator()(const bc::system::chain::script& value) const noexcept

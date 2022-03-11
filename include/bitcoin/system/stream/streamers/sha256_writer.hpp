@@ -26,13 +26,14 @@
 #include <bitcoin/system/stream/streamers/byte_reader.hpp>
 #include <bitcoin/system/stream/streamers/byte_writer.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 /// A hash writer that accepts an ostream.
 template <typename OStream = std::ostream>
-class sha256_writer
-  : public byte_writer<OStream>
+class sha256_writer : public byte_writer<OStream>
 {
 public:
     /// Constructors.

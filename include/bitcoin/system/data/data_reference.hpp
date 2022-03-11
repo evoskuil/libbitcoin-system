@@ -28,8 +28,10 @@
 #include <bitcoin/system/data/data_slice.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Lifetime:
 /// No prvalues are accepted, allowing extended lifetime.
@@ -46,8 +48,7 @@ namespace system {
 /// Accepts any sizeof(T) == 1 type as a "byte" and emits uint8_t.
 /// [] iteration past end is safe and returns zeros.
 /// Negative size construction yields a valid empty object.
-class BC_API data_reference
-  : public data_slice
+class BC_API data_reference : public data_slice
 {
 public:
     /// Empty reference.

@@ -76,7 +76,7 @@ static_assert(is_integer<int64_t>(), "");
 static_assert(is_integer<char>(), "");
 static_assert(is_integer<wchar_t>(), "");
 static_assert(!is_integer<bool>(), "");
-static_assert(!is_integer<std::string> (), "");
+static_assert(!is_integer<std::string>(), "");
 
 ////constexpr void* pointer = "";
 ////constexpr void* null_pointer = nullptr;
@@ -138,12 +138,14 @@ static_assert(width<signed char>() == to_bits(sizeof(signed char)), "");
 static_assert(width<signed short>() == to_bits(sizeof(signed short)), "");
 static_assert(width<signed int>() == to_bits(sizeof(signed int)), "");
 static_assert(width<signed long>() == to_bits(sizeof(signed long)), "");
-static_assert(width<signed long long>() == to_bits(sizeof(signed long long)), "");
+static_assert(
+    width<signed long long>() == to_bits(sizeof(signed long long)), "");
 static_assert(width<unsigned char>() == to_bits(sizeof(unsigned char)), "");
 static_assert(width<unsigned short>() == to_bits(sizeof(unsigned short)), "");
 static_assert(width<unsigned int>() == to_bits(sizeof(unsigned int)), "");
 static_assert(width<unsigned long>() == to_bits(sizeof(unsigned long)), "");
-static_assert(width<unsigned long long>() == to_bits(sizeof(unsigned long long)), "");
+static_assert(
+    width<unsigned long long>() == to_bits(sizeof(unsigned long long)), "");
 static_assert(width<wchar_t>() == to_bits(sizeof(wchar_t)), "");
 static_assert(width<int8_t>() == 8, "");
 static_assert(width<uint8_t>() == 8, "");
@@ -177,9 +179,9 @@ BOOST_AUTO_TEST_SUITE(constants_tests)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-static_assert(to_byte('\0') == uint8_t{ 0 }, "");
-static_assert(to_byte('x') == uint8_t{ 'x' }, "");
-static_assert(to_byte('\xff') == uint8_t{ 255 }, "");
+static_assert(to_byte('\0') == uint8_t{0}, "");
+static_assert(to_byte('x') == uint8_t{'x'}, "");
+static_assert(to_byte('\xff') == uint8_t{255}, "");
 
 static_assert(variable_size(1) == 1u, "");
 static_assert(variable_size(0xfe) == 3u, "");

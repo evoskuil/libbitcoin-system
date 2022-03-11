@@ -33,9 +33,12 @@
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 #include <bitcoin/system/words/words.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // Helper class for managing decoding overflow bug.
 // ============================================================================
@@ -59,18 +62,18 @@ namespace wallet {
 // The result can be an odd number of characters (9 total max).
 // print('%08x' % x) emits >= 8 hex characters, and can be odd length.
 
-v1_decoding::v1_decoding() noexcept
-  : v1_decoding({}, {})
+v1_decoding::v1_decoding() noexcept : v1_decoding({}, {})
 {
 }
 
 v1_decoding::v1_decoding(const data_chunk& entropy) noexcept
-  : v1_decoding(entropy, {})
+    : v1_decoding(entropy, {})
 {
 }
 
-v1_decoding::v1_decoding(const data_chunk& entropy, const overflow& overflows) noexcept
-  : entropy_(entropy), overflows_(overflows)
+v1_decoding::v1_decoding(
+    const data_chunk& entropy, const overflow& overflows) noexcept
+    : entropy_(entropy), overflows_(overflows)
 {
 }
 
@@ -117,8 +120,9 @@ data_chunk v1_decoding::seed_entropy() const noexcept
 // Guard: decoder 'value' cannot exceed 0x1003ca7a7, safe in int64_t but can
 // overflow int32_t/uint32_t. Only one bit (0x[1][003ca7a7]) can overflow.
 // So we upcast indexes to int64 and later check the result for overflow.
-static_assert((1625 * 1) + (1625 * 1626) + (1625 * 1626 * 1626ll) ==
-    0x1003ca7a7, "upper bound on electrum_v1 decoded triplet");
+static_assert(
+    (1625 * 1) + (1625 * 1626) + (1625 * 1626 * 1626ll) == 0x1003ca7a7,
+    "upper bound on electrum_v1 decoded triplet");
 
 // local constants
 // ----------------------------------------------------------------------------
@@ -131,20 +135,16 @@ static const auto size2 = power<int64_t>(size, 2);
 // private static
 // ----------------------------------------------------------------------------
 
-const electrum_v1::dictionaries electrum_v1::dictionaries_
-{
-    {
-        electrum_v1::dictionary{ language::en, words::electrum_v1::en },
-        electrum_v1::dictionary{ language::pt, words::electrum_v1::pt }
-    }
-};
+const electrum_v1::dictionaries electrum_v1::dictionaries_{
+    {electrum_v1::dictionary{language::en, words::electrum_v1::en},
+     electrum_v1::dictionary{language::pt, words::electrum_v1::pt}}};
 
 // protected static (coders)
 // ----------------------------------------------------------------------------
 
 // electrum/old_mnemonic.py#L1669
-string_list electrum_v1::encoder(const data_chunk& entropy,
-    language identifier) noexcept
+string_list electrum_v1::encoder(
+    const data_chunk& entropy, language identifier) noexcept
 {
     string_list words;
     words.reserve(word_count(entropy));
@@ -173,8 +173,8 @@ string_list electrum_v1::encoder(const data_chunk& entropy,
 }
 
 // electrum/old_mnemonic.py#L1682
-v1_decoding electrum_v1::decoder(const string_list& words,
-    language identifier) noexcept
+v1_decoding electrum_v1::decoder(
+    const string_list& words, language identifier) noexcept
 {
     data_chunk entropy;
     entropy.reserve(entropy_size(words));
@@ -194,10 +194,9 @@ v1_decoding electrum_v1::decoder(const string_list& words,
 
         // [floored_modulo(uno-0, size1)*size0] is a nop, shown for consistency.
         // Neg quotient integer div/mod is ceil in c++ and floor in python[2/3].
-        const auto value =
-            floored_modulo(uno - 0x0, size1) * size0 +
-            floored_modulo(dos - uno, size1) * size1 +
-            floored_modulo(tre - dos, size1) * size2;
+        const auto value = floored_modulo(uno - 0x0, size1) * size0
+                           + floored_modulo(dos - uno, size1) * size1
+                           + floored_modulo(tre - dos, size1) * size2;
 
         // Overflow: if true then this mnemonic was not encoded from entropy.
         *overflow++ = is_greater(value, max_uint32);
@@ -208,7 +207,7 @@ v1_decoding electrum_v1::decoder(const string_list& words,
     }
 
     out.flush();
-    return { entropy, overflows };
+    return {entropy, overflows};
 }
 
 // electrum/keystore.py#L692
@@ -249,8 +248,8 @@ size_t electrum_v1::word_count(const data_slice& entropy) noexcept
 // public static
 // ----------------------------------------------------------------------------
 
-language electrum_v1::contained_by(const string_list& words,
-    language identifier) noexcept
+language electrum_v1::contained_by(
+    const string_list& words, language identifier) noexcept
 {
     return dictionaries_.contains(words, identifier);
 }
@@ -273,66 +272,66 @@ bool electrum_v1::is_valid_word_count(size_t count) noexcept
 // construction
 // ----------------------------------------------------------------------------
 
-electrum_v1::electrum_v1() noexcept
-  : languages(), overflows_()
+electrum_v1::electrum_v1() noexcept : languages(), overflows_()
 {
 }
 
 electrum_v1::electrum_v1(const electrum_v1& other) noexcept
-  : languages(other), overflows_(other.overflows_)
+    : languages(other), overflows_(other.overflows_)
 {
 }
 
-electrum_v1::electrum_v1(const std::string& sentence,
-    language identifier) noexcept
-  : electrum_v1(split(sentence, identifier), identifier)
+electrum_v1::electrum_v1(
+    const std::string& sentence, language identifier) noexcept
+    : electrum_v1(split(sentence, identifier), identifier)
 {
 }
 
-electrum_v1::electrum_v1(const string_list& words,
-    language identifier) noexcept
-  : electrum_v1(from_words(words, identifier))
+electrum_v1::electrum_v1(const string_list& words, language identifier) noexcept
+    : electrum_v1(from_words(words, identifier))
 {
 }
 
-electrum_v1::electrum_v1(const data_chunk& entropy,
-    language identifier) noexcept
-  : electrum_v1(from_entropy(entropy, identifier))
+electrum_v1::electrum_v1(
+    const data_chunk& entropy, language identifier) noexcept
+    : electrum_v1(from_entropy(entropy, identifier))
 {
 }
 
-electrum_v1::electrum_v1(const minimum_entropy& entropy,
-    language identifier) noexcept
-  : electrum_v1(from_entropy(to_chunk(entropy), identifier))
+electrum_v1::electrum_v1(
+    const minimum_entropy& entropy, language identifier) noexcept
+    : electrum_v1(from_entropy(to_chunk(entropy), identifier))
 {
 }
 
-electrum_v1::electrum_v1(const maximum_entropy& entropy,
-    language identifier) noexcept
-  : electrum_v1(from_entropy(to_chunk(entropy), identifier))
-{
-}
-
-// protected
-electrum_v1::electrum_v1(const data_chunk& entropy, const string_list& words,
-    language identifier) noexcept
-  : electrum_v1(v1_decoding(entropy), words, identifier)
+electrum_v1::electrum_v1(
+    const maximum_entropy& entropy, language identifier) noexcept
+    : electrum_v1(from_entropy(to_chunk(entropy), identifier))
 {
 }
 
 // protected
-electrum_v1::electrum_v1(const v1_decoding& decoding, const string_list& words,
+electrum_v1::electrum_v1(
+    const data_chunk& entropy, const string_list& words,
     language identifier) noexcept
-  : languages(decoding.entropy(), words, identifier),
-    overflows_(decoding.overflows())
+    : electrum_v1(v1_decoding(entropy), words, identifier)
+{
+}
+
+// protected
+electrum_v1::electrum_v1(
+    const v1_decoding& decoding, const string_list& words,
+    language identifier) noexcept
+    : languages(decoding.entropy(), words, identifier),
+      overflows_(decoding.overflows())
 {
 }
 
 // protected static (factories)
 // ----------------------------------------------------------------------------
 
-electrum_v1 electrum_v1::from_entropy(const data_chunk& entropy,
-    language identifier) noexcept
+electrum_v1 electrum_v1::from_entropy(
+    const data_chunk& entropy, language identifier) noexcept
 {
     if (!is_valid_entropy_size(entropy.size()))
         return {};
@@ -341,11 +340,11 @@ electrum_v1 electrum_v1::from_entropy(const data_chunk& entropy,
         return {};
 
     // Save entropy and derived words.
-    return { entropy, encoder(entropy, identifier), identifier };
+    return {entropy, encoder(entropy, identifier), identifier};
 }
 
-electrum_v1 electrum_v1::from_words(const string_list& words,
-    language identifier) noexcept
+electrum_v1 electrum_v1::from_words(
+    const string_list& words, language identifier) noexcept
 {
     if (!is_valid_word_count(words.size()))
         return {};
@@ -361,7 +360,7 @@ electrum_v1 electrum_v1::from_words(const string_list& words,
         return {};
 
     // Save derived entropy and dictionary words, originals are discarded.
-    return { decoder(tokens, lexicon), tokens, lexicon };
+    return {decoder(tokens, lexicon), tokens, lexicon};
 }
 
 // overflow methods
@@ -371,10 +370,12 @@ electrum_v1 electrum_v1::from_words(const string_list& words,
 // public
 bool electrum_v1::overflow() const noexcept
 {
-    return std::any_of(overflows_.begin(), overflows_.end(), [](bool value)
-    {
-        return value;
-    });
+    return std::any_of(
+        overflows_.begin(), overflows_.end(),
+        [](bool value)
+        {
+            return value;
+        });
 }
 
 const v1_decoding::overflow& electrum_v1::overflows() const noexcept
@@ -404,7 +405,7 @@ ec_private electrum_v1::to_seed(const context& context) const noexcept
 
     // Context sets the version byte for derived payment addresses.
     // The private key will be invalid if the value does not ec verify.
-    return { ec_scalar(seed), context.address_version, compression };
+    return {ec_scalar(seed), context.address_version, compression};
 }
 
 ec_public electrum_v1::to_public_key(const context& context) const noexcept

@@ -25,29 +25,19 @@
 // Avoid using namespace in shared headers, but okay here.
 using namespace bc::system::words;
 
-namespace test {
-namespace mnemonics_dictionary {
+namespace test
+{
+namespace mnemonics_dictionary
+{
 
 const size_t test_dictionary_size = 10;
 typedef dictionary<test_dictionary_size>::words test_words;
 
 // First 10 words of BIP39 es, first word not sorted for C compare (<).
-const test_words test_words_es
-{
+const test_words test_words_es{
     false,
-    {
-        "ábaco",
-        "abdomen",
-        "abeja",
-        "abierto",
-        "abogado",
-        "abono",
-        "aborto",
-        "abrazo",
-        "abrir",
-        "abuelo"
-    }
-};
+    {"ábaco", "abdomen", "abeja", "abierto", "abogado", "abono", "aborto",
+     "abrazo", "abrir", "abuelo"}};
 
 // This is the instance under test.
 dictionary<test_dictionary_size> instance(language::es, test_words_es);

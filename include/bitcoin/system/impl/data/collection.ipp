@@ -29,8 +29,10 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Assert fails arbitrarily if 'list' contains pointer elements (e.g. to
 // const char*) because the comparison is between pointers, not values.
@@ -44,11 +46,11 @@ namespace system {
 
 // TODO: constrain to iterable Collection and constrain Element to
 // comparable against Collection::value_type.
-// Element is not required to be the Collection::value_type. 
+// Element is not required to be the Collection::value_type.
 // Collection requires size and empty methods.
 template <typename Collection, typename Element>
-typename Collection::difference_type
-binary_search(const Collection& list, const Element& element) noexcept
+typename Collection::difference_type binary_search(
+    const Collection& list, const Element& element) noexcept
 {
     // C++17: std::size.
     const auto size = list.size();
@@ -78,7 +80,7 @@ binary_search(const Collection& list, const Element& element) noexcept
 template <typename To, typename From>
 std::vector<To> cast(const std::vector<From>& source) noexcept
 {
-    return { std::begin(source), std::end(source) };
+    return {std::begin(source), std::end(source)};
 }
 
 // C++17: Parallel policy for std::transform.
@@ -86,7 +88,8 @@ template <typename To, typename From, size_t Size>
 std::array<To, Size> cast(const std::array<From, Size>& source) noexcept
 {
     std::array<To, Size> out;
-    std::transform(std::begin(source), std::end(source), std::begin(out),
+    std::transform(
+        std::begin(source), std::end(source), std::begin(out),
         [](const From& element) noexcept
         {
             return element;
@@ -97,10 +100,12 @@ std::array<To, Size> cast(const std::array<From, Size>& source) noexcept
 
 // C++17: Parallel policy for std::any_of.
 template <typename Collection>
-bool contains(const Collection& list,
+bool contains(
+    const Collection& list,
     const typename Collection::value_type& element) noexcept
 {
-    return std::any_of(std::begin(list), std::end(list),
+    return std::any_of(
+        std::begin(list), std::end(list),
         [&element](const typename Collection::value_type& value) noexcept
         {
             return value == element;
@@ -116,12 +121,13 @@ bool equal_points(
     if (left.size() != right.size())
         return false;
 
-    return std::equal(left.begin(), left.end(), right.begin(),
+    return std::equal(
+        left.begin(), left.end(), right.begin(),
         [](const std::shared_ptr<const Element>& first,
            const std::shared_ptr<const Element>& second) noexcept
         {
-            return (first && second && (*first == *second)) ||
-                (!first && !second);
+            return (first && second && (*first == *second))
+                   || (!first && !second);
         });
 }
 
@@ -129,40 +135,44 @@ bool equal_points(
 // C++17: Parallel policy for std::find_if.
 // Collection requires std::pair elements.
 template <typename Collection>
-typename Collection::difference_type
-find_pair_position(const Collection& list,
+typename Collection::difference_type find_pair_position(
+    const Collection& list,
     const typename Collection::value_type::first_type& key) noexcept
 {
-    const auto position = std::find_if(std::begin(list), std::end(list),
+    const auto position = std::find_if(
+        std::begin(list), std::end(list),
         [&key](const typename Collection::value_type& pair) noexcept
         {
             return pair.first == key;
         });
 
-    return position == std::end(list) ? negative_one :
-        std::distance(std::begin(list), position);
+    return position == std::end(list)
+               ? negative_one
+               : std::distance(std::begin(list), position);
 }
 
 // C++17: Parallel policy for std::find.
 template <typename Collection>
-typename Collection::difference_type
-find_position(const Collection& list,
+typename Collection::difference_type find_position(
+    const Collection& list,
     const typename Collection::value_type& element) noexcept
 {
     const auto position = std::find(std::begin(list), std::end(list), element);
-    return position == std::end(list) ? negative_one :
-        std::distance(std::begin(list), position);
+    return position == std::end(list)
+               ? negative_one
+               : std::distance(std::begin(list), position);
 }
 
 // TODO: specialize vector and generalize on element type.
 // Collection requires insert method (vector).
 template <typename Collection, typename Predicate>
-typename Collection::iterator
-insert_sorted(Collection& list, typename Collection::value_type& element,
+typename Collection::iterator insert_sorted(
+    Collection& list, typename Collection::value_type& element,
     Predicate predicate) noexcept
 {
-    return list.insert(std::upper_bound(std::begin(list),
-        std::end(list), element, predicate), element);
+    return list.insert(
+        std::upper_bound(std::begin(list), std::end(list), element, predicate),
+        element);
 }
 
 // TODO: specialize vector and generalize on element type.
@@ -178,8 +188,7 @@ void move_append(Collection& target, Collection& source) noexcept
 // TODO: specialize vector and generalize on element type.
 // Collection requires empty, back and pop_back methods (vector).
 template <typename Collection>
-typename Collection::value_type
-pop(Collection& stack) noexcept
+typename Collection::value_type pop(Collection& stack) noexcept
 {
     if (stack.empty())
         return {};
@@ -273,8 +282,8 @@ Collection difference(
 
 // Collection requires size, reserve and shrink_to_fit methods (vector).
 template <typename Collection>
-Collection difference(const Collection& minuend,
-    const Collection& subtrahend) noexcept
+Collection difference(
+    const Collection& minuend, const Collection& subtrahend) noexcept
 {
     return difference(minuend.begin(), minuend.end(), subtrahend);
 }
@@ -292,8 +301,9 @@ bool intersecting(
     const typename Collection::const_iterator& end_left,
     const Collection& right) noexcept
 {
-    return std::find_first_of(first_left, end_left, std::begin(right),
-        std::end(right)) != end_left;
+    return std::find_first_of(
+               first_left, end_left, std::begin(right), std::end(right))
+           != end_left;
 }
 
 // C++17: Parallel policy for std::reverse.
@@ -349,8 +359,8 @@ bool starts_with(
     const Collection& value) noexcept
 {
     // C++17: std::size.
-    return !is_lesser(std::distance(begin, end), value.size()) &&
-        std::equal(value.begin(), value.end(), begin);
+    return !is_lesser(std::distance(begin, end), value.size())
+           && std::equal(value.begin(), value.end(), begin);
 }
 
 } // namespace system

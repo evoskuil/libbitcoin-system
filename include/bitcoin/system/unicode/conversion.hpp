@@ -23,8 +23,10 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/unicode/code_points.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// UTF8/UTF32 are useful when iterating over Unicode characters.
 /// A single char32_t generally maps to a single Unicode code point.

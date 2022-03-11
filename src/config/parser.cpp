@@ -26,9 +26,12 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/unicode/utf8_everywhere/ifstream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 using namespace boost::filesystem;
 using namespace boost::program_options;
@@ -43,8 +46,8 @@ std::string parser::format_invalid_parameter(const std::string& message)
     return "Error: " + clean_message;
 }
 
-path parser::get_config_option(variables_map& variables,
-    const std::string& name)
+path parser::get_config_option(
+    variables_map& variables, const std::string& name)
 {
     // read config from the map so we don't require an early notify
     const auto& config = variables[name];
@@ -68,26 +71,27 @@ bool parser::get_option(variables_map& variables, const std::string& name)
     return variable.as<bool>();
 }
 
-void parser::load_command_variables(variables_map& variables, int argc,
-    const char* argv[])
+void parser::load_command_variables(
+    variables_map& variables, int argc, const char* argv[])
 {
     const auto options = load_options();
     const auto arguments = load_arguments();
-    auto command_parser = command_line_parser(argc, argv).options(options)
-        /*.allow_unregistered()*/.positional(arguments);
+    auto command_parser = command_line_parser(argc, argv)
+                              .options(options)
+                              /*.allow_unregistered()*/.positional(arguments);
     store(command_parser.run(), variables);
 }
 
-void parser::load_environment_variables(variables_map& variables,
-    const std::string& prefix)
+void parser::load_environment_variables(
+    variables_map& variables, const std::string& prefix)
 {
     const auto& environment_variables = load_environment();
     const auto environment = parse_environment(environment_variables, prefix);
     store(environment, variables);
 }
 
-bool parser::load_configuration_variables(variables_map& variables,
-    const std::string& option_name)
+bool parser::load_configuration_variables(
+    variables_map& variables, const std::string& option_name)
 {
     const auto config_settings = load_settings();
     const auto config_path = get_config_option(variables, option_name);

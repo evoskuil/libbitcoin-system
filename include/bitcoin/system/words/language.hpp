@@ -19,8 +19,10 @@
 #ifndef LIBBITCOIN_SYSTEM_WORDS_LANGUAGE_HPP
 #define LIBBITCOIN_SYSTEM_WORDS_LANGUAGE_HPP
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 typedef enum class language
 {
@@ -42,7 +44,7 @@ typedef enum class language
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::language>
 {
     size_t operator()(const bc::system::language& value) const noexcept

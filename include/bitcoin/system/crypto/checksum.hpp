@@ -24,8 +24,10 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // checksum, used by payment_address, wif, hd and ek.
 // p2p message checksum is implemented independently.
@@ -78,14 +80,15 @@ BC_API bool verify_checksum(const data_slice& data) noexcept;
 /// For implementation details see wallet::witness_address. Version is limited
 /// to 5 bits (less than 32) by bech32 design and is otherwise truncated. Non-
 /// zero versions select bech32m (vs. bech32), resulting in distinct checksum.
-BC_API base32_chunk bech32_build_checked(uint8_t version,
-    const data_chunk& program, const std::string& prefix) noexcept;
+BC_API base32_chunk bech32_build_checked(
+    uint8_t version, const data_chunk& program,
+    const std::string& prefix) noexcept;
 
 /// Verify the bech32 checksum and extract witness version and program.
 /// The data parameter may obtained from a witness address using decode_base32.
 /// For implementation details see wallet::witness_address.
-BC_API bool bech32_verify_checked(uint8_t& out_version,
-    data_chunk& out_program, const std::string& prefix,
+BC_API bool bech32_verify_checked(
+    uint8_t& out_version, data_chunk& out_program, const std::string& prefix,
     const base32_chunk& checked) noexcept;
 
 } // namespace system

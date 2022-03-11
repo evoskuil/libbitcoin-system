@@ -28,8 +28,10 @@
 
 #include <system_error>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 using code = std::error_code;
 

@@ -56,14 +56,14 @@ BOOST_AUTO_TEST_CASE(byte_flipper__bool__stream_default__true)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__bool__not_empty__true)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE(reader);
 }
 
 BOOST_AUTO_TEST_CASE(byte_flipper__bool__stream_end__true)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     stream.get();
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE(reader);
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__bool__stream_end__true)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__not_bool__stream_invalid__true)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     stream.get();
     stream.get();
     flip::bytes::iostream reader(stream);
@@ -92,14 +92,14 @@ BOOST_AUTO_TEST_CASE(byte_flipper__is_exhausted__default__true)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__is_exhausted__not_empty__false)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE(!reader.is_exhausted());
 }
 
 BOOST_AUTO_TEST_CASE(byte_flipper__is_exhausted__end__true)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     stream.get();
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE(reader.is_exhausted());
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__is_exhausted__end__true)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__is_exhausted__invalid__true)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     stream.get();
     stream.get();
     flip::bytes::iostream reader(stream);
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__is_exhausted__valid__does_not_change_state)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__is_exhausted__invalid__does_not_change_state)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     flip::bytes::iostream reader(stream);
     stream.get();
     stream.get();
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__invalidate__empty__invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__invalidate__not_empty__stream_invalid)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     flip::bytes::iostream reader(stream);
     reader.invalidate();
     BOOST_REQUIRE(!stream);
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__skip__default_empty__invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__skip__default_single__exhausted)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     BOOST_REQUIRE(reader);
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__skip__default_single__exhausted)
 BOOST_AUTO_TEST_CASE(byte_flipper__skip__end__exhausted)
 {
     const auto size = 42;
-    std::stringstream stream{ std::string(size, 0x00) };
+    std::stringstream stream{std::string(size, 0x00)};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(size);
     BOOST_REQUIRE(reader);
@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__skip__end__exhausted)
 BOOST_AUTO_TEST_CASE(byte_flipper__skip__past_end__invalid)
 {
     const auto size = 42;
-    std::stringstream stream{ std::string(size, 0x00) };
+    std::stringstream stream{std::string(size, 0x00)};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(add1(size));
     BOOST_REQUIRE(!reader);
@@ -204,7 +204,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__skip__past_end__invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__rewind__default_single__expected)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), '*');
     BOOST_REQUIRE(reader.is_exhausted());
@@ -215,11 +215,12 @@ BOOST_AUTO_TEST_CASE(byte_flipper__rewind__default_single__expected)
     BOOST_REQUIRE(reader);
 }
 
-BOOST_AUTO_TEST_CASE(byte_flipper__rewind__skip_to_end_rewind_to_middle__expected)
+BOOST_AUTO_TEST_CASE(
+    byte_flipper__rewind__skip_to_end_rewind_to_middle__expected)
 {
     const auto size = 42;
     const std::string value(size, 0x00);
-    std::stringstream stream{ value + "*" + value };
+    std::stringstream stream{value + "*" + value};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(size);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), '*');
@@ -234,7 +235,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__rewind__skip_to_end_rewind_to_middle__expecte
 BOOST_AUTO_TEST_CASE(byte_flipper__rewind__past_begin__invalid)
 {
     const auto size = 42;
-    std::stringstream stream{ std::string(size, 0x00) };
+    std::stringstream stream{std::string(size, 0x00)};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(size);
     reader.rewind_bytes(add1(size));
@@ -257,8 +258,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_big_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_big_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_big_endian<uint64_t>(), 0x0807060504030201);
     BOOST_REQUIRE(reader);
@@ -276,8 +277,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_2_bytes_big_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_2_bytes_big_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_2_bytes_big_endian(), 0x0807);
     BOOST_REQUIRE(reader);
@@ -295,8 +296,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_4_bytes_big_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_4_bytes_big_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07, 0x06, 0x05 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07, 0x06, 0x05};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_4_bytes_big_endian(), 0x08070605);
     BOOST_REQUIRE(reader);
@@ -314,8 +315,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_8_bytes_big_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_8_bytes_big_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_8_bytes_big_endian(), 0x0807060504030201);
     BOOST_REQUIRE(reader);
@@ -337,10 +338,11 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_little_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_little_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
-    BOOST_REQUIRE_EQUAL(reader.read_little_endian<uint64_t>(), 0x0102030405060708);
+    BOOST_REQUIRE_EQUAL(
+        reader.read_little_endian<uint64_t>(), 0x0102030405060708);
     BOOST_REQUIRE(reader);
 }
 
@@ -356,8 +358,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_2_bytes_little_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_2_bytes_little_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_2_bytes_little_endian(), 0x0708);
     BOOST_REQUIRE(reader);
@@ -375,8 +377,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_4_bytes_little_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_4_bytes_little_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_4_bytes_little_endian(), 0x05060708);
     BOOST_REQUIRE(reader);
@@ -394,10 +396,11 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_8_bytes_little_endian__empty__zero)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_8_bytes_little_endian__full__expected)
 {
-    const std::string value{ 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ value };
+    const std::string value{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
-    BOOST_REQUIRE_EQUAL(reader.read_8_bytes_little_endian(), 0x0102030405060708);
+    BOOST_REQUIRE_EQUAL(
+        reader.read_8_bytes_little_endian(), 0x0102030405060708);
     BOOST_REQUIRE(reader);
 }
 
@@ -405,8 +408,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_8_bytes_little_endian__full__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__one_byte__expected)
 {
-    const std::string value{ 0x08 };
-    std::stringstream stream{ value };
+    const std::string value{0x08};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_size(), 0x08);
     reader.rewind_bytes(1);
@@ -416,8 +419,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__one_byte__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__two_bytes__expected)
 {
-    const std::string value{ (char)varint_two_bytes, 0x08, 0x07 };
-    std::stringstream stream{ value };
+    const std::string value{(char)varint_two_bytes, 0x08, 0x07};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_size(), 0x0708);
     reader.rewind_bytes(3);
@@ -427,8 +430,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__two_bytes__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__four_bytes__expected)
 {
-    const std::string value{ (char)varint_four_bytes, 0x08, 0x07, 0x06, 0x05 };
-    std::stringstream stream{ value };
+    const std::string value{(char)varint_four_bytes, 0x08, 0x07, 0x06, 0x05};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_size(), 0x05060708);
     reader.rewind_bytes(5);
@@ -438,8 +441,16 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__four_bytes__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__eight_bytes__expected)
 {
-    const std::string value{ (char)varint_eight_bytes, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ value };
+    const std::string value{(char)varint_eight_bytes,
+                            0x08,
+                            0x07,
+                            0x06,
+                            0x05,
+                            0x04,
+                            0x03,
+                            0x02,
+                            0x01};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_variable(), 0x0102030405060708);
     reader.rewind_bytes(9);
@@ -456,7 +467,6 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_variable_size__eight_bytes__expected)
     }
 }
 
-
 // read_error_code
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_error_code__empty__default_invalid)
@@ -469,8 +479,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_error_code__empty__default_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_error_code__value__expected)
 {
-    const std::string value{ (char)error::double_spend, 0x00, 0x00, 0x00, '*' };
-    std::stringstream stream{ value };
+    const std::string value{(char)error::double_spend, 0x00, 0x00, 0x00, '*'};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_error_code().value(), error::double_spend);
     BOOST_REQUIRE(reader);
@@ -492,8 +502,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_forward__empty__pad_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_forward__not_empty__expected)
 {
-    const data_array<4> expected{ 0x01, 0x02, 0x03, 0x04 };
-    std::stringstream stream{ "*" + to_string(expected) + "*" };
+    const data_array<4> expected{0x01, 0x02, 0x03, 0x04};
+    std::stringstream stream{"*" + to_string(expected) + "*"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     BOOST_REQUIRE_EQUAL(reader.read_forward<4>(), expected);
@@ -502,8 +512,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_forward__not_empty__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_forward__past_end__padded_invalid)
 {
-    const data_array<4> expected{ 0x01, 0x02, pad, pad };
-    std::stringstream stream{ to_string(expected).substr(0, 2) };
+    const data_array<4> expected{0x01, 0x02, pad, pad};
+    std::stringstream stream{to_string(expected).substr(0, 2)};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_forward<4>(), expected);
     BOOST_REQUIRE(!reader);
@@ -521,9 +531,9 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_reverse__empty__pad_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_reverse__not_empty__expected)
 {
-    const data_array<4> value{ 0x01, 0x02, 0x03, 0x04 };
-    const data_array<4> expected{ 0x04, 0x03, 0x02, 0x01 };
-    std::stringstream stream{ "*" + to_string(value) + "*" };
+    const data_array<4> value{0x01, 0x02, 0x03, 0x04};
+    const data_array<4> expected{0x04, 0x03, 0x02, 0x01};
+    std::stringstream stream{"*" + to_string(value) + "*"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     BOOST_REQUIRE_EQUAL(reader.read_reverse<4>(), expected);
@@ -532,9 +542,9 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_reverse__not_empty__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_reverse__past_end__padded_invalid)
 {
-    const data_array<2> value{ 0x01, 0x02 };
-    const data_array<4> expected{ pad, pad, 0x02, 0x01 };
-    std::stringstream stream{ to_string(value) };
+    const data_array<2> value{0x01, 0x02};
+    const data_array<4> expected{pad, pad, 0x02, 0x01};
+    std::stringstream stream{to_string(value)};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_reverse<4>(), expected);
     BOOST_REQUIRE(!reader);
@@ -554,8 +564,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read__empty__empty)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read__value__expected)
 {
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
-    std::stringstream in{ expected };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
+    std::stringstream in{expected};
     std::stringstream out;
     flip::bytes::iostream reader(in);
     BOOST_REQUIRE(reader.read(out));
@@ -567,7 +577,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read__value__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_mini_hash__empty__null_hash)
 {
-    std::stringstream stream{ to_string(null_hash) };
+    std::stringstream stream{to_string(null_hash)};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_mini_hash(), null_mini_hash);
     BOOST_REQUIRE(reader);
@@ -575,8 +585,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_mini_hash__empty__null_hash)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_mini_hash__value__expected)
 {
-    const mini_hash expected{ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
-    std::stringstream stream{ to_string(expected) };
+    const mini_hash expected{0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+    std::stringstream stream{to_string(expected)};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_mini_hash(), expected);
     BOOST_REQUIRE(reader);
@@ -586,12 +596,10 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_mini_hash__value__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_short_hash__value__expected)
 {
-    const short_hash expected
-    {
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a
-    };
+    const short_hash expected{0x01, 0x02, 0x03, 0x04, 0x05,
+                              0x06, 0x07, 0x08, 0x09, 0x0a};
 
-    std::stringstream stream{ to_string(expected) };
+    std::stringstream stream{to_string(expected)};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_short_hash(), expected);
     BOOST_REQUIRE(reader);
@@ -601,15 +609,12 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_short_hash__value__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_hash__value__expected)
 {
-    const hash_digest expected
-    {
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02
-    };
+    const hash_digest expected{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                               0x09, 0x0a, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+                               0x07, 0x08, 0x09, 0x0a, 0x01, 0x02, 0x03, 0x04,
+                               0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x01, 0x02};
 
-    std::stringstream stream{ to_string(expected) };
+    std::stringstream stream{to_string(expected)};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_hash(), expected);
     BOOST_REQUIRE(reader);
@@ -619,18 +624,15 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_hash__value__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_long_hash__value__expected)
 {
-    const long_hash expected
-    {
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-        0x01, 0x02, 0x03, 0x04
-    };
+    const long_hash expected{
+        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x01,
+        0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x01, 0x02,
+        0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x01, 0x02, 0x03,
+        0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x01, 0x02, 0x03, 0x04,
+        0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x01, 0x02, 0x03, 0x04, 0x05,
+        0x06, 0x07, 0x08, 0x09, 0x0a, 0x01, 0x02, 0x03, 0x04};
 
-    std::stringstream stream{ to_string(expected) };
+    std::stringstream stream{to_string(expected)};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_long_hash(), expected);
     BOOST_REQUIRE(reader);
@@ -650,7 +652,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__peek_byte__empty__pad_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__peek_byte__end__pad_invalid)
 {
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(3);
     BOOST_REQUIRE_EQUAL(reader.peek_byte(), pad);
@@ -661,7 +663,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__peek_byte__end__pad_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__peek_byte__not_empty__expected_not_advanced)
 {
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.peek_byte(), 'a');
     BOOST_REQUIRE_EQUAL(reader.peek_byte(), 'a');
@@ -683,7 +685,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_byte__empty__pad_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_byte__end__pad_invalid)
 {
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(3);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), pad);
@@ -694,7 +696,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_byte__end__pad_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_byte__not_empty__expected_advanced)
 {
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), 'a');
     BOOST_REQUIRE_EQUAL(reader.read_byte(), 'b');
@@ -714,7 +716,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes0__empty__empty_valid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes0__end__empty_valid)
 {
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(3);
     BOOST_REQUIRE(reader.read_bytes().empty());
@@ -723,7 +725,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes0__end__empty_valid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes0__not_empty__expected)
 {
-    std::stringstream stream{ "*abc" };
+    std::stringstream stream{"*abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     BOOST_REQUIRE_EQUAL(reader.read_bytes(), to_chunk("abc"));
@@ -742,7 +744,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__empty_zero__empty_valid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__end_zero__empty_valid)
 {
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(3);
     BOOST_REQUIRE(reader.read_bytes(0).empty());
@@ -751,7 +753,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__end_zero__empty_valid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__to_end__expected)
 {
-    std::stringstream stream{ "*abc" };
+    std::stringstream stream{"*abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     BOOST_REQUIRE_EQUAL(reader.read_bytes(3), to_chunk("abc"));
@@ -760,7 +762,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__to_end__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__middle__expected)
 {
-    std::stringstream stream{ "*abc*" };
+    std::stringstream stream{"*abc*"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     BOOST_REQUIRE_EQUAL(reader.read_bytes(3), to_chunk("abc"));
@@ -770,7 +772,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__middle__expected)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes1__past_end__expected_invalid)
 {
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_bytes(6), to_chunk("abc\0\0\0"));
     BOOST_REQUIRE(!reader);
@@ -790,7 +792,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__empty_zero__empty_valid)
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__end_zero__empty_valid)
 {
     data_chunk sink;
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_bytes(3);
     reader.read_bytes(sink.data(), 0);
@@ -800,7 +802,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__end_zero__empty_valid)
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__to_end__expected)
 {
     data_chunk sink(3, 0x00);
-    std::stringstream stream{ "*abc" };
+    std::stringstream stream{"*abc"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     reader.read_bytes(sink.data(), sink.size());
@@ -811,7 +813,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__to_end__expected)
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__middle__expected)
 {
     data_chunk sink(3, 0x00);
-    std::stringstream stream{ "*abc*" };
+    std::stringstream stream{"*abc*"};
     flip::bytes::iostream reader(stream);
     reader.skip_byte();
     reader.read_bytes(sink.data(), sink.size());
@@ -823,7 +825,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__middle__expected)
 BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__past_end__expected_invalid)
 {
     data_chunk sink(6, 0x00);
-    std::stringstream stream{ "abc" };
+    std::stringstream stream{"abc"};
     flip::bytes::iostream reader(stream);
     reader.read_bytes(sink.data(), sink.size());
     BOOST_REQUIRE_EQUAL(sink, to_chunk("abc\0\0\0"));
@@ -838,32 +840,45 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_bytes2__past_end__expected_invalid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_string__one_byte__expected)
 {
-    const std::string value{ 0x03, 'a', 'b', 'c' };
-    std::stringstream stream{ value };
+    const std::string value{0x03, 'a', 'b', 'c'};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string(), "abc");
 }
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_string__two_bytes__expected)
 {
-    const std::string value{ (char)varint_two_bytes, 0x03, 0x00, 'a', 'b', 'c' };
-    std::stringstream stream{ value };
+    const std::string value{(char)varint_two_bytes, 0x03, 0x00, 'a', 'b', 'c'};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string(), "abc");
 }
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_string__four_bytes__expected)
 {
-    const std::string value{ (char)varint_four_bytes, 0x03, 0x00, 0x00, 0x00, 'a', 'b', 'c' };
-    std::stringstream stream{ value };
+    const std::string value{
+        (char)varint_four_bytes, 0x03, 0x00, 0x00, 0x00, 'a', 'b', 'c'};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string(), "abc");
 }
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_string__eight_bytes__expected)
 {
-    const std::string value{ (char)varint_eight_bytes, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 'a', 'b', 'c' };
-    std::stringstream stream{ value };
+    const std::string value{
+        (char)varint_eight_bytes,
+        0x03,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        'a',
+        'b',
+        'c'};
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string(), "abc");
 }
@@ -880,19 +895,20 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__zero__empty_valid)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__partial__expected_valid)
 {
-    const std::string value{ "abcdefghij" };
+    const std::string value{"abcdefghij"};
     const auto length = to_half(value.length());
-    std::stringstream stream{ value };
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
-    BOOST_REQUIRE_EQUAL(reader.read_string_buffer(length), value.substr(0, length));
+    BOOST_REQUIRE_EQUAL(
+        reader.read_string_buffer(length), value.substr(0, length));
     BOOST_REQUIRE(reader);
 }
 
 BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__full__expected_valid)
 {
-    const std::string value{ "abcdefghij" };
+    const std::string value{"abcdefghij"};
     const auto length = value.length();
-    std::stringstream stream{ value + "*" };
+    std::stringstream stream{value + "*"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string_buffer(length), value);
     BOOST_REQUIRE_EQUAL(stream.get(), '*');
@@ -900,22 +916,24 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__full__expected_valid)
 }
 
 // The full number of bytes are read, but not past end.
-BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__past_end__truncated_valid)
+BOOST_AUTO_TEST_CASE(
+    byte_flipper__read_string_buffer__past_end__truncated_valid)
 {
-    const std::string value{ "abcdefghij" };
+    const std::string value{"abcdefghij"};
     const auto length = value.length();
-    std::stringstream stream{ value };
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string_buffer(add1(length)), value);
     BOOST_REQUIRE(reader);
 }
 
 // The full number of bytes are read, and the string is terminated at null.
-BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__full_embedded_null__truncated_exhausted)
+BOOST_AUTO_TEST_CASE(
+    byte_flipper__read_string_buffer__full_embedded_null__truncated_exhausted)
 {
-    const std::string value{ "abcdef\0hij" };
+    const std::string value{"abcdef\0hij"};
     const auto length = value.length();
-    std::stringstream stream{ value };
+    std::stringstream stream{value};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string_buffer(length), "abcdef");
     BOOST_REQUIRE(reader);
@@ -923,11 +941,12 @@ BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__full_embedded_null__trunc
 }
 
 // The full number of bytes are read, and the string is terminated at null.
-BOOST_AUTO_TEST_CASE(byte_flipper__read_string_buffer__partial_embedded_null__truncated_not_exhausted)
+BOOST_AUTO_TEST_CASE(
+    byte_flipper__read_string_buffer__partial_embedded_null__truncated_not_exhausted)
 {
-    const std::string value{ "abcdef\0hij" };
+    const std::string value{"abcdef\0hij"};
     const auto length = value.length();
-    std::stringstream stream{ value + "*" };
+    std::stringstream stream{value + "*"};
     flip::bytes::iostream reader(stream);
     BOOST_REQUIRE_EQUAL(reader.read_string_buffer(length), "abcdef");
     BOOST_REQUIRE(reader);
@@ -1010,7 +1029,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_big_endian__uint8_t__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_big_endian<uint8_t>(0x42);
-    const std::string expected{ 0x42 };
+    const std::string expected{0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1033,7 +1052,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_2_bytes_big_endian__value__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_2_bytes_big_endian(0x42);
-    const std::string expected{ 0x00, 0x42 };
+    const std::string expected{0x00, 0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1045,7 +1064,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_4_bytes_big_endian__value__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_4_bytes_big_endian(0x42);
-    const std::string expected{ 0x00, 0x00, 0x00, 0x42 };
+    const std::string expected{0x00, 0x00, 0x00, 0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1057,7 +1076,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_8_bytes_big_endian__value__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_8_bytes_big_endian(0x42);
-    const std::string expected{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42 };
+    const std::string expected{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1073,7 +1092,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_little_endian__uint8_t__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_little_endian<uint8_t>(0x42);
-    const std::string expected{ 0x42 };
+    const std::string expected{0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1096,7 +1115,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_2_bytes_little_endian__value__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_2_bytes_little_endian(0x42);
-    const std::string expected{ 0x42, 0x00 };
+    const std::string expected{0x42, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1108,7 +1127,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_4_bytes_little_endian__value__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_4_bytes_little_endian(0x42);
-    const std::string expected{ 0x42, 0x00, 0x00, 0x00 };
+    const std::string expected{0x42, 0x00, 0x00, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1120,7 +1139,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_8_bytes_little_endian__value__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_8_bytes_little_endian(0x42);
-    const std::string expected{ 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    const std::string expected{0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1132,7 +1151,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_variable__one_byte__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_variable(0x08);
-    const std::string expected{ 0x08 };
+    const std::string expected{0x08};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1142,7 +1161,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_variable__two_bytes__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_variable(0x0708);
-    const std::string expected{ (char)varint_two_bytes, 0x08, 0x07 };
+    const std::string expected{(char)varint_two_bytes, 0x08, 0x07};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1152,7 +1171,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_variable__four_bytes__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_variable(0x05060708);
-    const std::string expected{ (char)varint_four_bytes, 0x08, 0x07, 0x06, 0x05 };
+    const std::string expected{(char)varint_four_bytes, 0x08, 0x07, 0x06, 0x05};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1162,7 +1181,15 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_variable__eight_bytes__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_variable(0x0102030405060708);
-    const std::string expected{ (char)varint_eight_bytes, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+    const std::string expected{(char)varint_eight_bytes,
+                               0x08,
+                               0x07,
+                               0x06,
+                               0x05,
+                               0x04,
+                               0x03,
+                               0x02,
+                               0x01};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1174,7 +1201,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_error_code__value__expected)
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
     writer.write_error_code(error::double_spend);
-    const std::string expected{ (char)error::double_spend, 0x00, 0x00, 0x00 };
+    const std::string expected{(char)error::double_spend, 0x00, 0x00, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -1197,8 +1224,8 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write__empty__empty)
 
 BOOST_AUTO_TEST_CASE(byte_flipper__write__value__expected)
 {
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
-    std::istringstream in{ expected };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
+    std::istringstream in{expected};
     std::stringstream out;
     flip::bytes::iostream writer(out);
     BOOST_REQUIRE(writer.write(in));
@@ -1232,7 +1259,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_bytes1__value__expected)
 {
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
     writer.write_bytes(expected);
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
@@ -1254,7 +1281,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_bytes2__value__expected)
 {
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
     writer.write_bytes(data_slice(expected).data(), expected.size());
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
@@ -1273,7 +1300,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_string__one_byte__expected)
     constexpr auto size = to_half(varint_two_bytes);
     const std::string expected(size, '*');
     writer.write_string(expected);
-    BOOST_REQUIRE_EQUAL(stream.str(), std::string{ "\x7e" } + expected);
+    BOOST_REQUIRE_EQUAL(stream.str(), std::string{"\x7e"} + expected);
     BOOST_REQUIRE(writer);
 }
 
@@ -1342,7 +1369,7 @@ BOOST_AUTO_TEST_CASE(byte_flipper__write_string_buffer__value__expected)
 {
     std::stringstream stream;
     flip::bytes::iostream writer(stream);
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
     writer.write_string_buffer(expected.data(), expected.size());
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);

@@ -23,8 +23,10 @@
 #include <bitcoin/system/version.hpp>
 
 // Create bc namespace alias.
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 } // namespace system
 } // namespace libbitcoin
 
@@ -33,16 +35,16 @@ namespace bc = libbitcoin;
 #define BC_USER_AGENT "/libbitcoin:" LIBBITCOIN_SYSTEM_VERSION "/"
 
 #ifdef NDEBUG
-    #define BC_ASSERT(expression)
-    #define BC_ASSERT_MSG(expression, text)
-    #define BC_DEBUG_ONLY(expression)
-    #define BC_EXCEPT noexcept
+#define BC_ASSERT(expression)
+#define BC_ASSERT_MSG(expression, text)
+#define BC_DEBUG_ONLY(expression)
+#define BC_EXCEPT noexcept
 #else
-    #include <cassert>
-    #define BC_ASSERT(expression) assert(expression)
-    #define BC_ASSERT_MSG(expression, text) assert((expression)&&(text))
-    #define BC_DEBUG_ONLY(expression) expression
-    #define BC_EXCEPT
+#include <cassert>
+#define BC_ASSERT(expression) assert(expression)
+#define BC_ASSERT_MSG(expression, text) assert((expression) && (text))
+#define BC_DEBUG_ONLY(expression) expression
+#define BC_EXCEPT
 #endif
 
 // See http://gcc.gnu.org/wiki/Visibility
@@ -50,19 +52,19 @@ namespace bc = libbitcoin;
 // Generic helper definitions for shared library support
 // GNU visibilty attribute overrides compiler flag `fvisibility`.
 #if defined _MSC_VER || defined __CYGWIN__
-    #define BC_HELPER_DLL_IMPORT __declspec(dllimport)
-    #define BC_HELPER_DLL_EXPORT __declspec(dllexport)
-    #define BC_HELPER_DLL_LOCAL
+#define BC_HELPER_DLL_IMPORT __declspec(dllimport)
+#define BC_HELPER_DLL_EXPORT __declspec(dllexport)
+#define BC_HELPER_DLL_LOCAL
 #else
-    #if __GNUC__ >= 4
-        #define BC_HELPER_DLL_IMPORT __attribute__((visibility("default")))
-        #define BC_HELPER_DLL_EXPORT __attribute__((visibility("default")))
-        #define BC_HELPER_DLL_LOCAL  __attribute__((visibility("internal")))
-    #else
-        #define BC_HELPER_DLL_IMPORT
-        #define BC_HELPER_DLL_EXPORT
-        #define BC_HELPER_DLL_LOCAL
-    #endif
+#if __GNUC__ >= 4
+#define BC_HELPER_DLL_IMPORT __attribute__((visibility("default")))
+#define BC_HELPER_DLL_EXPORT __attribute__((visibility("default")))
+#define BC_HELPER_DLL_LOCAL __attribute__((visibility("internal")))
+#else
+#define BC_HELPER_DLL_IMPORT
+#define BC_HELPER_DLL_EXPORT
+#define BC_HELPER_DLL_LOCAL
+#endif
 #endif
 
 // Now we use the generic helper definitions above to define BC_API
@@ -71,43 +73,43 @@ namespace bc = libbitcoin;
 // used for non-api symbols.
 
 #if defined BC_STATIC
-    #define BC_API
-    #define BC_INTERNAL
+#define BC_API
+#define BC_INTERNAL
 #elif defined BC_DLL
-    #define BC_API      BC_HELPER_DLL_EXPORT
-    #define BC_INTERNAL BC_HELPER_DLL_LOCAL
+#define BC_API BC_HELPER_DLL_EXPORT
+#define BC_INTERNAL BC_HELPER_DLL_LOCAL
 #else
-    #define BC_API      BC_HELPER_DLL_IMPORT
-    #define BC_INTERNAL BC_HELPER_DLL_LOCAL
+#define BC_API BC_HELPER_DLL_IMPORT
+#define BC_INTERNAL BC_HELPER_DLL_LOCAL
 #endif
 
 // Tag to deprecate functions and methods.
 // Gives a compiler warning when they are used.
 #if defined _MSC_VER || defined __CYGWIN__
-    #define BC_DEPRECATED __declspec(deprecated)
+#define BC_DEPRECATED __declspec(deprecated)
 #else
-    #if __GNUC__ >= 4
-        #define BC_DEPRECATED __attribute__((deprecated))
-    #else
-        #define BC_DEPRECATED
-    #endif
+#if __GNUC__ >= 4
+#define BC_DEPRECATED __attribute__((deprecated))
+#else
+#define BC_DEPRECATED
+#endif
 #endif
 
 // ISO predefined constant for c++ version.
 #if __cplusplus >= 199711L
-    #define BC_CPP_03
+#define BC_CPP_03
 #endif
 #if __cplusplus >= 201103L
-    #define BC_CPP_11
+#define BC_CPP_11
 #endif
 #if __cplusplus >= 201402L
-    #define BC_CPP_14
+#define BC_CPP_14
 #endif
 #if __cplusplus >= 201703L
-    #define BC_CPP_17
+#define BC_CPP_17
 #endif
 #if __cplusplus >= 202002L
-    #define BC_CPP_20
+#define BC_CPP_20
 #endif
 
 // Avoid namespace conflict between boost::placeholders and std::placeholders.
@@ -117,11 +119,13 @@ namespace bc = libbitcoin;
 #define BOOST_BIND_NO_PLACEHOLDERS
 
 // These are ADL free functions for use with boost-json.
-#define DECLARE_JSON_VALUE_CONVERTORS(name) \
-name tag_invoke(boost::json::value_to_tag<name>, \
-    const boost::json::value& value) noexcept; \
-void tag_invoke(boost::json::value_from_tag, \
-    boost::json::value& value, const name& instance) noexcept
+#define DECLARE_JSON_VALUE_CONVERTORS(name)                                    \
+    name tag_invoke(                                                           \
+        boost::json::value_to_tag<name>,                                       \
+        const boost::json::value& value) noexcept;                             \
+    void tag_invoke(                                                           \
+        boost::json::value_from_tag, boost::json::value& value,                \
+        const name& instance) noexcept
 
 // Define so we can have better visibility of lcov exclusion ranges.
 #define LCOV_EXCL_START(text)

@@ -24,28 +24,21 @@ BOOST_AUTO_TEST_SUITE(header_tests)
 namespace json = boost::json;
 using namespace system::chain;
 
-static const auto hash1 = base16_hash("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-static const auto hash2 = base16_hash("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
-static const header expected_header
-{
-    10,
-    hash1,
-    hash2,
-    531234,
-    6523454,
-    68644
-};
+static const auto hash1 = base16_hash(
+    "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+static const auto hash2 = base16_hash(
+    "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
+static const header expected_header{10, hash1, hash2, 531234, 6523454, 68644};
 
 // Access protected validation methods.
-class accessor
-  : public header
+class accessor : public header
 {
 public:
     // Use base class constructors.
     using header::header;
 
-    bool is_invalid_proof_of_work(uint32_t proof_of_work_limit,
-        bool scrypt=false) const
+    bool is_invalid_proof_of_work(
+        uint32_t proof_of_work_limit, bool scrypt = false) const
     {
         return header::is_invalid_proof_of_work(proof_of_work_limit, scrypt);
     }
@@ -91,7 +84,9 @@ BOOST_AUTO_TEST_CASE(header__constructor__move_parameters__expected)
 
     auto merkle_copy = merkle;
     auto previous_copy = previous;
-    const header instance(version, std::move(previous_copy), std::move(merkle_copy), timestamp, bits, nonce);
+    const header instance(
+        version, std::move(previous_copy), std::move(merkle_copy), timestamp,
+        bits, nonce);
     BOOST_REQUIRE(instance.is_valid());
     BOOST_REQUIRE_EQUAL(instance.version(), version);
     BOOST_REQUIRE_EQUAL(instance.previous_block_hash(), previous);
@@ -246,93 +241,110 @@ BOOST_AUTO_TEST_CASE(header__difficulty__genesis_block__expected)
 // validation (protected)
 // ----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(header__is_invalid_proof_of_work__bits_exceeds_maximum__true)
+BOOST_AUTO_TEST_CASE(
+    header__is_invalid_proof_of_work__bits_exceeds_maximum__true)
 {
     const settings settings(selection::mainnet);
-    const accessor instance{ {}, hash_digest{}, {}, {}, add1(settings.proof_of_work_limit), {} };
-    BOOST_REQUIRE(instance.is_invalid_proof_of_work(settings.proof_of_work_limit, false));
+    const accessor instance{
+        {}, hash_digest{}, {}, {}, add1(settings.proof_of_work_limit), {}};
+    BOOST_REQUIRE(
+        instance.is_invalid_proof_of_work(settings.proof_of_work_limit, false));
 }
 
 BOOST_AUTO_TEST_CASE(header__is_invalid_proof_of_work__hash_greater_bits__true)
 {
     const settings settings(selection::mainnet);
-    const accessor instance
-    {
+    const accessor instance{
         11234,
-        base16_hash("abababababababababababababababababababababababababababababababab"),
-        base16_hash("fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe"),
+        base16_hash(
+            "abababababababababababababababababababababababababababababababab"),
+        base16_hash(
+            "fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe"),
         753234,
         0,
-        34564
-    };
+        34564};
 
-    BOOST_REQUIRE(instance.is_invalid_proof_of_work(settings.proof_of_work_limit, false));
+    BOOST_REQUIRE(
+        instance.is_invalid_proof_of_work(settings.proof_of_work_limit, false));
 }
 
-BOOST_AUTO_TEST_CASE(header__is_invalid_proof_of_work__hash_less_than_bits_false)
+BOOST_AUTO_TEST_CASE(
+    header__is_invalid_proof_of_work__hash_less_than_bits_false)
 {
     const settings settings(selection::mainnet);
-    const accessor instance
-    {
+    const accessor instance{
         4,
-        base16_hash("000000000000000003ddc1e929e2944b8b0039af9aa0d826c480a83d8b39c373"),
-        base16_hash("a6cb0b0d6531a71abe2daaa4a991e5498e1b6b0b51549568d0f9d55329b905df"),
+        base16_hash(
+            "000000000000000003ddc1e929e2944b8b0039af9aa0d826c480a83d8b39c373"),
+        base16_hash(
+            "a6cb0b0d6531a71abe2daaa4a991e5498e1b6b0b51549568d0f9d55329b905df"),
         1474388414,
         402972254,
-        2842832236
-    };
+        2842832236};
 
-    BOOST_REQUIRE(!instance.is_invalid_proof_of_work(settings.proof_of_work_limit, false));
+    BOOST_REQUIRE(!instance.is_invalid_proof_of_work(
+        settings.proof_of_work_limit, false));
 }
 
-BOOST_AUTO_TEST_CASE(header__is_valid_scrypt_proof_of_work__hash_greater_than_bits__false)
+BOOST_AUTO_TEST_CASE(
+    header__is_valid_scrypt_proof_of_work__hash_greater_than_bits__false)
 {
     const settings settings(selection::mainnet);
-    const accessor instance
-    {
+    const accessor instance{
         536870912,
-        base16_hash("abababababababababababababababababababababababababababababababab"),
-        base16_hash("5163359dde15eb3f49cbd0926981f065ef1405fc9d4cece8818662b3b65f5dc6"),
+        base16_hash(
+            "abababababababababababababababababababababababababababababababab"),
+        base16_hash(
+            "5163359dde15eb3f49cbd0926981f065ef1405fc9d4cece8818662b3b65f5dc6"),
         1535119178,
         436332170,
-        2135224651
-    };
+        2135224651};
 
-    BOOST_REQUIRE(instance.is_invalid_proof_of_work(settings.proof_of_work_limit, true));
+    BOOST_REQUIRE(
+        instance.is_invalid_proof_of_work(settings.proof_of_work_limit, true));
 }
 
-BOOST_AUTO_TEST_CASE(header__is_valid_scrypt_proof_of_work__hash_less_than_bits__false)
+BOOST_AUTO_TEST_CASE(
+    header__is_valid_scrypt_proof_of_work__hash_less_than_bits__false)
 {
     const settings settings(selection::mainnet);
-    const accessor instance
-    {
+    const accessor instance{
         536870912,
-        base16_hash("313ced849aafeff324073bb2bd31ecdcc365ed215a34e827bb797ad33d158542"),
-        base16_hash("5163359dde15eb3f49cbd0926981f065ef1405fc9d4cece8818662b3b65f5dc6"),
+        base16_hash(
+            "313ced849aafeff324073bb2bd31ecdcc365ed215a34e827bb797ad33d158542"),
+        base16_hash(
+            "5163359dde15eb3f49cbd0926981f065ef1405fc9d4cece8818662b3b65f5dc6"),
         1535119178,
         436332170,
-        2135224651
-    };
+        2135224651};
 
-    BOOST_REQUIRE(!instance.is_invalid_proof_of_work(settings.proof_of_work_limit, true));
-    BOOST_REQUIRE(instance.is_invalid_proof_of_work(settings.proof_of_work_limit, false));
+    BOOST_REQUIRE(
+        !instance.is_invalid_proof_of_work(settings.proof_of_work_limit, true));
+    BOOST_REQUIRE(
+        instance.is_invalid_proof_of_work(settings.proof_of_work_limit, false));
 }
 
-BOOST_AUTO_TEST_CASE(header__is_invalid_timestamp__timestamp_less_than_2_hours_from_now__false)
+BOOST_AUTO_TEST_CASE(
+    header__is_invalid_timestamp__timestamp_less_than_2_hours_from_now__false)
 {
     const auto now = std::chrono::system_clock::now();
     const auto now_time = std::chrono::system_clock::to_time_t(now);
-    const accessor instance{ {}, hash_digest{}, {}, static_cast<uint32_t>(now_time), {}, {} };
-    BOOST_REQUIRE(!instance.is_invalid_timestamp(settings().timestamp_limit_seconds));
+    const accessor instance{
+        {}, hash_digest{}, {}, static_cast<uint32_t>(now_time), {}, {}};
+    BOOST_REQUIRE(
+        !instance.is_invalid_timestamp(settings().timestamp_limit_seconds));
 }
 
-BOOST_AUTO_TEST_CASE(header__is_invalid_timestamp__timestamp_greater_than_2_hours_from_now__true)
+BOOST_AUTO_TEST_CASE(
+    header__is_invalid_timestamp__timestamp_greater_than_2_hours_from_now__true)
 {
     const auto now = std::chrono::system_clock::now();
     const auto duration = std::chrono::hours(3);
     const auto future = std::chrono::system_clock::to_time_t(now + duration);
-    const accessor instance{ {}, hash_digest{}, {}, static_cast<uint32_t>(future), {}, {} };
-    BOOST_REQUIRE(instance.is_invalid_timestamp(settings().timestamp_limit_seconds));
+    const accessor instance{
+        {}, hash_digest{}, {}, static_cast<uint32_t>(future), {}, {}};
+    BOOST_REQUIRE(
+        instance.is_invalid_timestamp(settings().timestamp_limit_seconds));
 }
 
 // json
@@ -340,27 +352,19 @@ BOOST_AUTO_TEST_CASE(header__is_invalid_timestamp__timestamp_greater_than_2_hour
 
 BOOST_AUTO_TEST_CASE(header__json__conversions__expected)
 {
-    const std::string text
-    {
+    const std::string text{
         "{"
-            "\"version\":42,"
-            "\"previous\":\"0000000000000000000000000000000000000000000000000000000000000000\","
-            "\"merkle_root\":\"0000000000000000000000000000000000000000000000000000000000000001\","
-            "\"timestamp\":43,"
-            "\"bits\":44,"
-            "\"nonce\":45"
-        "}"
-    };
+        "\"version\":42,"
+        "\"previous\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000000\","
+        "\"merkle_root\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000001\","
+        "\"timestamp\":43,"
+        "\"bits\":44,"
+        "\"nonce\":45"
+        "}"};
 
-    const chain::header instance
-    {
-        42,
-        null_hash,
-        one_hash,
-        43,
-        44,
-        45
-    };
+    const chain::header instance{42, null_hash, one_hash, 43, 44, 45};
 
     const auto value = json::value_from(instance);
 

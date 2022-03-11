@@ -24,22 +24,22 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
-hash160::hash160() noexcept
-  : value_(null_short_hash)
+hash160::hash160() noexcept : value_(null_short_hash)
 {
 }
 
-hash160::hash160(const short_hash& value) noexcept
-  : value_(value)
+hash160::hash160(const short_hash& value) noexcept : value_(value)
 {
 }
 
-hash160::hash160(const hash160& other) noexcept
-  : hash160(other.value_)
+hash160::hash160(const hash160& other) noexcept : hash160(other.value_)
 {
 }
 

@@ -44,34 +44,34 @@ BOOST_AUTO_TEST_CASE(string__to_string_integer__todo__todo)
 
 BOOST_AUTO_TEST_CASE(string__to_string_slice__to_array__inverse)
 {
-    std::string result{ "foobar" };
+    std::string result{"foobar"};
     BOOST_REQUIRE_EQUAL(to_string(to_array<6>(result)), result);
 }
 
 BOOST_AUTO_TEST_CASE(string__to_string_slice__to_chunk__inverse)
 {
-    std::string result{ "foobar" };
+    std::string result{"foobar"};
     BOOST_REQUIRE_EQUAL(to_string(to_chunk(result)), result);
 }
 
 BOOST_AUTO_TEST_CASE(string__to_string_slice__empty__empty)
 {
     const data_chunk value{};
-    const std::string expected{ "" };
+    const std::string expected{""};
     BOOST_REQUIRE_EQUAL(to_string(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__to_string_slice__vector__expected)
 {
-    const data_chunk value{ 'a', 'b', 'c' };
-    const std::string expected{ "abc" };
+    const data_chunk value{'a', 'b', 'c'};
+    const std::string expected{"abc"};
     BOOST_REQUIRE_EQUAL(to_string(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__to_string_slice__array__expected)
 {
-    const data_array<3> value{ { 'a', 'b', 'c' } };
-    const std::string expected{ "abc" };
+    const data_array<3> value{{'a', 'b', 'c'}};
+    const std::string expected{"abc"};
     BOOST_REQUIRE_EQUAL(system::to_string(value), expected);
 }
 
@@ -83,54 +83,60 @@ BOOST_AUTO_TEST_CASE(string__to_string_slice__array__expected)
 
 BOOST_AUTO_TEST_CASE(string__join1__empties__one_space)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "", "" }), " ");
+    BOOST_REQUIRE_EQUAL(system::join(string_list{"", ""}), " ");
 }
 
 BOOST_AUTO_TEST_CASE(string__join1__spaces__three_spaces)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ " ", " " }, " "), "   ");
+    BOOST_REQUIRE_EQUAL(system::join(string_list{" ", " "}, " "), "   ");
 }
 
 BOOST_AUTO_TEST_CASE(string__join1__left_value__right_space)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "a", "" }), "a ");
+    BOOST_REQUIRE_EQUAL(system::join(string_list{"a", ""}), "a ");
 }
 
 BOOST_AUTO_TEST_CASE(string__join1__right_value__left_space)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "", "b" }), " b");
+    BOOST_REQUIRE_EQUAL(system::join(string_list{"", "b"}), " b");
 }
 
 BOOST_AUTO_TEST_CASE(string__join1__values__delimited)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "abc", "xyz" }), "abc xyz");
+    BOOST_REQUIRE_EQUAL(system::join(string_list{"abc", "xyz"}), "abc xyz");
 }
 
 // join2
 
 BOOST_AUTO_TEST_CASE(string__join2__empties_empty_delimiter__empty)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "", "" }, ""), "");
+    BOOST_REQUIRE_EQUAL(system::join(string_list{"", ""}, ""), "");
 }
 
 BOOST_AUTO_TEST_CASE(string__join2__values_empty_delimiter__undelimited)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "abc", "xyz" }, ""), "abcxyz");
+    BOOST_REQUIRE_EQUAL(system::join(string_list{"abc", "xyz"}, ""), "abcxyz");
 }
 
 BOOST_AUTO_TEST_CASE(string__join2__values_comma_delimiter__delimited)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "abc", "xyz" }, ","), "abc,xyz");
+    BOOST_REQUIRE_EQUAL(
+        system::join(string_list{"abc", "xyz"}, ","), "abc,xyz");
 }
 
-BOOST_AUTO_TEST_CASE(string__join2__values_ideographic_space_delimiter__delimited)
+BOOST_AUTO_TEST_CASE(
+    string__join2__values_ideographic_space_delimiter__delimited)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ "abc", "xyz" }, ideographic_space), "abc\xe3\x80\x80xyz");
+    BOOST_REQUIRE_EQUAL(
+        system::join(string_list{"abc", "xyz"}, ideographic_space),
+        "abc\xe3\x80\x80xyz");
 }
 
-BOOST_AUTO_TEST_CASE(string__join2__untrimmed_values_comma_delimiter__untrimmed_delimited)
+BOOST_AUTO_TEST_CASE(
+    string__join2__untrimmed_values_comma_delimiter__untrimmed_delimited)
 {
-    BOOST_REQUIRE_EQUAL(system::join(string_list{ " abc ", " xyz " }, ","), " abc , xyz ");
+    BOOST_REQUIRE_EQUAL(
+        system::join(string_list{" abc ", " xyz "}, ","), " abc , xyz ");
 }
 
 #endif // STRING_JOIN
@@ -141,15 +147,15 @@ BOOST_AUTO_TEST_CASE(string__join2__untrimmed_values_comma_delimiter__untrimmed_
 
 BOOST_AUTO_TEST_CASE(string__split0__true_compress__trimmed_compressed)
 {
-    const std::string value{ "\t\r\n abc " };
-    const string_list expected{ "abc" };
+    const std::string value{"\t\r\n abc "};
+    const string_list expected{"abc"};
     BOOST_REQUIRE_EQUAL(system::split(value, true), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split0__false_compress__trimmed)
 {
-    const std::string value{ " abc \t\r\n" };
-    const string_list expected{ "abc" };
+    const std::string value{" abc \t\r\n"};
+    const string_list expected{"abc"};
     BOOST_REQUIRE_EQUAL(system::split(value, false), expected);
 }
 
@@ -158,56 +164,57 @@ BOOST_AUTO_TEST_CASE(string__split0__false_compress__trimmed)
 BOOST_AUTO_TEST_CASE(string__split1__empty__empty)
 {
     const std::string value{};
-    const string_list expected{ "" };
+    const string_list expected{""};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split1__empty_token__empty_token)
 {
-    const std::string value{ "" };
-    const string_list expected{ value };
+    const std::string value{""};
+    const string_list expected{value};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split1__no_delimiter__one_token)
 {
-    const std::string value{ "abc" };
-    const string_list expected{ value };
+    const std::string value{"abc"};
+    const string_list expected{value};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split1__one_delimiter__split)
 {
-    const std::string value{ "abc xyz" };
-    const string_list expected{ "abc", "xyz" };
+    const std::string value{"abc xyz"};
+    const string_list expected{"abc", "xyz"};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split1__nine_delimiters__compressed)
 {
-    const std::string value{ "abc   xyz   123   456" };
-    const string_list expected{ "abc", "xyz", "123", "456" };
+    const std::string value{"abc   xyz   123   456"};
+    const string_list expected{"abc", "xyz", "123", "456"};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split1__one_delimiter__left_trimmed_and_compressed)
 {
-    const std::string value{ "\t\r\n abc" };
-    const string_list expected{ "abc" };
+    const std::string value{"\t\r\n abc"};
+    const string_list expected{"abc"};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
-BOOST_AUTO_TEST_CASE(string__split1__one_delimiter__right_trimmed_and_compressed)
+BOOST_AUTO_TEST_CASE(
+    string__split1__one_delimiter__right_trimmed_and_compressed)
 {
-    const std::string value{ "abc \t\r\n" };
-    const string_list expected{ "abc" };
+    const std::string value{"abc \t\r\n"};
+    const string_list expected{"abc"};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split1__twelve_delimiters__trimmed_and_compressed)
 {
-    const std::string value{ "  \t\r\n  abc  \t\r\n  xyz  \t\r\n  " };
-    const string_list expected{ "abc", "xyz" };
+    const std::string value{"  \t\r\n  abc  \t\r\n  xyz  \t\r\n  "};
+    const string_list expected{"abc", "xyz"};
     BOOST_REQUIRE_EQUAL(system::split(value), expected);
 }
 
@@ -215,22 +222,25 @@ BOOST_AUTO_TEST_CASE(string__split1__twelve_delimiters__trimmed_and_compressed)
 
 BOOST_AUTO_TEST_CASE(string__split2__one_ideographic_space_delimiter__split)
 {
-    const std::string value{ "www\xe3\x80\x80mmm" };
-    const string_list expected{ "www", "mmm" };
+    const std::string value{"www\xe3\x80\x80mmm"};
+    const string_list expected{"www", "mmm"};
     BOOST_REQUIRE_EQUAL(system::split(value, ideographic_space), expected);
 }
 
-BOOST_AUTO_TEST_CASE(string__split2__three_ideographic_space_delimiters__compressed)
+BOOST_AUTO_TEST_CASE(
+    string__split2__three_ideographic_space_delimiters__compressed)
 {
-    const std::string value{ "\xe3\x80\x80www\xe3\x80\x80mmm\xe3\x80\x80" };
-    const string_list expected{ "www", "mmm" };
+    const std::string value{"\xe3\x80\x80www\xe3\x80\x80mmm\xe3\x80\x80"};
+    const string_list expected{"www", "mmm"};
     BOOST_REQUIRE_EQUAL(system::split(value, ideographic_space), expected);
 }
 
-BOOST_AUTO_TEST_CASE(string__split2__four_ideographic_space_delimiters__trimmed_compressed)
+BOOST_AUTO_TEST_CASE(
+    string__split2__four_ideographic_space_delimiters__trimmed_compressed)
 {
-    const std::string value{ " \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 " };
-    const string_list expected{ "www", "mmm" };
+    const std::string value{
+        " \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 "};
+    const string_list expected{"www", "mmm"};
     BOOST_REQUIRE_EQUAL(system::split(value, ideographic_space), expected);
 }
 
@@ -238,80 +248,94 @@ BOOST_AUTO_TEST_CASE(string__split2__four_ideographic_space_delimiters__trimmed_
 
 BOOST_AUTO_TEST_CASE(string__split3__one_delimiter_left__untrimmed)
 {
-    const std::string value{ "\t\r\n abc" };
-    const string_list expected{ "\t\r\n", "abc" };
+    const std::string value{"\t\r\n abc"};
+    const string_list expected{"\t\r\n", "abc"};
     BOOST_REQUIRE_EQUAL(system::split(value, ascii_space, false), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split3__one_delimiter_right__untrimmed)
 {
-    const std::string value{ "abc \t\r\n" };
-    const string_list expected{ "abc", "\t\r\n" };
+    const std::string value{"abc \t\r\n"};
+    const string_list expected{"abc", "\t\r\n"};
     BOOST_REQUIRE_EQUAL(system::split(value, ascii_space, false), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split3__twelve_delimiters__untrimmed_compressed)
 {
-    const std::string value{ "  \t\r\n  abc  \t\r\n  xyz  \t\r\n  " };
-    const string_list expected{ "\t\r\n", "abc", "\t\r\n", "xyz", "\t\r\n" };
+    const std::string value{"  \t\r\n  abc  \t\r\n  xyz  \t\r\n  "};
+    const string_list expected{"\t\r\n", "abc", "\t\r\n", "xyz", "\t\r\n"};
     BOOST_REQUIRE_EQUAL(system::split(value, ascii_space, false), expected);
 }
 
-BOOST_AUTO_TEST_CASE(string__split3__four_ideographic_space_delimiters__untrimmed_compressed)
+BOOST_AUTO_TEST_CASE(
+    string__split3__four_ideographic_space_delimiters__untrimmed_compressed)
 {
-    const std::string value{ " \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 " };
-    const string_list expected{ " ", " www ", " mmm ", " " };
-    BOOST_REQUIRE_EQUAL(system::split(value, ideographic_space, false), expected);
+    const std::string value{
+        " \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 "};
+    const string_list expected{" ", " www ", " mmm ", " "};
+    BOOST_REQUIRE_EQUAL(
+        system::split(value, ideographic_space, false), expected);
 }
 
 // split4
 
-BOOST_AUTO_TEST_CASE(string__split4__twelve_comma_delimiters__trimmed_uncompressed)
+BOOST_AUTO_TEST_CASE(
+    string__split4__twelve_comma_delimiters__trimmed_uncompressed)
 {
-    const std::string value{ ",,\t\r\n,,abc,,\t\r\n,,xyz,,\t\r\n,," };
-    const string_list expected{ "", "", "", "", "abc", "", "", "", "xyz", "", "", "", "" };
+    const std::string value{",,\t\r\n,,abc,,\t\r\n,,xyz,,\t\r\n,,"};
+    const string_list expected{"", "",    "", "", "abc", "", "",
+                               "", "xyz", "", "", "",    ""};
     BOOST_REQUIRE_EQUAL(system::split(value, ",", true, false), expected);
 }
 
-BOOST_AUTO_TEST_CASE(string__split4__four_ideographic_space_delimiters__untrimmed_uncompressed)
+BOOST_AUTO_TEST_CASE(
+    string__split4__four_ideographic_space_delimiters__untrimmed_uncompressed)
 {
-    const std::string value{ " \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 " };
-    const string_list expected{ " ", " www ", "", " mmm ", " " };
-    BOOST_REQUIRE_EQUAL(system::split(value, ideographic_space, false, false), expected);
+    const std::string value{
+        " \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 "};
+    const string_list expected{" ", " www ", "", " mmm ", " "};
+    BOOST_REQUIRE_EQUAL(
+        system::split(value, ideographic_space, false, false), expected);
 }
 
-BOOST_AUTO_TEST_CASE(string__split5__ascii_and_ideographic_space_delimiters__untrimmed_uncompressed)
+BOOST_AUTO_TEST_CASE(
+    string__split5__ascii_and_ideographic_space_delimiters__untrimmed_uncompressed)
 {
-    const std::string value{ "\t \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 \t" };
-    const string_list expected{ "\t", "", "", "www", "", "", "", "mmm", "", "", "\t" };
-    const string_list delimiters{ ideographic_space, ascii_space };
+    const std::string value{
+        "\t \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 \t"};
+    const string_list expected{"\t", "",    "", "www", "",  "",
+                               "",   "mmm", "", "",    "\t"};
+    const string_list delimiters{ideographic_space, ascii_space};
     BOOST_REQUIRE_EQUAL(system::split(value, delimiters, {}, false), expected);
 }
 
 // split5
 
-BOOST_AUTO_TEST_CASE(string__split5__ascii_and_ideographic_space_delimiters__untrimmed_compressed)
+BOOST_AUTO_TEST_CASE(
+    string__split5__ascii_and_ideographic_space_delimiters__untrimmed_compressed)
 {
-    const std::string value{ "\t \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 \t" };
-    const string_list expected{ "\t", "www", "mmm", "\t" };
-    const string_list delimiters{ ideographic_space, ascii_space };
+    const std::string value{
+        "\t \xe3\x80\x80 www \xe3\x80\x80\xe3\x80\x80 mmm \xe3\x80\x80 \t"};
+    const string_list expected{"\t", "www", "mmm", "\t"};
+    const string_list delimiters{ideographic_space, ascii_space};
     BOOST_REQUIRE_EQUAL(system::split(value, delimiters, {}), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split5__alpha_bravo_charlie__compressed)
 {
-    const std::string value{ "alpha bravo charlie" };
-    const string_list expected{ "lph", "r", "vo", "h", "rlie" };
-    const string_list delimiters{ "a", "b", "c", " " };
+    const std::string value{"alpha bravo charlie"};
+    const string_list expected{"lph", "r", "vo", "h", "rlie"};
+    const string_list delimiters{"a", "b", "c", " "};
     BOOST_REQUIRE_EQUAL(system::split(value, delimiters, {}, true), expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__split5__alpha_bravo_charlie__trimmed)
 {
-    const std::string value{ "\talpha \tbravo\t charlie\t" };
-    const string_list expected{ "", "lph", "", "", "r", "vo", "", "h", "rlie" };
-    const string_list delimiters{ "a", "b", "c", " " };
-    BOOST_REQUIRE_EQUAL(system::split(value, delimiters, ascii_whitespace, false), expected);
+    const std::string value{"\talpha \tbravo\t charlie\t"};
+    const string_list expected{"", "lph", "", "", "r", "vo", "", "h", "rlie"};
+    const string_list delimiters{"a", "b", "c", " "};
+    BOOST_REQUIRE_EQUAL(
+        system::split(value, delimiters, ascii_whitespace, false), expected);
 }
 
 #endif // STRING_SPLIT
@@ -322,14 +346,14 @@ BOOST_AUTO_TEST_CASE(string__split5__alpha_bravo_charlie__trimmed)
 
 BOOST_AUTO_TEST_CASE(string__trim__empty__empty)
 {
-    std::string value{ "" };
+    std::string value{""};
     system::trim(value);
     BOOST_REQUIRE_EQUAL(value, "");
 }
 
 BOOST_AUTO_TEST_CASE(string__trim__no_whitespace__unchanged)
 {
-    std::string value{ "abcdefghij" };
+    std::string value{"abcdefghij"};
     const auto expected = value;
     system::trim(value);
     BOOST_REQUIRE_EQUAL(value, value);
@@ -337,14 +361,14 @@ BOOST_AUTO_TEST_CASE(string__trim__no_whitespace__unchanged)
 
 BOOST_AUTO_TEST_CASE(string__trim__all_whitespace__empty)
 {
-    std::string value{ " \t\n\v\f\r " };
+    std::string value{" \t\n\v\f\r "};
     system::trim(value);
     BOOST_REQUIRE_EQUAL(value, "");
 }
 
 BOOST_AUTO_TEST_CASE(string__trim__internal_whitespace__unchanged)
 {
-    std::string value{ "1 \t\n\v\f\r 1" };
+    std::string value{"1 \t\n\v\f\r 1"};
     const auto expected = value;
     system::trim(value);
     BOOST_REQUIRE_EQUAL(value, expected);
@@ -352,7 +376,7 @@ BOOST_AUTO_TEST_CASE(string__trim__internal_whitespace__unchanged)
 
 BOOST_AUTO_TEST_CASE(string__trim__external_whitespace__trimmed)
 {
-    std::string value{ "\t\n\v\f\r 1 \r\f\v\n\t" };
+    std::string value{"\t\n\v\f\r 1 \r\f\v\n\t"};
     system::trim(value);
     BOOST_REQUIRE_EQUAL(value, "1");
 }
@@ -423,39 +447,39 @@ BOOST_AUTO_TEST_CASE(string__reduce__empty__empty)
 
 BOOST_AUTO_TEST_CASE(string__reduce__nothing_to_do__unchanged)
 {
-    string_list values{ "a", "b", "c" };
-    const string_list expected{ "a", "b", "c" };
+    string_list values{"a", "b", "c"};
+    const string_list expected{"a", "b", "c"};
     reduce(values);
     BOOST_REQUIRE_EQUAL(values, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__reduce__empties__single_empty)
 {
-    string_list values{ "", "", "" };
-    const string_list expected{ "" };
+    string_list values{"", "", ""};
+    const string_list expected{""};
     reduce(values);
     BOOST_REQUIRE_EQUAL(values, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__reduce__whitespace__trimmed)
 {
-    string_list values{ " \ta\t ", "\r\tb\t\n", "\t\tc\t\t" };
-    const string_list expected{ "a", "b", "c" };
+    string_list values{" \ta\t ", "\r\tb\t\n", "\t\tc\t\t"};
+    const string_list expected{"a", "b", "c"};
     reduce(values);
     BOOST_REQUIRE_EQUAL(values, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__reduce__only_whitespace__trimmed_and_reduced)
 {
-    string_list values{ " \t\t ", "\r\t\t\n", "\t\tc\t\t" };
-    const string_list expected{ "c" };
+    string_list values{" \t\t ", "\r\t\t\n", "\t\tc\t\t"};
+    const string_list expected{"c"};
     reduce(values);
     BOOST_REQUIRE_EQUAL(values, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__reduce__empties_reduce_false__unchanged)
 {
-    string_list values{ "", "", "" };
+    string_list values{"", "", ""};
     const string_list expected = values;
     reduce(values, {}, false);
     BOOST_REQUIRE_EQUAL(values, expected);
@@ -463,7 +487,7 @@ BOOST_AUTO_TEST_CASE(string__reduce__empties_reduce_false__unchanged)
 
 BOOST_AUTO_TEST_CASE(string__reduce__padded_trim_false__unchanged)
 {
-    string_list values{ " \ta\t ", "\r\tb\t\n", "\t\tc\t\t" };
+    string_list values{" \ta\t ", "\r\tb\t\n", "\t\tc\t\t"};
     const string_list expected = values;
     reduce(values, {}, true);
     BOOST_REQUIRE_EQUAL(values, expected);
@@ -471,7 +495,7 @@ BOOST_AUTO_TEST_CASE(string__reduce__padded_trim_false__unchanged)
 
 BOOST_AUTO_TEST_CASE(string__reduce__only_whitespace_both_false__unchanged)
 {
-    string_list values{ " \t\t ", "\r\t\t\n", "\t\tc\t\t" };
+    string_list values{" \t\t ", "\r\t\t\n", "\t\tc\t\t"};
     const string_list expected = values;
     reduce(values, {}, false);
     BOOST_REQUIRE_EQUAL(values, expected);
@@ -500,64 +524,64 @@ BOOST_AUTO_TEST_CASE(string__replace__empty__empty)
 
 BOOST_AUTO_TEST_CASE(string__replace__none__unchanged)
 {
-    std::string value{ "abc xyz abc xyz" };
+    std::string value{"abc xyz abc xyz"};
     BOOST_REQUIRE_EQUAL(replace(value, "def", "klm"), 0u);
     BOOST_REQUIRE_EQUAL(value, value);
 }
 
 BOOST_AUTO_TEST_CASE(string__replace__multiple__expected)
 {
-    std::string value{ "abc def abc def" };
-    const std::string expected{ "abc klm abc klm" };
+    std::string value{"abc def abc def"};
+    const std::string expected{"abc klm abc klm"};
     BOOST_REQUIRE_EQUAL(replace(value, "def", "klm"), 2u);
     BOOST_REQUIRE_EQUAL(value, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__replace__multiple_adjacent__expected)
 {
-    std::string value{ "defdefabcdef" };
-    const std::string expected{ "klmklmabcklm" };
+    std::string value{"defdefabcdef"};
+    const std::string expected{"klmklmabcklm"};
     BOOST_REQUIRE_EQUAL(replace(value, "def", "klm"), 3u);
     BOOST_REQUIRE_EQUAL(value, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__replace__shorter__expected)
 {
-    std::string value{ "abc def abc def" };
-    const std::string expected{ "abc kl abc kl" };
+    std::string value{"abc def abc def"};
+    const std::string expected{"abc kl abc kl"};
     BOOST_REQUIRE_EQUAL(replace(value, "def", "kl"), 2u);
     BOOST_REQUIRE_EQUAL(value, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__replace__longer__expected)
 {
-    std::string value{ "abc def abc def" };
-    const std::string expected{ "abc klmn abc klmn" };
+    std::string value{"abc def abc def"};
+    const std::string expected{"abc klmn abc klmn"};
     BOOST_REQUIRE_EQUAL(replace(value, "def", "klmn"), 2u);
     BOOST_REQUIRE_EQUAL(value, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__replace__reflexive__expected)
 {
-    std::string value{ "abc def abc def" };
-    const std::string expected{ "abc defdef abc defdef" };
+    std::string value{"abc def abc def"};
+    const std::string expected{"abc defdef abc defdef"};
     BOOST_REQUIRE_EQUAL(replace(value, "def", "defdef"), 2u);
     BOOST_REQUIRE_EQUAL(value, expected);
 }
 
 BOOST_AUTO_TEST_CASE(string__replace__with_spaces__expected)
 {
-    std::string value{ "abc def abc def" };
-    const std::string expected1{ " bc def  bc def" };
+    std::string value{"abc def abc def"};
+    const std::string expected1{" bc def  bc def"};
     BOOST_REQUIRE_EQUAL(replace(value, "a", " "), 2u);
     BOOST_REQUIRE_EQUAL(value, expected1);
-    const std::string expected2{ "  c def   c def" };
+    const std::string expected2{"  c def   c def"};
     BOOST_REQUIRE_EQUAL(replace(value, "b", " "), 2u);
     BOOST_REQUIRE_EQUAL(value, expected2);
-    const std::string expected3{ "    def     def" };
+    const std::string expected3{"    def     def"};
     BOOST_REQUIRE_EQUAL(replace(value, "c", " "), 2u);
     BOOST_REQUIRE_EQUAL(value, expected3);
-    const string_list expected4{ "def", "", "", "", "", "def" };
+    const string_list expected4{"def", "", "", "", "", "def"};
     BOOST_REQUIRE_EQUAL(split(value, false), expected4);
 }
 
@@ -570,7 +594,9 @@ BOOST_AUTO_TEST_CASE(string__replace_copy__empty__empty)
 
 BOOST_AUTO_TEST_CASE(string__replace_copy__not_empty__expected)
 {
-    BOOST_REQUIRE_EQUAL(replace_copy("abc def abc def", "def", "defdef"), "abc defdef abc defdef");
+    BOOST_REQUIRE_EQUAL(
+        replace_copy("abc def abc def", "def", "defdef"),
+        "abc defdef abc defdef");
 }
 
 #endif // STRING_REPLACE

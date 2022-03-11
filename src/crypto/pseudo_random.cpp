@@ -26,8 +26,10 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 using namespace std::chrono;
 
@@ -36,15 +38,18 @@ using namespace std::chrono;
 
 void pseudo_random::fill(data_chunk& out) noexcept
 {
-    std::transform(out.begin(), out.end(), out.begin(), [](uint8_t) noexcept
-    {
-        return next();
-    });
+    std::transform(
+        out.begin(), out.end(), out.begin(),
+        [](uint8_t) noexcept
+        {
+            return next();
+        });
 }
 
 uint8_t pseudo_random::next() noexcept
 {
-    return next(std::numeric_limits<uint8_t>::min(),
+    return next(
+        std::numeric_limits<uint8_t>::min(),
         std::numeric_limits<uint8_t>::max());
 }
 

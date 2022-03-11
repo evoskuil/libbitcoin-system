@@ -25,9 +25,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for base58 sodium keys.
 /// Base85 requires four byte alignment, sodium keys are 32 bytes.
@@ -48,8 +51,8 @@ public:
     std::string to_string() const;
 
     friend std::istream& operator>>(std::istream& input, base85& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const base85& argument);
+    friend std::ostream& operator<<(
+        std::ostream& output, const base85& argument);
 
 private:
     data_chunk value_;

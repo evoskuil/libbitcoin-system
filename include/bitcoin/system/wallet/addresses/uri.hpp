@@ -23,9 +23,12 @@
 #include <string>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /**
  * A parsed URI according to RFC 3986.
@@ -37,7 +40,7 @@ public:
      * Decodes a URI from a string.
      * @param strict Set to false to tolerate unescaped special characters.
      */
-    bool decode(const std::string& encoded, bool strict=true) noexcept;
+    bool decode(const std::string& encoded, bool strict = true) noexcept;
     std::string encoded() const noexcept;
 
     /**

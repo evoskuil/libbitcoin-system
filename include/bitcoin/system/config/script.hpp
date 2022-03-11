@@ -26,9 +26,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper to convert between base16/raw script and script_type.
 class BC_API script
@@ -46,13 +49,13 @@ public:
 
     /// Return a pretty-printed copy of the script.
     std::string to_string(
-        uint32_t flags=chain::forks::all_rules) const noexcept;
+        uint32_t flags = chain::forks::all_rules) const noexcept;
 
     operator const chain::script&() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, script& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const script& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const script& argument) noexcept;
 
 private:
     chain::script value_;

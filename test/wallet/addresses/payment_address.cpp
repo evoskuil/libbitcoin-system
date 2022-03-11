@@ -24,13 +24,19 @@ using namespace system::chain;
 using namespace bc::system::wallet;
 
 // $ bx base16-encode "Satoshi" | bx sha256
-#define SECRET "002688cc350a5333a87fa622eacec626c3d1c0ebf9f3793de3885fa254d7e393"
-#define SCRIPT "dup hash160 [18c0bd8d1818f1bf99cb1df2269c645318ef7b73] equalverify checksig"
+#define SECRET                                                                 \
+    "002688cc350a5333a87fa622eacec626c3d1c0ebf9f3793de3885fa254d7e393"
+#define SCRIPT                                                                 \
+    "dup hash160 [18c0bd8d1818f1bf99cb1df2269c645318ef7b73] equalverify "      \
+    "checksig"
 
 // $ bx base16-encode "Satoshi" | bx sha256 | bx ec-to-public
-#define COMPRESSED "03d24123978d696a6c964f2dcb1d1e000d4150102fbbcc37f020401e35fb4cb745"
+#define COMPRESSED                                                             \
+    "03d24123978d696a6c964f2dcb1d1e000d4150102fbbcc37f020401e35fb4cb745"
 // $ bx base16-encode "Satoshi" | bx sha256 | bx ec-to-public -u
-#define UNCOMPRESSED "04d24123978d696a6c964f2dcb1d1e000d4150102fbbcc37f020401e35fb4cb74561a3362716303b0469f04c3d0e3cbc4b5b62a2da7add6ecc3b254404b12d2f83"
+#define UNCOMPRESSED                                                           \
+    "04d24123978d696a6c964f2dcb1d1e000d4150102fbbcc37f020401e35fb4cb74561a336" \
+    "2716303b0469f04c3d0e3cbc4b5b62a2da7add6ecc3b254404b12d2f83"
 
 // $ bx base16-encode "Satoshi" | bx sha256 | bx ec-to-public | bx bitcoin160
 #define COMPRESSED_HASH "f85beb6356d0813ddb0dbb14230a249fe931a135"
@@ -95,29 +101,32 @@ BOOST_AUTO_TEST_CASE(payment_address__construct__secret_testnet__valid_expected)
 
     // MSVC CTP loses the MSB (WIF prefix) byte of the literal version when
     // using this initializer, but the MSB isn't used by payment_address.
-    const payment_address address({ secret, 0x806f, true });
+    const payment_address address({secret, 0x806f, true});
     BOOST_REQUIRE(address);
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_COMPRESSED_TESTNET);
 }
 
-BOOST_AUTO_TEST_CASE(payment_address__construct__secret_mainnet_uncompressed__valid_expected)
+BOOST_AUTO_TEST_CASE(
+    payment_address__construct__secret_mainnet_uncompressed__valid_expected)
 {
     ec_secret secret;
     BOOST_REQUIRE(decode_base16(secret, SECRET));
 
-    const payment_address address({ secret, payment_address::mainnet_p2kh, false });
+    const payment_address address(
+        {secret, payment_address::mainnet_p2kh, false});
     BOOST_REQUIRE(address);
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_UNCOMPRESSED);
 }
 
-BOOST_AUTO_TEST_CASE(payment_address__construct__secret_testnet_uncompressed__valid_expected)
+BOOST_AUTO_TEST_CASE(
+    payment_address__construct__secret_testnet_uncompressed__valid_expected)
 {
     ec_secret secret;
     BOOST_REQUIRE(decode_base16(secret, SECRET));
 
     // MSVC CTP loses the MSB (WIF prefix) byte of the literal version when
     // using this initializer, but the MSB isn't used by payment_address.
-    const payment_address address({ secret, 0x806f, false });
+    const payment_address address({secret, 0x806f, false});
     BOOST_REQUIRE(address);
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_UNCOMPRESSED_TESTNET);
 }
@@ -138,36 +147,40 @@ BOOST_AUTO_TEST_CASE(payment_address__construct__public_testnet__valid_expected)
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_COMPRESSED_TESTNET);
 }
 
-BOOST_AUTO_TEST_CASE(payment_address__construct__public_uncompressed__valid_expected)
+BOOST_AUTO_TEST_CASE(
+    payment_address__construct__public_uncompressed__valid_expected)
 {
     const payment_address address(ec_public(UNCOMPRESSED));
     BOOST_REQUIRE(address);
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_UNCOMPRESSED);
 }
 
-BOOST_AUTO_TEST_CASE(payment_address__construct__public_testnet_uncompressed__valid_expected)
+BOOST_AUTO_TEST_CASE(
+    payment_address__construct__public_testnet_uncompressed__valid_expected)
 {
     const payment_address address(ec_public(UNCOMPRESSED), 0x6f);
     BOOST_REQUIRE(address);
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_UNCOMPRESSED_TESTNET);
 }
 
-BOOST_AUTO_TEST_CASE(payment_address__construct__public_compressed_from_uncompressed_testnet__valid_expected)
+BOOST_AUTO_TEST_CASE(
+    payment_address__construct__public_compressed_from_uncompressed_testnet__valid_expected)
 {
     ec_uncompressed point;
     BOOST_REQUIRE(decode_base16(point, UNCOMPRESSED));
 
-    const payment_address address(ec_public{ point, true }, 0x6f);
+    const payment_address address(ec_public{point, true}, 0x6f);
     BOOST_REQUIRE(address);
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_COMPRESSED_TESTNET);
 }
 
-BOOST_AUTO_TEST_CASE(payment_address__construct__public_uncompressed_from_compressed_testnet__valid_expected)
+BOOST_AUTO_TEST_CASE(
+    payment_address__construct__public_uncompressed_from_compressed_testnet__valid_expected)
 {
     ec_compressed point;
     BOOST_REQUIRE(decode_base16(point, COMPRESSED));
 
-    const payment_address address(ec_public{ point, false }, 0x6f);
+    const payment_address address(ec_public{point, false}, 0x6f);
     BOOST_REQUIRE(address);
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_UNCOMPRESSED_TESTNET);
 }
@@ -184,7 +197,8 @@ BOOST_AUTO_TEST_CASE(payment_address__construct__hash__valid_expected)
     BOOST_REQUIRE_EQUAL(address.encoded(), ADDRESS_COMPRESSED);
 }
 
-BOOST_AUTO_TEST_CASE(payment_address__construct__uncompressed_hash_testnet__valid_expected)
+BOOST_AUTO_TEST_CASE(
+    payment_address__construct__uncompressed_hash_testnet__valid_expected)
 {
     short_hash hash;
     BOOST_REQUIRE(decode_base16(hash, UNCOMPRESSED_HASH));

@@ -24,9 +24,12 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper stub for chain::input.
 class BC_API input
@@ -41,14 +44,14 @@ public:
     operator const chain::input&() const noexcept;
 
     friend std::istream& operator>>(std::istream& stream, input& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const input& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const input& argument) noexcept;
 
 private:
     chain::input value_;
 };
 
-} // namespace explorer
+} // namespace config
 } // namespace system
 } // namespace libbitcoin
 

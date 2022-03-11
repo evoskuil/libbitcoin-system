@@ -30,9 +30,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 class BC_API point
 {
@@ -120,7 +123,7 @@ DECLARE_JSON_VALUE_CONVERTORS(point::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::point>
 {
     size_t operator()(const bc::system::chain::point& value) const noexcept

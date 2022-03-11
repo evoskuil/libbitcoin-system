@@ -26,11 +26,11 @@ BOOST_AUTO_TEST_SUITE(data_reference_tests)
 
 // test vector
 const auto size = 6u;
-const std::string string{ "foobar" };
-const data_chunk data{ 'f', 'o', 'o', 'b', 'a', 'r' };
-const data_array<size> byte{ { 'f', 'o', 'o', 'b', 'a', 'r' } };
-const std::vector<char> char_vector{ 'f', 'o', 'o', 'b', 'a', 'r' };
-const std::array<char, size> char_array{ { 'f', 'o', 'o', 'b', 'a', 'r' } };
+const std::string string{"foobar"};
+const data_chunk data{'f', 'o', 'o', 'b', 'a', 'r'};
+const data_array<size> byte{{'f', 'o', 'o', 'b', 'a', 'r'}};
+const std::vector<char> char_vector{'f', 'o', 'o', 'b', 'a', 'r'};
+const std::array<char, size> char_array{{'f', 'o', 'o', 'b', 'a', 'r'}};
 const auto encoded = encode_base16(string);
 
 // construct, empty
@@ -71,13 +71,13 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__default__empty)
 
 BOOST_AUTO_TEST_CASE(data_reference__construct__pointers_empty__empty)
 {
-    const std::string value{ "foobar" };
+    const std::string value{"foobar"};
     BOOST_REQUIRE(data_reference(&value[0], &value[0]).empty());
 }
 
 BOOST_AUTO_TEST_CASE(data_reference__construct__pointers_reversed__empty)
 {
-    const std::string value{ "foobar" };
+    const std::string value{"foobar"};
     BOOST_REQUIRE(data_reference(&value[5], &value[0]).empty());
 }
 
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__iterators_empty__empty)
 
 BOOST_AUTO_TEST_CASE(data_reference__construct__iterators_reversed__empty)
 {
-    const data_chunk value{ 'f', 'o', 'o', 'b', 'a', 'r' };
+    const data_chunk value{'f', 'o', 'o', 'b', 'a', 'r'};
     BOOST_REQUIRE(data_reference(value.end(), value.begin()).empty());
 }
 
@@ -114,9 +114,9 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__copy__expected)
 BOOST_AUTO_TEST_CASE(data_reference__construct__string__expected)
 {
     // negative vector
-    const std::string negative_string{ "baadf00d" };
-    const data_chunk negative_data{ 'b', 'a', 'a', 'd', 'f', '0', '0', 'd' };
-    const data_array<8> negative_byte{ { 'b', 'a', 'a', 'd', 'f', '0', '0', 'd' } };
+    const std::string negative_string{"baadf00d"};
+    const data_chunk negative_data{'b', 'a', 'a', 'd', 'f', '0', '0', 'd'};
+    const data_array<8> negative_byte{{'b', 'a', 'a', 'd', 'f', '0', '0', 'd'}};
 
     // construct(literal)
     const data_reference reference(string);
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__string__expected)
     BOOST_REQUIRE_EQUAL(*reference.begin(), 'f');
     BOOST_REQUIRE_EQUAL(static_cast<data_chunk>(reference).front(), 'f');
     BOOST_REQUIRE_EQUAL(static_cast<data_array<size>>(reference).front(), 'f');
-    
+
     // end
     BOOST_REQUIRE_EQUAL(reference.back(), 'r');
     BOOST_REQUIRE_EQUAL(reference[sub1(size)], 'r');
@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__array__expected)
     BOOST_REQUIRE_EQUAL(reference0.encoded(), encoded);
 
     // construct(data_array)
-    const data_reference reference1{ byte };
+    const data_reference reference1{byte};
     BOOST_REQUIRE(!reference1.empty());
     BOOST_REQUIRE_EQUAL(reference1.size(), size);
     BOOST_REQUIRE_EQUAL(reference1.encoded(), encoded);
@@ -223,7 +223,7 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__vector__expected)
     BOOST_REQUIRE_EQUAL(reference1.encoded(), encoded);
 
     // construct(data_chunk)
-    const data_reference reference3 = { data };
+    const data_reference reference3 = {data};
     BOOST_REQUIRE(!reference3.empty());
     BOOST_REQUIRE_EQUAL(reference3.size(), size);
     BOOST_REQUIRE_EQUAL(reference3.encoded(), encoded);
@@ -244,7 +244,8 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__pointers__expected)
     BOOST_REQUIRE_EQUAL(reference1.encoded(), encoded);
 
     // construct(pointers)
-    const data_reference reference2 = { byte.data(), std::next(byte.data(), size) };
+    const data_reference reference2 = {
+        byte.data(), std::next(byte.data(), size)};
     BOOST_REQUIRE(!reference2.empty());
     BOOST_REQUIRE_EQUAL(reference2.size(), size);
     BOOST_REQUIRE_EQUAL(reference2.encoded(), encoded);
@@ -259,7 +260,7 @@ BOOST_AUTO_TEST_CASE(data_reference__construct__iterators__expected)
     BOOST_REQUIRE_EQUAL(reference1.encoded(), encoded);
 
     // construct(iterators)
-    const data_reference reference2 = { string.begin(), string.end() };
+    const data_reference reference2 = {string.begin(), string.end()};
     BOOST_REQUIRE(!reference2.empty());
     BOOST_REQUIRE_EQUAL(reference2.size(), size);
     BOOST_REQUIRE_EQUAL(reference2.encoded(), encoded);

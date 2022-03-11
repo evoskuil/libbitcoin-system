@@ -25,9 +25,12 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/machine/program.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace machine {
+namespace libbitcoin
+{
+namespace system
+{
+namespace machine
+{
 
 class BC_API interpreter
 {
@@ -40,10 +43,10 @@ public:
     static result op_unevaluated(chain::opcode) noexcept;
     static result op_nop(program& program, chain::opcode) noexcept;
     static result op_push_number(program& program, uint8_t value) noexcept;
-    static result op_push_size(program& program,
-        const chain::operation& op) noexcept;
-    static result op_push_data(program& program, chunk_ptr&& data,
-        uint32_t size_limit) noexcept;
+    static result op_push_size(
+        program& program, const chain::operation& op) noexcept;
+    static result op_push_data(
+        program& program, chunk_ptr&& data, uint32_t size_limit) noexcept;
 
     // Operations (not shared).
     // ------------------------------------------------------------------------
@@ -120,8 +123,8 @@ public:
     static result op_sha256(program& program) noexcept;
     static result op_hash160(program& program) noexcept;
     static result op_hash256(program& program) noexcept;
-    static result op_codeseparator(program& program,
-        const chain::operation& op) noexcept;
+    static result op_codeseparator(
+        program& program, const chain::operation& op) noexcept;
     static result op_check_sig_verify(program& program) noexcept;
     static result op_check_sig(program& program) noexcept;
     static result op_check_multisig_verify(program& program) noexcept;

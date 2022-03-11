@@ -25,9 +25,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/wallet/addresses/payment_address.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /**
  * The maximum lot and sequence values for encrypted key token creation.
@@ -102,9 +105,10 @@ enum ek_flag : uint8_t
  * @param[in]  compressed   Set true to associate ec public key compression.
  * @return false if the token checksum is not valid.
  */
-BC_API bool create_key_pair(encrypted_private& out_private,
-    ec_compressed& out_point, const encrypted_token& token,
-    const ek_seed& seed, uint8_t version, bool compressed=true) noexcept;
+BC_API bool create_key_pair(
+    encrypted_private& out_private, ec_compressed& out_point,
+    const encrypted_token& token, const ek_seed& seed, uint8_t version,
+    bool compressed = true) noexcept;
 
 /**
  * DEPRECATED (scenario)
@@ -120,10 +124,10 @@ BC_API bool create_key_pair(encrypted_private& out_private,
  * @param[in]  compressed   Set true to associate ec public key compression.
  * @return false if the token checksum is not valid.
  */
-BC_API bool create_key_pair(encrypted_private& out_private,
-    encrypted_public& out_public, ec_compressed& out_point,
-    const encrypted_token& token, const ek_seed& seed, uint8_t version,
-    bool compressed=true) noexcept;
+BC_API bool create_key_pair(
+    encrypted_private& out_private, encrypted_public& out_public,
+    ec_compressed& out_point, const encrypted_token& token, const ek_seed& seed,
+    uint8_t version, bool compressed = true) noexcept;
 
 /**
  * Create an intermediate passphrase for subsequent key pair generation.
@@ -132,8 +136,9 @@ BC_API bool create_key_pair(encrypted_private& out_private,
  * @param[in]  entropy     A random value for use in the encryption.
  * @return false if the token could not be created from the entropy.
  */
-BC_API bool create_token(encrypted_token& out_token,
-    const std::string& passphrase, const ek_entropy& entropy) noexcept;
+BC_API bool create_token(
+    encrypted_token& out_token, const std::string& passphrase,
+    const ek_entropy& entropy) noexcept;
 
 /**
  * Create an intermediate passphrase for subsequent key pair generation.
@@ -145,9 +150,9 @@ BC_API bool create_token(encrypted_token& out_token,
  * @return false if the lot and/or sequence are out of range or the token
  * could not be created from the entropy.
  */
-BC_API bool create_token(encrypted_token& out_token,
-    const std::string& passphrase, const ek_salt& salt, uint32_t lot,
-    uint32_t sequence) noexcept;
+BC_API bool create_token(
+    encrypted_token& out_token, const std::string& passphrase,
+    const ek_salt& salt, uint32_t lot, uint32_t sequence) noexcept;
 
 /**
  * Encrypt the ec secret to an encrypted public key using the passphrase.
@@ -158,9 +163,10 @@ BC_API bool create_token(encrypted_token& out_token,
  * @param[in]  compressed   Set true to associate ec public key compression.
  * @return false if the secret could not be converted to a public key.
  */
-BC_API bool encrypt(encrypted_private& out_private, const ec_secret& secret,
+BC_API bool encrypt(
+    encrypted_private& out_private, const ec_secret& secret,
     const std::string& passphrase, uint8_t version,
-    bool compressed=true) noexcept;
+    bool compressed = true) noexcept;
 
 /**
  * Decrypt the ec secret associated with the encrypted private key.
@@ -171,9 +177,9 @@ BC_API bool encrypt(encrypted_private& out_private, const ec_secret& secret,
  * @param[in]  passphrase      The passphrase from the encryption or token.
  * @return false if the key checksum or passphrase is not valid.
  */
-BC_API bool decrypt(ec_secret& out_secret, uint8_t& out_version,
-    bool& out_compressed, const encrypted_private& key,
-    const std::string& passphrase) noexcept;
+BC_API bool decrypt(
+    ec_secret& out_secret, uint8_t& out_version, bool& out_compressed,
+    const encrypted_private& key, const std::string& passphrase) noexcept;
 
 /**
  * DEPRECATED (scenario)
@@ -185,9 +191,9 @@ BC_API bool decrypt(ec_secret& out_secret, uint8_t& out_version,
  * @param[in]  passphrase      The passphrase of the associated token.
  * @return false if the key checksum or passphrase is not valid.
  */
-BC_API bool decrypt(ec_compressed& out_point, uint8_t& out_version,
-    bool& out_compressed, const encrypted_public& key,
-    const std::string& passphrase) noexcept;
+BC_API bool decrypt(
+    ec_compressed& out_point, uint8_t& out_version, bool& out_compressed,
+    const encrypted_public& key, const std::string& passphrase) noexcept;
 
 } // namespace wallet
 } // namespace system

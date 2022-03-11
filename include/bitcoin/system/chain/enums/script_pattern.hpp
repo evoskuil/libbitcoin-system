@@ -19,9 +19,12 @@
 #ifndef LIBBITCOIN_SYSTEM_CHAIN_ENUMS_SCRIPT_PATTERN_HPP
 #define LIBBITCOIN_SYSTEM_CHAIN_ENUMS_SCRIPT_PATTERN_HPP
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 /// Script patterms.
 /// Comments from: bitcoin.org/en/developer-guide#signature-hash-types

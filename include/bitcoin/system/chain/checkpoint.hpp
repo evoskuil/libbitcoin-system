@@ -31,9 +31,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // TODO: derive from (or alias) point.
 class BC_API checkpoint
@@ -52,9 +55,9 @@ public:
     checkpoint(const hash_digest& hash, size_t height) noexcept;
     explicit checkpoint(const std::string& hash, size_t height) noexcept;
 
-    template <size_t Size, if_size<Size, add1(two * hash_size)> = true>
-    checkpoint(const char(&string)[Size], size_t height) noexcept
-      : checkpoint(std::string(string), height)
+    template <size_t Size, if_size<Size, add1(two* hash_size)> = true>
+    checkpoint(const char (&string)[Size], size_t height) noexcept
+        : checkpoint(std::string(string), height)
     {
     }
 
@@ -91,8 +94,8 @@ protected:
     checkpoint(const hash_digest& hash, size_t height, bool valid) noexcept;
 
 private:
-    static checkpoint from_string(const std::string& hash,
-        size_t height) noexcept;
+    static checkpoint from_string(
+        const std::string& hash, size_t height) noexcept;
 
     hash_digest hash_;
     size_t height_;
@@ -115,7 +118,7 @@ DECLARE_JSON_VALUE_CONVERTORS(checkpoint);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::checkpoint>
 {
     size_t operator()(const bc::system::chain::checkpoint& value) const noexcept

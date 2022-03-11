@@ -155,19 +155,20 @@ BOOST_AUTO_TEST_CASE(ascii__is_ascii__empty__true)
 
 BOOST_AUTO_TEST_CASE(ascii__is_ascii__alphanumeric__true)
 {
-    BOOST_REQUIRE(is_ascii("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
+    BOOST_REQUIRE(is_ascii(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
 }
 
 BOOST_AUTO_TEST_CASE(ascii__is_ascii__below_128__true)
 {
-    BOOST_REQUIRE(is_ascii(std::string{ '\x00' }));
-    BOOST_REQUIRE(is_ascii(std::string{ '\x7f' }));
+    BOOST_REQUIRE(is_ascii(std::string{'\x00'}));
+    BOOST_REQUIRE(is_ascii(std::string{'\x7f'}));
 }
 
 BOOST_AUTO_TEST_CASE(ascii__is_ascii__above_127__false)
 {
-    BOOST_REQUIRE(!is_ascii(std::string{ '\x80' }));
-    BOOST_REQUIRE(!is_ascii(std::string{ '\xff' }));
+    BOOST_REQUIRE(!is_ascii(std::string{'\x80'}));
+    BOOST_REQUIRE(!is_ascii(std::string{'\xff'}));
 }
 
 BOOST_AUTO_TEST_CASE(ascii__is_ascii__ideographic_space__false)
@@ -184,7 +185,8 @@ BOOST_AUTO_TEST_CASE(ascii__is_ascii_numeric__empty__true)
 
 BOOST_AUTO_TEST_CASE(ascii__is_ascii_numeric__alphanumeric__false)
 {
-    BOOST_REQUIRE(!is_ascii_numeric("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
+    BOOST_REQUIRE(!is_ascii_numeric(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
 }
 
 BOOST_AUTO_TEST_CASE(ascii__is_ascii_numeric__numeric__true)
@@ -199,7 +201,8 @@ BOOST_AUTO_TEST_CASE(ascii__is_ascii_numeric__negative_numerics__true)
     BOOST_REQUIRE(is_ascii_numeric("-01234567890"));
 }
 
-BOOST_AUTO_TEST_CASE(ascii__is_ascii_numeric__misplaced_negative_numerics__false)
+BOOST_AUTO_TEST_CASE(
+    ascii__is_ascii_numeric__misplaced_negative_numerics__false)
 {
     BOOST_REQUIRE(!is_ascii_numeric("0-"));
     BOOST_REQUIRE(!is_ascii_numeric("-1-"));
@@ -232,27 +235,27 @@ BOOST_AUTO_TEST_CASE(ascii__is_ascii_numeric__decimal_numeric__false)
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_lower__empty__empty)
 {
-    const std::string value{ "" };
+    const std::string value{""};
     BOOST_REQUIRE_EQUAL(ascii_to_lower(value), value);
 }
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_lower__lower__unchanged)
 {
-    const std::string value{ "abcdefghijklmnopqrstuvwxyz0123456789" };
+    const std::string value{"abcdefghijklmnopqrstuvwxyz0123456789"};
     BOOST_REQUIRE_EQUAL(ascii_to_lower(value), value);
 }
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_lower__upper__lowered)
 {
-    const std::string value{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" };
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz0123456789" };
+    const std::string value{"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz0123456789"};
     BOOST_REQUIRE_EQUAL(ascii_to_lower(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_lower__mixed__lowered)
 {
-    const std::string value{ "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789" };
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz0123456789" };
+    const std::string value{"AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"};
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz0123456789"};
     BOOST_REQUIRE_EQUAL(ascii_to_lower(value), expected);
 }
 
@@ -260,27 +263,27 @@ BOOST_AUTO_TEST_CASE(ascii__ascii_to_lower__mixed__lowered)
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_upper__empty__empty)
 {
-    const std::string value{ "" };
+    const std::string value{""};
     BOOST_REQUIRE_EQUAL(ascii_to_upper(value), value);
 }
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_upper__lower__raised)
 {
-    const std::string value{ "abcdefghijklmnopqrstuvwxyz0123456789" };
-    const std::string expected{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" };
+    const std::string value{"abcdefghijklmnopqrstuvwxyz0123456789"};
+    const std::string expected{"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
     BOOST_REQUIRE_EQUAL(ascii_to_upper(value), expected);
 }
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_upper__upper__unchanged)
 {
-    const std::string value{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" };
+    const std::string value{"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
     BOOST_REQUIRE_EQUAL(ascii_to_upper(value), value);
 }
 
 BOOST_AUTO_TEST_CASE(ascii__ascii_to_upper__mixed__raised)
 {
-    const std::string value{ "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789" };
-    const std::string expected{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" };
+    const std::string value{"AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"};
+    const std::string expected{"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
     BOOST_REQUIRE_EQUAL(ascii_to_upper(value), expected);
 }
 
@@ -319,19 +322,22 @@ BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__empty__false)
     BOOST_REQUIRE(!has_mixed_ascii_case(""));
 }
 
-BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__mixed_case_with_non_ascii__true)
+BOOST_AUTO_TEST_CASE(
+    ascii__has_mixed_ascii_case__mixed_case_with_non_ascii__true)
 {
     BOOST_REQUIRE(has_mixed_ascii_case("\x80xYz"));
 }
 
 BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__lower_ascii__false)
 {
-    BOOST_REQUIRE(!has_mixed_ascii_case("abcdefghijklmnopqrstuvwxyz0123456789"));
+    BOOST_REQUIRE(
+        !has_mixed_ascii_case("abcdefghijklmnopqrstuvwxyz0123456789"));
 }
 
 BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__upper_ascii__false)
 {
-    BOOST_REQUIRE(!has_mixed_ascii_case("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"));
+    BOOST_REQUIRE(
+        !has_mixed_ascii_case("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"));
 }
 
 BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__mixed_ascii__true)
@@ -339,19 +345,22 @@ BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__mixed_ascii__true)
     BOOST_REQUIRE(has_mixed_ascii_case("AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"));
 }
 
-BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__lower_ascii_with_ideographic_space__false)
+BOOST_AUTO_TEST_CASE(
+    ascii__has_mixed_ascii_case__lower_ascii_with_ideographic_space__false)
 {
     const auto unicode = ideographic_space + "abcdefghijklmnopqrstuvwxyz";
     BOOST_REQUIRE(!has_mixed_ascii_case(unicode));
 }
 
-BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__upper_ascii_with_ideographic_space__false)
+BOOST_AUTO_TEST_CASE(
+    ascii__has_mixed_ascii_case__upper_ascii_with_ideographic_space__false)
 {
     const auto unicode = ideographic_space + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     BOOST_REQUIRE(!has_mixed_ascii_case(unicode));
 }
 
-BOOST_AUTO_TEST_CASE(ascii__has_mixed_ascii_case__mixed_ascii_with_ideographic_space__true)
+BOOST_AUTO_TEST_CASE(
+    ascii__has_mixed_ascii_case__mixed_ascii_with_ideographic_space__true)
 {
     const auto unicode = ideographic_space + "AbCdEfGhIjKlMnOpQrStUvWxYz";
     BOOST_REQUIRE(has_mixed_ascii_case(unicode));

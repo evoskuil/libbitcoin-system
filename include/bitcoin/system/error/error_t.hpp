@@ -32,9 +32,12 @@
 // explicit success code for the given category improves consistency as the
 // source of a propagated success can be extracted.
 
-namespace libbitcoin {
-namespace system {
-namespace error {
+namespace libbitcoin
+{
+namespace system
+{
+namespace error
+{
 
 enum error_t
 {

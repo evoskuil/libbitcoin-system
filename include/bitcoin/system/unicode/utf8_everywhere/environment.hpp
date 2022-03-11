@@ -25,8 +25,10 @@
 #include <boost/filesystem.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Win32 UTF8 standard I/O utilities.
 // ----------------------------------------------------------------------------
@@ -61,10 +63,11 @@ BC_API void set_binary_stdout();
 // For standard I/O, use <system/unicode/conversion.hpp>.
 constexpr size_t utf8_max_character_size = 4;
 BC_API size_t utf8_remainder_size(const char text[], size_t size);
-BC_API size_t to_utf8(char out_to[], size_t to_bytes, const wchar_t from[],
-    size_t from_chars);
-BC_API size_t to_utf16(size_t& remainder, wchar_t out_to[], size_t to_chars,
-    const char from[], size_t from_bytes);
+BC_API size_t to_utf8(
+    char out_to[], size_t to_bytes, const wchar_t from[], size_t from_chars);
+BC_API size_t to_utf16(
+    size_t& remainder, wchar_t out_to[], size_t to_chars, const char from[],
+    size_t from_bytes);
 
 #ifdef _MSC_VER
 
@@ -77,8 +80,8 @@ BC_API std::ostream& cerr_stream();
 BC_API void free_environment(char* environment[]);
 BC_API char** allocate_environment(wchar_t* environment[]);
 BC_API char** allocate_environment(int argc, wchar_t* argv[]);
-BC_API int call_utf8_main(int argc, wchar_t* argv[],
-    int(*main)(int argc, char* argv[]));
+BC_API int call_utf8_main(
+    int argc, wchar_t* argv[], int (*main)(int argc, char* argv[]));
 #endif
 
 #ifdef _MSC_VER

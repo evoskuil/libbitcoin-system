@@ -40,14 +40,14 @@ BOOST_AUTO_TEST_CASE(bit_writer__bool__stream_default__true)
 
 BOOST_AUTO_TEST_CASE(bit_writer__bool__not_empty__true)
 {
-    std::ostringstream stream{ "*" };
+    std::ostringstream stream{"*"};
     write::bits::ostream writer(stream);
     BOOST_REQUIRE(writer);
 }
 
 BOOST_AUTO_TEST_CASE(bit_writer__bool__stream_end__true)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     stream.get();
     write::bits::ostream writer(stream);
     BOOST_REQUIRE(writer);
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__bool__stream_end__true)
 
 BOOST_AUTO_TEST_CASE(bit_writer__not_bool__stream_invalid__true)
 {
-    std::stringstream stream{ "*" };
+    std::stringstream stream{"*"};
     stream.get();
     stream.get();
     write::bits::ostream writer(stream);
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_big_endian__uint8_t__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_big_endian<uint8_t>(0x42);
-    const std::string expected{ 0x42 };
+    const std::string expected{0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_2_bytes_big_endian__value__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_2_bytes_big_endian(0x42);
-    const std::string expected{ 0x00, 0x42 };
+    const std::string expected{0x00, 0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_4_bytes_big_endian__value__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_4_bytes_big_endian(0x42);
-    const std::string expected{ 0x00, 0x00, 0x00, 0x42 };
+    const std::string expected{0x00, 0x00, 0x00, 0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_8_bytes_big_endian__value__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_8_bytes_big_endian(0x42);
-    const std::string expected{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42 };
+    const std::string expected{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -179,7 +179,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_little_endian__uint8_t__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_little_endian<uint8_t>(0x42);
-    const std::string expected{ 0x42 };
+    const std::string expected{0x42};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_2_bytes_little_endian__value__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_2_bytes_little_endian(0x42);
-    const std::string expected{ 0x42, 0x00 };
+    const std::string expected{0x42, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -214,7 +214,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_4_bytes_little_endian__value__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_4_bytes_little_endian(0x42);
-    const std::string expected{ 0x42, 0x00, 0x00, 0x00 };
+    const std::string expected{0x42, 0x00, 0x00, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -226,7 +226,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_8_bytes_little_endian__value__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_8_bytes_little_endian(0x42);
-    const std::string expected{ 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    const std::string expected{0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_variable__one_byte__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_variable(0x08);
-    const std::string expected{ 0x08 };
+    const std::string expected{0x08};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -248,7 +248,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_variable__two_bytes__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_variable(0x0708);
-    const std::string expected{ (char)varint_two_bytes, 0x08, 0x07 };
+    const std::string expected{(char)varint_two_bytes, 0x08, 0x07};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -258,7 +258,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_variable__four_bytes__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_variable(0x05060708);
-    const std::string expected{ (char)varint_four_bytes, 0x08, 0x07, 0x06, 0x05 };
+    const std::string expected{(char)varint_four_bytes, 0x08, 0x07, 0x06, 0x05};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -268,7 +268,15 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_variable__eight_bytes__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_variable(0x0102030405060708);
-    const std::string expected{ (char)varint_eight_bytes, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+    const std::string expected{(char)varint_eight_bytes,
+                               0x08,
+                               0x07,
+                               0x06,
+                               0x05,
+                               0x04,
+                               0x03,
+                               0x02,
+                               0x01};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -280,7 +288,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_error_code__value__expected)
     std::ostringstream stream;
     write::bits::ostream writer(stream);
     writer.write_error_code(error::double_spend);
-    const std::string expected{ (char)error::double_spend, 0x00, 0x00, 0x00 };
+    const std::string expected{(char)error::double_spend, 0x00, 0x00, 0x00};
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
 }
@@ -303,8 +311,8 @@ BOOST_AUTO_TEST_CASE(bit_writer__write__empty__empty)
 
 BOOST_AUTO_TEST_CASE(bit_writer__write__value__expected)
 {
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
-    std::istringstream in{ expected };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
+    std::istringstream in{expected};
     std::stringstream out;
     write::bits::ostream writer(out);
     BOOST_REQUIRE(writer.write(in));
@@ -338,7 +346,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_bytes1__value__expected)
 {
     std::ostringstream stream;
     write::bits::ostream writer(stream);
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
     writer.write_bytes(expected);
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
@@ -360,7 +368,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_bytes2__value__expected)
 {
     std::ostringstream stream;
     write::bits::ostream writer(stream);
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
     writer.write_bytes(data_slice(expected).data(), expected.size());
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);
@@ -379,7 +387,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_string__one_byte__expected)
     constexpr auto size = to_half(varint_two_bytes);
     const std::string expected(size, '*');
     writer.write_string(expected);
-    BOOST_REQUIRE_EQUAL(stream.str(), std::string{ "\x7e" } + expected);
+    BOOST_REQUIRE_EQUAL(stream.str(), std::string{"\x7e"} + expected);
     BOOST_REQUIRE(writer);
 }
 
@@ -448,7 +456,7 @@ BOOST_AUTO_TEST_CASE(bit_writer__write_string_buffer__value__expected)
 {
     std::ostringstream stream;
     write::bits::ostream writer(stream);
-    const std::string expected{ "abcdefghijklmnopqrstuvwxyz" };
+    const std::string expected{"abcdefghijklmnopqrstuvwxyz"};
     writer.write_string_buffer(expected.data(), expected.size());
     BOOST_REQUIRE_EQUAL(stream.str(), expected);
     BOOST_REQUIRE(writer);

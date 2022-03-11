@@ -23,15 +23,17 @@
 #include <bitcoin/system/crypto/crypto.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // TODO: move to elliptic_curve
 const uint8_t ec_point::invalid = 0x00;
 const uint8_t ec_point::compressed_even = 0x02;
 const uint8_t ec_point::compressed_odd = 0x03;
 const uint8_t ec_point::uncompressed = 0x04;
-const ec_point ec_point::generator{ ec_compressed_generator };
+const ec_point ec_point::generator{ec_compressed_generator};
 
 // private
 bool ec_point::is_valid() const noexcept
@@ -42,28 +44,25 @@ bool ec_point::is_valid() const noexcept
 // construction
 // ----------------------------------------------------------------------------
 
-ec_point::ec_point() noexcept
-  : point_(null_ec_compressed)
+ec_point::ec_point() noexcept : point_(null_ec_compressed)
 {
 }
 
-ec_point::ec_point(ec_point&& point) noexcept
-  : point_(std::move(point.point_))
+ec_point::ec_point(ec_point&& point) noexcept : point_(std::move(point.point_))
 {
 }
 
-ec_point::ec_point(const ec_point& point) noexcept
-  : point_(point.point_)
+ec_point::ec_point(const ec_point& point) noexcept : point_(point.point_)
 {
 }
 
 ec_point::ec_point(ec_compressed&& compressed) noexcept
-  : point_(std::move(compressed))
+    : point_(std::move(compressed))
 {
 }
 
 ec_point::ec_point(const ec_compressed& compressed) noexcept
-  : point_(compressed)
+    : point_(compressed)
 {
 }
 
@@ -141,8 +140,8 @@ ec_point ec_point::operator-() const noexcept
     auto out = point_;
     if (!ec_negate(out))
         return {};
-    
-    return ec_point{ out };
+
+    return ec_point{out};
 }
 
 // binary math operators (const)
@@ -156,8 +155,8 @@ ec_point operator+(const ec_point& left, const ec_point& right) noexcept
     ec_compressed out = left.point();
     if (!ec_add(out, right.point()))
         return {};
-    
-    return ec_point{ out };
+
+    return ec_point{out};
 }
 
 ec_point operator-(const ec_point& left, const ec_point& right) noexcept
@@ -176,8 +175,8 @@ ec_point operator*(const ec_point& left, const ec_scalar& right) noexcept
     auto out = left.point();
     if (!ec_multiply(out, right.secret()))
         return {};
-    
-    return ec_point{ out };
+
+    return ec_point{out};
 }
 
 ec_point operator*(const ec_scalar& left, const ec_point& right) noexcept

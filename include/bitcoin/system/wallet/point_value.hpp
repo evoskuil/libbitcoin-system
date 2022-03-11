@@ -24,13 +24,15 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// A valued point, does not implement specialized serialization methods.
-class BC_API point_value
-  : public chain::point
+class BC_API point_value : public chain::point
 {
 public:
     typedef std::vector<point_value> list;

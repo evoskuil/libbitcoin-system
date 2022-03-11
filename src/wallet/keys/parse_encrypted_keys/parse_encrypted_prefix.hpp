@@ -32,11 +32,14 @@
 // representing an address.... Alt-chain implementers may also change the prefix
 // such that encrypted addresses do not start with "6P".
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
-template<uint8_t Size>
+template <uint8_t Size>
 class parse_encrypted_prefix
 {
 public:

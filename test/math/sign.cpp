@@ -20,9 +20,15 @@
 
 // Test helpers to verify output signedness.
 template <typename Integer, if_signed_integer<Integer> = true>
-constexpr bool is_unsigned(Integer) { return false; }
+constexpr bool is_unsigned(Integer)
+{
+    return false;
+}
 template <typename Integer, if_unsigned_integer<Integer> = true>
-constexpr bool is_unsigned(Integer) { return true; }
+constexpr bool is_unsigned(Integer)
+{
+    return true;
+}
 
 // to_signed
 static_assert(!is_unsigned(to_signed(-1)), "");

@@ -28,9 +28,12 @@
 #include <bitcoin/system/crypto/crypto.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace neutrino {
+namespace libbitcoin
+{
+namespace system
+{
+namespace neutrino
+{
 
 // Golomb-Rice related values (bip158).
 constexpr uint8_t golomb_bits = 19;
@@ -44,11 +47,11 @@ bool compute_filter(const chain::block& block, data_chunk& out_filter) noexcept
     const auto key = to_siphash_key(slice<zero, to_half(hash_size)>(hash));
     data_stack scripts;
 
-    for (const auto& tx: *block.transactions())
+    for (const auto& tx : *block.transactions())
     {
         if (!tx->is_coinbase())
         {
-            for (const auto& input: *(tx->inputs()))
+            for (const auto& input : *(tx->inputs()))
             {
                 if (!input->prevout->is_valid())
                     return false;
@@ -60,14 +63,14 @@ bool compute_filter(const chain::block& block, data_chunk& out_filter) noexcept
             }
         }
 
-        for (const auto& output: *(tx->outputs()))
+        for (const auto& output : *(tx->outputs()))
         {
             const auto& script = output->script();
 
             // bip138: any "nil" items MUST NOT be included.
             // bip138:exclude all outputs that start with OP_RETURN.
-            if (!script.ops().empty() &&
-                !chain::script::is_pay_op_return_pattern(script.ops()))
+            if (!script.ops().empty()
+                && !chain::script::is_pay_op_return_pattern(script.ops()))
                 scripts.push_back(script.to_data(false));
         }
     }
@@ -84,14 +87,14 @@ bool compute_filter(const chain::block& block, data_chunk& out_filter) noexcept
     return true;
 }
 
-hash_digest compute_filter_header(const hash_digest& previous_block_hash,
-    const data_chunk& filter) noexcept
+hash_digest compute_filter_header(
+    const hash_digest& previous_block_hash, const data_chunk& filter) noexcept
 {
     return bitcoin_hash(splice(bitcoin_hash(filter), previous_block_hash));
 }
 
-bool match_filter(const block_filter& filter,
-    const chain::script& script) noexcept
+bool match_filter(
+    const block_filter& filter, const chain::script& script) noexcept
 {
     if (script.ops().empty())
         return false;
@@ -110,8 +113,8 @@ bool match_filter(const block_filter& filter,
     return golomb::match(target, stream, set_size, key, golomb_bits, rate);
 }
 
-bool match_filter(const block_filter& filter,
-    const chain::scripts& scripts) noexcept
+bool match_filter(
+    const block_filter& filter, const chain::scripts& scripts) noexcept
 {
     if (scripts.empty())
         return false;
@@ -119,7 +122,8 @@ bool match_filter(const block_filter& filter,
     data_stack stack;
     stack.reserve(scripts.size());
 
-    std::for_each(scripts.begin(), scripts.end(),
+    std::for_each(
+        scripts.begin(), scripts.end(),
         [&](const chain::script& script) noexcept
         {
             if (!script.ops().empty())
@@ -143,13 +147,14 @@ bool match_filter(const block_filter& filter,
     return golomb::match(stack, stream, set_size, key, golomb_bits, rate);
 }
 
-bool match_filter(const block_filter& filter,
-    const wallet::payment_address& address) noexcept
+bool match_filter(
+    const block_filter& filter, const wallet::payment_address& address) noexcept
 {
     return match_filter(filter, address.output_script());
 }
 
-bool match_filter(const block_filter& filter,
+bool match_filter(
+    const block_filter& filter,
     const wallet::payment_address::list& addresses) noexcept
 {
     if (addresses.empty())
@@ -159,7 +164,8 @@ bool match_filter(const block_filter& filter,
     chain::scripts stack(no_fill_allocator);
     stack.resize(addresses.size());
 
-    std::transform(addresses.begin(), addresses.end(), stack.begin(),
+    std::transform(
+        addresses.begin(), addresses.end(), stack.begin(),
         [](const wallet::payment_address& address) noexcept
         {
             return address.output_script();
@@ -168,6 +174,6 @@ bool match_filter(const block_filter& filter,
     return match_filter(filter, stack);
 }
 
-} // namespace chain
+} // namespace neutrino
 } // namespace system
 } // namespace libbitcoin

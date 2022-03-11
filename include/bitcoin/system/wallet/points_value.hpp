@@ -24,9 +24,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/wallet/point_value.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 class BC_API points_value
 {
@@ -44,8 +47,9 @@ public:
     };
 
     /// Select outpoints for a spend from a list of unspent outputs.
-    static void select(points_value& out, const points_value& unspent,
-        uint64_t minimum_value, selection option=selection::greedy) noexcept;
+    static void select(
+        points_value& out, const points_value& unspent, uint64_t minimum_value,
+        selection option = selection::greedy) noexcept;
 
     /// Total value of the current set of points.
     uint64_t value() const noexcept;
@@ -54,14 +58,16 @@ public:
     point_value::list points;
 
 private:
-    static void greedy(points_value& out, const points_value& unspent,
+    static void greedy(
+        points_value& out, const points_value& unspent,
         uint64_t minimum_value) noexcept;
 
-    static void individual(points_value& out, const points_value& unspent,
+    static void individual(
+        points_value& out, const points_value& unspent,
         uint64_t minimum_value) noexcept;
 };
 
-} // namespace chain
+} // namespace wallet
 } // namespace system
 } // namespace libbitcoin
 

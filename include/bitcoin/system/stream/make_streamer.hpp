@@ -21,8 +21,10 @@
 
 #include <bitcoin/system/stream/make_stream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Suppress multiple inheritance warnings.
 // The inheritance is virtual, so not actually multiple.
@@ -34,15 +36,14 @@ namespace system {
 
 /// Construct an output stream and feed it to a writer.
 /// For std::ostream just pass to writer on construct.
-template <typename Device,
-    template <typename = make_stream<Device>> class Base,
+template <
+    typename Device, template <typename = make_stream<Device>> class Base,
     typename Stream = make_stream<Device>, typename Streamer = Base<Stream>>
-class make_streamer
-  : public Streamer
+class make_streamer : public Streamer
 {
 public:
     make_streamer(typename Device::container device) noexcept
-      : stream_(device), Streamer(stream_)
+        : stream_(device), Streamer(stream_)
     {
     }
 

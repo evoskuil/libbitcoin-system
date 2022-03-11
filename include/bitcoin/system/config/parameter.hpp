@@ -25,15 +25,29 @@
 #include <boost/program_options.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Shorthand for property declarations in parameter class.
-#define BC_PROPERTY(type, name) \
-    public: virtual type name() const { return name##_; } \
-    public: virtual void set_##name(type value) { name##_ = value; } \
-    private: type name##_
+#define BC_PROPERTY(type, name)                                                \
+public:                                                                        \
+    virtual type name() const                                                  \
+    {                                                                          \
+        return name##_;                                                        \
+    }                                                                          \
+                                                                               \
+public:                                                                        \
+    virtual void set_##name(type value)                                        \
+    {                                                                          \
+        name##_ = value;                                                       \
+    }                                                                          \
+                                                                               \
+private:                                                                       \
+    type name##_
 
 /// A tuple to represent a positional argument name count.
 typedef std::pair<const std::string, int> argument_pair;
@@ -50,7 +64,6 @@ typedef std::vector<parameter> parameter_list;
 class BC_API parameter
 {
 private:
-
     /// Enumerated options for selecting the canonical name.
     enum search_options : int
     {
@@ -65,7 +78,6 @@ private:
     };
 
 public:
-
     /// Sentinel - the option is not a positional argument.
     static const int not_positional;
 
@@ -97,8 +109,8 @@ public:
     /// position   The option's position (or -1 of arg).
     /// arguments  The argument names list.
     /// return     The arguments limit value for the option.
-    unsigned arguments_limit(int position,
-        const boost::program_options::option_description& option,
+    unsigned arguments_limit(
+        int position, const boost::program_options::option_description& option,
         const argument_list& arguments) const;
 
     /// Get the option's short name character or zero.

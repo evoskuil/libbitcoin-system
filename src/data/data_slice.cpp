@@ -26,35 +26,36 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // constructors
 // ----------------------------------------------------------------------------
 
-data_slice::data_slice() noexcept
-  : data_slice(nullptr, nullptr, zero)
+data_slice::data_slice() noexcept : data_slice(nullptr, nullptr, zero)
 {
 }
 
 data_slice::data_slice(const data_slice& other) noexcept
-  : begin_(other.begin_), end_(other.end_), size_(other.size_)
+    : begin_(other.begin_), end_(other.end_), size_(other.size_)
 {
 }
 
 data_slice::data_slice(const std::string& text) noexcept
-  : data_slice(from_size(text.begin(), text.size()))
+    : data_slice(from_size(text.begin(), text.size()))
 {
 }
 
 data_slice::data_slice(std::initializer_list<value_type> bytes) noexcept
-  : data_slice(from_size(bytes.begin(), bytes.size()))
+    : data_slice(from_size(bytes.begin(), bytes.size()))
 {
 }
 
 // private
 data_slice::data_slice(pointer begin, pointer end, size_type size) noexcept
-  : begin_(begin), end_(end), size_(size)
+    : begin_(begin), end_(end), size_(size)
 {
 }
 
@@ -63,12 +64,12 @@ data_slice::data_slice(pointer begin, pointer end, size_type size) noexcept
 
 std::vector<data_slice::value_type> data_slice::to_chunk() const noexcept
 {
-    return { begin_, end_ };
+    return {begin_, end_};
 }
 
 std::string data_slice::to_string() const noexcept
 {
-    return { begin_, end_ };
+    return {begin_, end_};
 }
 
 // Cannot provide a "decode" factory since the data is not owned.

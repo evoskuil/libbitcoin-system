@@ -23,8 +23,10 @@
 #include <streambuf>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /**
  * Class to translate internal utf8 iostreams to external utf16 iostreams.
@@ -32,8 +34,7 @@ namespace system {
  * However because of utf8-utf16 conversion ratios of up to 4:1 the effective
  * wide output buffering may be reduced to as much as 256 characters.
  */
-class BC_API unicode_streambuf
-  : public std::streambuf
+class BC_API unicode_streambuf : public std::streambuf
 {
 public:
     /**

@@ -20,40 +20,50 @@
 
 BOOST_AUTO_TEST_SUITE(base_10_tests)
 
-#define TEST_AMOUNT(NAME, EXPECTED, ...) \
-BOOST_AUTO_TEST_CASE(parse_amount_##NAME##_test) \
-{ \
-    uint64_t result, expected = EXPECTED; \
-    BOOST_REQUIRE(decode_base10(result, __VA_ARGS__)); \
-    BOOST_REQUIRE_EQUAL(result, expected); \
-}
+#define TEST_AMOUNT(NAME, EXPECTED, ...)                                       \
+    BOOST_AUTO_TEST_CASE(parse_amount_##NAME##_test)                           \
+    {                                                                          \
+        uint64_t result, expected = EXPECTED;                                  \
+        BOOST_REQUIRE(decode_base10(result, __VA_ARGS__));                     \
+        BOOST_REQUIRE_EQUAL(result, expected);                                 \
+    }
 
-#define TEST_AMOUNT_FAIL(NAME, ...) \
-BOOST_AUTO_TEST_CASE(parse_amount_##NAME##_test) \
-{ \
-    uint64_t result; \
-    BOOST_REQUIRE(!decode_base10(result, __VA_ARGS__)); \
-}
+#define TEST_AMOUNT_FAIL(NAME, ...)                                            \
+    BOOST_AUTO_TEST_CASE(parse_amount_##NAME##_test)                           \
+    {                                                                          \
+        uint64_t result;                                                       \
+        BOOST_REQUIRE(!decode_base10(result, __VA_ARGS__));                    \
+    }
 
-#define TEST_FORMAT(CONDITION, EXPECTED, ...) \
-BOOST_AUTO_TEST_CASE(base10__encode_base10__##CONDITION##__formatted_string) \
-{ \
-    std::string expected = EXPECTED; \
-    std::string result = encode_base10(__VA_ARGS__); \
-    BOOST_REQUIRE_EQUAL(result, expected); \
-}
+#define TEST_FORMAT(CONDITION, EXPECTED, ...)                                  \
+    BOOST_AUTO_TEST_CASE(                                                      \
+        base10__encode_base10__##CONDITION##__formatted_string)                \
+    {                                                                          \
+        std::string expected = EXPECTED;                                       \
+        std::string result = encode_base10(__VA_ARGS__);                       \
+        BOOST_REQUIRE_EQUAL(result, expected);                                 \
+    }
 
 // Limits:
 TEST_AMOUNT(zero, 0, "0")
 TEST_AMOUNT(max_uint64, max_uint64, "18446744073709551615")
 
 // Max money (mainnet, testnet):
-TEST_AMOUNT(max_money_retarget, settings(chain::selection::mainnet).max_money(), "20999999.9769", btc_decimal_places)
-TEST_AMOUNT(overflow_max_money_retarget, settings(chain::selection::mainnet).max_money() + 1, "20999999.97690001", btc_decimal_places)
+TEST_AMOUNT(
+    max_money_retarget, settings(chain::selection::mainnet).max_money(),
+    "20999999.9769", btc_decimal_places)
+TEST_AMOUNT(
+    overflow_max_money_retarget,
+    settings(chain::selection::mainnet).max_money() + 1, "20999999.97690001",
+    btc_decimal_places)
 
 // Max money (regtest):
-TEST_AMOUNT(max_money, settings(chain::selection::regtest).max_money(), "14999.99998350", btc_decimal_places)
-TEST_AMOUNT(overflow_max_money, settings(chain::selection::regtest).max_money() + 1, "14999.99998351", btc_decimal_places)
+TEST_AMOUNT(
+    max_money, settings(chain::selection::regtest).max_money(),
+    "14999.99998350", btc_decimal_places)
+TEST_AMOUNT(
+    overflow_max_money, settings(chain::selection::regtest).max_money() + 1,
+    "14999.99998351", btc_decimal_places)
 
 // Decimal points:
 TEST_AMOUNT(point, 0, ".")
@@ -92,15 +102,30 @@ TEST_AMOUNT_FAIL(negative_fail, "-42")
 // Limits:
 TEST_FORMAT(zero_max_decimal_places, "0", 0, max_uint8)
 TEST_FORMAT(max_uint64, "18446744073709551615", max_uint64)
-TEST_FORMAT(max_uint64_max_decimal_places, "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000018446744073709551615", max_uint64, max_uint8)
+TEST_FORMAT(
+    max_uint64_max_decimal_places,
+    "0."
+    "00000000000000000000000000000000000000000000000000000000000000000000000000"
+    "00000000000000000000000000000000000000000000000000000000000000000000000000"
+    "00000000000000000000000000000000000000000000000000000000000000000000000000"
+    "000000000000018446744073709551615",
+    max_uint64, max_uint8)
 
 // Max money (mainnet, testnet):
-TEST_FORMAT(max_money_retarget, "20999999.9769", settings(chain::selection::mainnet).max_money(), btc_decimal_places)
-TEST_FORMAT(overflow_max_money_retarget, "20999999.97690001", settings(chain::selection::mainnet).max_money() + 1, btc_decimal_places)
+TEST_FORMAT(
+    max_money_retarget, "20999999.9769",
+    settings(chain::selection::mainnet).max_money(), btc_decimal_places)
+TEST_FORMAT(
+    overflow_max_money_retarget, "20999999.97690001",
+    settings(chain::selection::mainnet).max_money() + 1, btc_decimal_places)
 
 // Max money (regtest):
-TEST_FORMAT(max_money, "14999.9999835", settings(chain::selection::regtest).max_money(), btc_decimal_places)
-TEST_FORMAT(overflow_max_money, "14999.99998351", settings(chain::selection::regtest).max_money() + 1, btc_decimal_places)
+TEST_FORMAT(
+    max_money, "14999.9999835", settings(chain::selection::regtest).max_money(),
+    btc_decimal_places)
+TEST_FORMAT(
+    overflow_max_money, "14999.99998351",
+    settings(chain::selection::regtest).max_money() + 1, btc_decimal_places)
 
 // Decimal points:
 TEST_FORMAT(pure_integer, "42", 42, 0)

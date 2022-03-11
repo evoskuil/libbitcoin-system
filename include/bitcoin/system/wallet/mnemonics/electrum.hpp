@@ -33,23 +33,25 @@
 #include <bitcoin/system/wallet/mnemonics/mnemonic.hpp>
 #include <bitcoin/system/words/words.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// A wallet mnemonic, as defined by the second Electrum implementation.
 /// Generates menemonic with desired prefix from entropy.
 /// Converts menemonic to entropy and prefix.
 /// Converts entropy and valid prefix to menemonic.
 /// Derives master keys from menemonic or entropy, and optional passphrase.
-class BC_API electrum
-  : public electrum_v1
+class BC_API electrum : public electrum_v1
 {
 public:
     /// Seed prefix types.
-    /// The values for old, bip39 and none are not actual prefixes but 
+    /// The values for old, bip39 and none are not actual prefixes but
     /// here for consistency when handling electrum exceptional conditions.
-    enum class seed_prefix: uint8_t
+    enum class seed_prefix : uint8_t
     {
         old,
         bip39,
@@ -71,25 +73,26 @@ public:
     /// The dictionary, limited by identifier, that contains all words.
     /// If 'none' is specified all dictionaries are searched.
     /// If 'none' is specified and contained by both en and fr, returns en.
-    static language contained_by(const string_list& words,
-        language identifier=language::none) noexcept;
+    static language contained_by(
+        const string_list& words,
+        language identifier = language::none) noexcept;
 
     /// Valid dictionaries (en, es, it, fr, cs, pt, ja, ko, zh_Hans, zh_Hant).
     static bool is_valid_dictionary(language identifier) noexcept;
 
     /// Valid entropy values (17 to 64 bytes).
     static bool is_valid_entropy_size(size_t size) noexcept;
-    
+
     /// Valid word counts (12 to 46 words).
     static bool is_valid_word_count(size_t count) noexcept;
 
     /// Returns true if the seed of the words has the given prefix.
     /// Will also match 'old', 'bip39' and 'none', as specified.
     /// Non-ascii words must be nfkd/lower prenormalized if WITH_ICU undefind.
-    static bool is_prefix(const string_list& words,
-        seed_prefix prefix) noexcept;
-    static bool is_prefix(const std::string& sentence,
-        seed_prefix prefix) noexcept;
+    static bool is_prefix(
+        const string_list& words, seed_prefix prefix) noexcept;
+    static bool is_prefix(
+        const std::string& sentence, seed_prefix prefix) noexcept;
 
     /// Obtain the enumerated prefix corresponding to the words.
     /// Returns 'old', 'bip39' or 'none' if not a valid electrum v2 seed.
@@ -102,8 +105,8 @@ public:
     /// The "root seed" is also referred to by electrum as the "master key".
     /// There is no way to determine if this is a valid "root seed".
     /// The prefix cannot be verified, which requires the "recovery seed".
-    static hd_private to_key(const long_hash& seed,
-        const context& context) noexcept;
+    static hd_private to_key(
+        const long_hash& seed, const context& context) noexcept;
 
     /// Convert an hd form "root seed" to its raw form (loses context).
     /// The "root seed" is also referred to by electrum as the "master key".
@@ -118,18 +121,21 @@ public:
     /// Construct from the "recovery seed" (mnemonic phrase).
     /// Validity and prefix should be checked after construction.
     /// Any valid length of words from a single dictionary will be valid.
-    electrum(const string_list& words,
-        language identifier=language::none) noexcept;
-    electrum(const std::string& sentence,
-        language identifier=language::none) noexcept;
+    electrum(
+        const string_list& words,
+        language identifier = language::none) noexcept;
+    electrum(
+        const std::string& sentence,
+        language identifier = language::none) noexcept;
 
     /// Construct from the "recovery seed" (mnemonic entropy).
     /// Validity should be checked after construction.
     /// By default this only verifies entropy against the prefix.
     /// Set grind limit to allow entropy mutation for prefix discovery.
     /// The instance will be invalid if the prefix not found within the limit.
-    electrum(const data_chunk& entropy, seed_prefix prefix, language lexicon,
-        size_t grind_limit=0) noexcept;
+    electrum(
+        const data_chunk& entropy, seed_prefix prefix, language lexicon,
+        size_t grind_limit = 0) noexcept;
 
     /// The prefix indicates the intended use of the seed.
     seed_prefix prefix() const noexcept;
@@ -138,7 +144,7 @@ public:
     /// The "root seed" is also referred to by electrum as the "master key".
     /// Returns null result if current prefix is 'none', 'bip39, or 'old'.
     /// Returns null result with non-ascii passphrase and WITH_ICU undefind.
-    long_hash to_seed(const std::string& passphrase="") const noexcept;
+    long_hash to_seed(const std::string& passphrase = "") const noexcept;
 
     /// Derive hd form "root seed" from mnemonic entropy and passphrase.
     /// The "root seed" is also referred to as the "master private key".
@@ -147,8 +153,9 @@ public:
     /// Context affects the hd form but does not affect the contained seed.
     /// Returns invalid result if current prefix is 'none', 'bip39, or 'old'.
     /// Returns invalid result with non-ascii passphrase and WITH_ICU undefind.
-    hd_private to_key(const std::string& passphrase="",
-        const context& context=btc_mainnet_p2kh) const noexcept;
+    hd_private to_key(
+        const std::string& passphrase = "",
+        const context& context = btc_mainnet_p2kh) const noexcept;
 
 protected:
     typedef struct
@@ -159,12 +166,13 @@ protected:
     } grinding;
 
     /// Constructors.
-    electrum(const data_chunk& entropy, const string_list& words,
+    electrum(
+        const data_chunk& entropy, const string_list& words,
         language identifier, seed_prefix prefix) noexcept;
 
     /// Map entropy to entropy bit count (132 to 506 bits).
     static size_t entropy_bits(const data_slice& entropy) noexcept;
-    
+
     /// Map words to entropy bit count (132 to 506 bits).
     static size_t entropy_bits(const string_list& words) noexcept;
 
@@ -173,7 +181,7 @@ protected:
 
     /// Map words to entropy size (17 to 64 bytes).
     static size_t entropy_size(const string_list& words) noexcept;
-    
+
     /// Map entropy size to word count (12 to 46 words).
     static size_t word_count(const data_slice& entropy) noexcept;
 
@@ -192,33 +200,35 @@ protected:
     static bool is_conflict(const string_list& words) noexcept;
     static seed_prefix to_conflict(const string_list& words) noexcept;
 
-    static seed_prefix normalized_to_prefix(
-        const string_list& words) noexcept;
-    static bool normalized_is_prefix(const string_list& words,
-        seed_prefix prefix) noexcept;
+    static seed_prefix normalized_to_prefix(const string_list& words) noexcept;
+    static bool normalized_is_prefix(
+        const string_list& words, seed_prefix prefix) noexcept;
 
     static bool is_ambiguous(size_t count, seed_prefix prefix) noexcept;
-    static bool is_ambiguous(const string_list& words, language requested,
+    static bool is_ambiguous(
+        const string_list& words, language requested,
         language derived) noexcept;
 
     static bool is_seedable(seed_prefix prefix) noexcept;
     static std::string to_version(seed_prefix prefix) noexcept;
 
-    static string_list encoder(const data_chunk& entropy,
-        language identifier) noexcept;
-    static data_chunk decoder(const string_list& words,
-        language identifier) noexcept;
-    static grinding grinder(const data_chunk& entropy, seed_prefix prefix,
-        language identifier, size_t limit) noexcept;
-    static bool validator(const string_list& words, 
-        seed_prefix prefix) noexcept;
-    static long_hash seeder(const string_list& words,
-        const std::string& passphrase) noexcept;
+    static string_list encoder(
+        const data_chunk& entropy, language identifier) noexcept;
+    static data_chunk decoder(
+        const string_list& words, language identifier) noexcept;
+    static grinding grinder(
+        const data_chunk& entropy, seed_prefix prefix, language identifier,
+        size_t limit) noexcept;
+    static bool validator(
+        const string_list& words, seed_prefix prefix) noexcept;
+    static long_hash seeder(
+        const string_list& words, const std::string& passphrase) noexcept;
 
-    static electrum from_words(const string_list& words,
-        language identifier) noexcept;
-    static electrum from_entropy(const data_chunk& entropy, seed_prefix prefix,
-        language identifier, size_t grind_limit) noexcept;
+    static electrum from_words(
+        const string_list& words, language identifier) noexcept;
+    static electrum from_entropy(
+        const data_chunk& entropy, seed_prefix prefix, language identifier,
+        size_t grind_limit) noexcept;
 
 private:
     // All Electrum dictionaries, subset of <dictionaries/mnemonic.cpp>.

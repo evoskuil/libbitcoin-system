@@ -43,8 +43,10 @@
 // encodings (e.g. "scientific notation") are supported. Integer conversion
 // depends on the serialization library, which depends on std::iostream.
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Returns true if a character is one of [0-9].
 // The C standard library function 'isdigit' depends on the current locale
@@ -61,8 +63,9 @@ inline bool is_character(const char character) noexcept
     return character == Character;
 }
 
-bool decode_base10(uint64_t& out, const std::string& amount,
-    uint8_t decimal_places, bool strict) noexcept
+bool decode_base10(
+    uint64_t& out, const std::string& amount, uint8_t decimal_places,
+    bool strict) noexcept
 {
     std::string value(amount);
 
@@ -112,8 +115,8 @@ std::string encode_base10(uint64_t amount, uint8_t decimal_places) noexcept
     stream << amount;
     auto text = stream.str();
     text.insert(text.size() - decimal_places, one, '.');
-    trim_right(text, { "0" });
-    trim_right(text, { "." });
+    trim_right(text, {"0"});
+    trim_right(text, {"."});
     return text;
 }
 

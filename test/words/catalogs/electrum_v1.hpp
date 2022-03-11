@@ -27,12 +27,15 @@
 using namespace bc::system;
 using namespace bc::system::words;
 
-namespace test {
-namespace catalogs_electrum_v1 {
+namespace test
+{
+namespace catalogs_electrum_v1
+{
 
 bool abnormal(const electrum_v1::catalog::words& words)
 {
-    return std::all_of(words.word.begin(), words.word.end(),
+    return std::all_of(
+        words.word.begin(), words.word.end(),
         [&](const char test[])
         {
             std::string copy = test;
@@ -42,45 +45,57 @@ bool abnormal(const electrum_v1::catalog::words& words)
         });
 }
 
-static ptrdiff_t intersection(const electrum_v1::catalog::words& left,
+static ptrdiff_t intersection(
+    const electrum_v1::catalog::words& left,
     const electrum_v1::catalog::words& right)
 {
-    return std::count_if(left.word.begin(), left.word.end(),
+    return std::count_if(
+        left.word.begin(), left.word.end(),
         [&](const char test_left[])
         {
-            return std::find_if(right.word.begin(), right.word.end(),
-                [&](const char test_right[])
-                {
-                    return (std::strcmp(test_left, test_right) == 0);
-                }) != right.word.end();
-        });
-    }
-
-static bool intersects(const electrum_v1::catalog::words& left,
-    const electrum::catalog::words& right)
-{
-    return std::any_of(left.word.begin(), left.word.end(),
-        [&](const char test_left[])
-        {
-            return std::find_if(right.word.begin(), right.word.end(),
-                [&](const char test_right[])
-                {
-                    return (std::strcmp(test_left, test_right) == 0);
-                }) != right.word.end();
+            return std::find_if(
+                       right.word.begin(), right.word.end(),
+                       [&](const char test_right[])
+                       {
+                           return (std::strcmp(test_left, test_right) == 0);
+                       })
+                   != right.word.end();
         });
 }
 
-static ptrdiff_t intersection(const electrum_v1::catalog::words& left,
+static bool intersects(
+    const electrum_v1::catalog::words& left,
     const electrum::catalog::words& right)
 {
-    return std::count_if(left.word.begin(), left.word.end(),
+    return std::any_of(
+        left.word.begin(), left.word.end(),
         [&](const char test_left[])
         {
-            return std::find_if(right.word.begin(), right.word.end(),
-                [&](const char test_right[])
-                {
-                    return (std::strcmp(test_left, test_right) == 0);
-                }) != right.word.end();
+            return std::find_if(
+                       right.word.begin(), right.word.end(),
+                       [&](const char test_right[])
+                       {
+                           return (std::strcmp(test_left, test_right) == 0);
+                       })
+                   != right.word.end();
+        });
+}
+
+static ptrdiff_t intersection(
+    const electrum_v1::catalog::words& left,
+    const electrum::catalog::words& right)
+{
+    return std::count_if(
+        left.word.begin(), left.word.end(),
+        [&](const char test_left[])
+        {
+            return std::find_if(
+                       right.word.begin(), right.word.end(),
+                       [&](const char test_right[])
+                       {
+                           return (std::strcmp(test_left, test_right) == 0);
+                       })
+                   != right.word.end();
         });
 }
 
@@ -88,7 +103,8 @@ static string_list to_string_list(const electrum_v1::catalog::words& words)
 {
     // Convert catalog to string, otherwise pointers are compared.
     string_list tokens(electrum_v1::catalog::size());
-    std::transform(words.word.begin(), words.word.end(), tokens.begin(),
+    std::transform(
+        words.word.begin(), words.word.end(), tokens.begin(),
         [](const char* token)
         {
             return token;
@@ -122,7 +138,7 @@ static hash_digest identity(const electrum_v1::catalog::words& words)
     return sha256_hash(join(to_string_list(words)));
 }
 
-} // catalogs_electrum_v1
-} // test
+} // namespace catalogs_electrum_v1
+} // namespace test
 
 #endif

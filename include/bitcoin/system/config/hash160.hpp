@@ -24,9 +24,12 @@
 #include <bitcoin/system/crypto/crypto.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for a bitcoin 160 bit hash.
 class BC_API hash160
@@ -40,8 +43,8 @@ public:
     operator const short_hash&() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, hash160& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const hash160& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const hash160& argument) noexcept;
 
 private:
     short_hash value_;

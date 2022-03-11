@@ -26,8 +26,10 @@
 #include <bitcoin/system/serial/serial.hpp>
 #include <bitcoin/system/unicode/ascii.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // bitcoin checksum.
 // ----------------------------------------------------------------------------
@@ -57,8 +59,8 @@ bool verify_checksum(const data_slice& data) noexcept
         return false;
 
     const auto position = std::prev(data.end(), sizeof(uint32_t));
-    const auto check = from_little_endian<uint32_t>({ position, data.end() });
-    return check == bitcoin_checksum({ data.begin(), position });
+    const auto check = from_little_endian<uint32_t>({position, data.end()});
+    return check == bitcoin_checksum({data.begin(), position});
 }
 
 // bech32 checksum
@@ -100,16 +102,21 @@ static uint32_t bech32_checksum(const base32_chunk& data) noexcept
 {
     uint32_t checksum = 1;
 
-    for (const auto& value: data)
+    for (const auto& value : data)
     {
         const uint32_t coeficient = (checksum >> 25);
         checksum = ((checksum & 0x01ffffff) << 5) ^ value.convert_to<uint8_t>();
 
-        if (coeficient & 0x01) checksum ^= 0x3b6a57b2;
-        if (coeficient & 0x02) checksum ^= 0x26508e6d;
-        if (coeficient & 0x04) checksum ^= 0x1ea119fa;
-        if (coeficient & 0x08) checksum ^= 0x3d4233dd;
-        if (coeficient & 0x10) checksum ^= 0x2a1462b3;
+        if (coeficient & 0x01)
+            checksum ^= 0x3b6a57b2;
+        if (coeficient & 0x02)
+            checksum ^= 0x26508e6d;
+        if (coeficient & 0x04)
+            checksum ^= 0x1ea119fa;
+        if (coeficient & 0x08)
+            checksum ^= 0x3d4233dd;
+        if (coeficient & 0x10)
+            checksum ^= 0x2a1462b3;
     }
 
     return checksum;
@@ -122,15 +129,15 @@ static uint32_t bech32_constant(uint8_t version) noexcept
     return is_zero(version) ? 0x00000001 : 0x2bc830a3;
 }
 
-static void bech32_prepend_prefix(base32_chunk& data,
-    const std::string& prefix) noexcept
+static void bech32_prepend_prefix(
+    base32_chunk& data, const std::string& prefix) noexcept
 {
     const auto expanded = bech32_expand_prefix(prefix);
     data.insert(data.begin(), expanded.begin(), expanded.end());
 }
 
-static void bech32_append_checksum(base32_chunk& data,
-    const std::string& prefix, uint8_t version) noexcept
+static void bech32_append_checksum(
+    base32_chunk& data, const std::string& prefix, uint8_t version) noexcept
 {
     auto prefixed = data;
     bech32_prepend_prefix(prefixed, prefix);
@@ -140,15 +147,17 @@ static void bech32_append_checksum(base32_chunk& data,
     data.insert(data.end(), checked.begin(), checked.end());
 }
 
-static bool bech32_verify_checksum(const base32_chunk& checked,
-    const std::string& prefix, uint8_t version) noexcept
+static bool bech32_verify_checksum(
+    const base32_chunk& checked, const std::string& prefix,
+    uint8_t version) noexcept
 {
     auto prefixed = checked;
     bech32_prepend_prefix(prefixed, prefix);
     return bech32_checksum(prefixed) == bech32_constant(version);
 }
 
-base32_chunk bech32_build_checked(uint8_t version, const data_chunk& program,
+base32_chunk bech32_build_checked(
+    uint8_t version, const data_chunk& program,
     const std::string& prefix) noexcept
 {
     // Version expansion would truncate a value above 5 bits.
@@ -163,18 +172,17 @@ base32_chunk bech32_build_checked(uint8_t version, const data_chunk& program,
     return checked;
 }
 
-bool bech32_verify_checked(uint8_t& out_version, data_chunk& out_program,
-    const std::string& prefix, const base32_chunk& checked) noexcept
+bool bech32_verify_checked(
+    uint8_t& out_version, data_chunk& out_program, const std::string& prefix,
+    const base32_chunk& checked) noexcept
 {
     if (checked.size() < bech32_version_size + bech32_checksum_size)
         return false;
 
     out_version = checked.front().convert_to<uint8_t>();
     out_program = base32_pack(
-    {
-        std::next(checked.begin(), bech32_version_size),
-        std::prev(checked.end(), bech32_checksum_size)
-    });
+        {std::next(checked.begin(), bech32_version_size),
+         std::prev(checked.end(), bech32_checksum_size)});
 
     return bech32_verify_checksum(checked, prefix, out_version);
 }

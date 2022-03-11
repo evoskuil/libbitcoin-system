@@ -25,8 +25,10 @@
 #include <boost/program_options.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// We do not use exceptions for general purpose error handling.
 
@@ -68,8 +70,7 @@ using ostream_exception = std::iostream::failure;
 using istream_exception = boost::program_options::invalid_option_value;
 using ifstream_exception = boost::program_options::reading_file;
 
-class BC_API end_of_stream
-  : std::exception
+class BC_API end_of_stream : std::exception
 {
 };
 

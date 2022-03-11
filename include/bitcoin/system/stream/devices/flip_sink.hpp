@@ -22,24 +22,23 @@
 #include <bitcoin/system/stream/device.hpp>
 #include <bitcoin/system/stream/devices/copy_sink.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Sink for ios::stream, copies bytes to/from Container.
 // The only derivation is override of copy_sink::category.
 // This allows copy_sink to avoid an unnecessary output_sequence invocation.
 template <typename Container>
-class flip_sink
-  : public copy_sink<Container>
+class flip_sink : public copy_sink<Container>
 {
 public:
-    struct category
-      : ios::seekable, ios::direct_tag
+    struct category : ios::seekable, ios::direct_tag
     {
     };
 
-    flip_sink(const Container& data) noexcept
-      : copy_sink<Container>(data)
+    flip_sink(const Container& data) noexcept : copy_sink<Container>(data)
     {
     }
 };

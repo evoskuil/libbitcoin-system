@@ -25,8 +25,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// key_rings is a collection of rings of public keys.
 /// Each ring contains several public keys.
@@ -49,8 +51,8 @@ struct BC_API ring_signature
 
 /// Prepare hash digest for use in ring signature signing and verification.
 /// Returns ring signature digest: sha256(message || flatten(rings)).
-BC_API hash_digest digest(const data_slice& message,
-    const key_rings& rings) noexcept;
+BC_API hash_digest
+digest(const data_slice& message, const key_rings& rings) noexcept;
 
 /// Create a borromean ring signature.
 /// There must exist a valid signing key for each ring of public keys.
@@ -63,20 +65,20 @@ BC_API hash_digest digest(const data_slice& message,
 /// digest   The message digest to sign.
 /// salts    Randomizing seed values.
 /// return false if the signing operation fails.
-BC_API bool sign(ring_signature& out, const secret_list& secrets,
-    const key_rings& rings, const hash_digest& digest,
-    const secret_list& salts) noexcept;
+BC_API bool sign(
+    ring_signature& out, const secret_list& secrets, const key_rings& rings,
+    const hash_digest& digest, const secret_list& salts) noexcept;
 
 /// Verify a borromean ring signature.
 /// rings        The rings each with N_i public keys.
 /// digest       The message digest to verify.
 /// signature    Signature.
 /// return false if the verify operation fails.
-BC_API bool verify(const key_rings& rings, const hash_digest& digest,
+BC_API bool verify(
+    const key_rings& rings, const hash_digest& digest,
     const ring_signature& signature) noexcept;
 
 } // namespace system
 } // namespace libbitcoin
 
 #endif
-

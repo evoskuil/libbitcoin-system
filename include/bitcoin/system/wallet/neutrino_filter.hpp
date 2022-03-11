@@ -29,9 +29,12 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/wallet/addresses/payment_address.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace neutrino {
+namespace libbitcoin
+{
+namespace system
+{
+namespace neutrino
+{
 
 struct BC_API block_filter
 {
@@ -39,22 +42,24 @@ struct BC_API block_filter
     data_chunk filter;
 };
 
-bool BC_API compute_filter(const chain::block& block,
-    data_chunk& out_filter) noexcept;
+bool BC_API
+compute_filter(const chain::block& block, data_chunk& out_filter) noexcept;
 
-hash_digest BC_API compute_filter_header(const hash_digest& previous_block,
-    const data_chunk& filter) noexcept;
+hash_digest BC_API compute_filter_header(
+    const hash_digest& previous_block, const data_chunk& filter) noexcept;
 
-bool BC_API match_filter(const block_filter& filter,
-    const chain::script& script) noexcept;
+bool BC_API
+match_filter(const block_filter& filter, const chain::script& script) noexcept;
 
-bool BC_API match_filter(const block_filter& filter,
-    const chain::scripts& scripts) noexcept;
+bool BC_API match_filter(
+    const block_filter& filter, const chain::scripts& scripts) noexcept;
 
-bool BC_API match_filter(const block_filter& filter,
+bool BC_API match_filter(
+    const block_filter& filter,
     const wallet::payment_address& address) noexcept;
 
-bool BC_API match_filter(const block_filter& filter,
+bool BC_API match_filter(
+    const block_filter& filter,
     const wallet::payment_address::list& addresses) noexcept;
 
 } // namespace neutrino

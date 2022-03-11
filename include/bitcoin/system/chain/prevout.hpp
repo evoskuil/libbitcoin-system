@@ -25,14 +25,16 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/chain/output.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // Prevout should be stored as shared (adds 16 bytes).
 // copy: output(3 * 64 + 1) + 2 * 64 + 2 = 41 bytes (vs. 16 when shared).
-class BC_API prevout
-  : public output
+class BC_API prevout : public output
 {
 public:
     // prevout::ptr is non-const.
@@ -42,21 +44,21 @@ public:
     using chain::output::output;
 
     //*************************************************************************
-    // CONSENSUS: 
+    // CONSENSUS:
     // A height of zero is immature (unspendable) despite unspent state.
     //*************************************************************************
     /// The confirmed chain height of the prevout (zero if not found).
     size_t height = zero;
 
     //*************************************************************************
-    // CONSENSUS: 
+    // CONSENSUS:
     // A mtp of max_uint32 fails locktime maturity (until time overflow).
     //*************************************************************************
     /// The median time past at height (max_uint32 if not found/confirmed).
     uint32_t median_time_past = max_uint32;
 
     //*************************************************************************
-    // CONSENSUS: 
+    // CONSENSUS:
     // For the first coinbase input, this indicates that a transaction of the
     // same hash is either spent by height or does not exist by height (bip30).
     // If the coinbase height is below height then a collision must be assumed.

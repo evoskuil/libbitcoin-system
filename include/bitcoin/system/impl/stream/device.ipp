@@ -26,13 +26,14 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/math/sign.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // protected
 template <typename Container>
-device<Container>::device(size_type remaining) noexcept
-  : remaining_(remaining)
+device<Container>::device(size_type remaining) noexcept : remaining_(remaining)
 {
 }
 
@@ -40,24 +41,24 @@ device<Container>::device(size_type remaining) noexcept
 // ----------------------------------------------------------------------------
 
 template <typename Container>
-typename device<Container>::sequence
-device<Container>::input_sequence() const noexcept
+typename device<Container>::sequence device<Container>::input_sequence()
+    const noexcept
 {
     // Required to match output_sequence for read/write devices.
     return do_sequence();
 }
 
 template <typename Container>
-typename device<Container>::sequence
-device<Container>::output_sequence() const noexcept
+typename device<Container>::sequence device<Container>::output_sequence()
+    const noexcept
 {
     // Required to match input_sequence for read/write devices.
     return do_sequence();
 }
 
 template <typename Container>
-typename device<Container>::size_type
-device<Container>::read(char_type* buffer, size_type count) noexcept
+typename device<Container>::size_type device<Container>::read(
+    char_type* buffer, size_type count) noexcept
 {
     if (is_null(buffer) || is_negative(count))
         return negative_one;
@@ -71,8 +72,8 @@ device<Container>::read(char_type* buffer, size_type count) noexcept
 }
 
 template <typename Container>
-typename device<Container>::size_type
-device<Container>::write(const char_type* buffer, size_type count) noexcept
+typename device<Container>::size_type device<Container>::write(
+    const char_type* buffer, size_type count) noexcept
 {
     if (is_null(buffer) || is_negative(count))
         return negative_one;
@@ -86,8 +87,8 @@ device<Container>::write(const char_type* buffer, size_type count) noexcept
 }
 
 template <typename Container>
-typename device<Container>::size_type
-device<Container>::optimal_buffer_size() const noexcept
+typename device<Container>::size_type device<Container>::optimal_buffer_size()
+    const noexcept
 {
     // The buffer size allocated by iostreams upon indirect device construct.
     return do_optimal_buffer_size();
@@ -97,11 +98,11 @@ device<Container>::optimal_buffer_size() const noexcept
 // ----------------------------------------------------------------------------
 
 template <typename Container>
-typename device<Container>::sequence
-device<Container>::do_sequence() const noexcept
+typename device<Container>::sequence device<Container>::do_sequence()
+    const noexcept
 {
     // Not implemented, override.
-    return { nullptr, nullptr };
+    return {nullptr, nullptr};
 }
 
 template <typename Container>
@@ -118,8 +119,8 @@ void device<Container>::do_write(const value_type*, size_type) noexcept
 }
 
 template <typename Container>
-typename device<Container>::size_type
-device<Container>::do_optimal_buffer_size() const noexcept
+typename device<Container>::size_type device<
+    Container>::do_optimal_buffer_size() const noexcept
 {
     // Defaults to 4k bytes, override in indirect devices.
     return BOOST_IOSTREAMS_DEFAULT_DEVICE_BUFFER_SIZE;

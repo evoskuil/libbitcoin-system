@@ -22,12 +22,14 @@
 #include <bitcoin/system/constants.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Protected base class constructor (must be derived).
 secp256k1_initializer::secp256k1_initializer(int flags) noexcept
-  : context_(secp256k1_context_create(flags))
+    : context_(secp256k1_context_create(flags))
 {
     BC_ASSERT(context_ != nullptr);
 }
@@ -43,7 +45,7 @@ secp256k1_initializer::~secp256k1_initializer() noexcept
 
 // Concrete type for signing init.
 secp256k1_signing::secp256k1_signing() noexcept
-  : secp256k1_initializer(SECP256K1_CONTEXT_SIGN)
+    : secp256k1_initializer(SECP256K1_CONTEXT_SIGN)
 {
 }
 
@@ -56,7 +58,7 @@ secp256k1_context* secp256k1_signing::context() noexcept
 
 // Concrete type for verification init.
 secp256k1_verification::secp256k1_verification() noexcept
-  : secp256k1_initializer(SECP256K1_CONTEXT_VERIFY)
+    : secp256k1_initializer(SECP256K1_CONTEXT_VERIFY)
 {
 }
 

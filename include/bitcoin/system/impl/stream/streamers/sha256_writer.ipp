@@ -26,9 +26,11 @@
 #include <bitcoin/system/stream/streamers/byte_reader.hpp>
 #include <bitcoin/system/stream/streamers/byte_writer.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 // All public methods must rely on protected for stream state except validity.
 
 // constructors
@@ -36,8 +38,7 @@ namespace system {
 
 template <typename OStream>
 sha256_writer<OStream>::sha256_writer(OStream& sink) noexcept
-  : byte_writer<OStream>(sink),
-    context_{ intrinsics::sha256_initial }
+    : byte_writer<OStream>(sink), context_{intrinsics::sha256_initial}
 {
     ////intrinsics::sha256_initialize(context_);
 }
@@ -53,8 +54,8 @@ sha256_writer<OStream>::~sha256_writer() noexcept
 // ----------------------------------------------------------------------------
 
 template <typename OStream>
-void sha256_writer<OStream>::do_write_bytes(const uint8_t* data,
-    size_t size) noexcept
+void sha256_writer<OStream>::do_write_bytes(
+    const uint8_t* data, size_t size) noexcept
 {
     sha256_update(context_, data, size);
 }

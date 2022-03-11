@@ -30,14 +30,16 @@
 #include <bitcoin/system/wallet/keys/ec_point.hpp>
 #include <bitcoin/system/wallet/keys/ec_scalar.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 typedef std::vector<uint32_t> index_list;
 typedef std::map<ec_compressed, ec_secret> secret_keys_map;
 
-static ec_scalar borromean_hash(const hash_digest& M, const data_slice& R,
-    uint32_t i, uint32_t j) noexcept
+static ec_scalar borromean_hash(
+    const hash_digest& M, const data_slice& R, uint32_t i, uint32_t j) noexcept
 {
     // e = H(M || R || i || j)
     hash_digest hash;
@@ -51,16 +53,16 @@ static ec_scalar borromean_hash(const hash_digest& M, const data_slice& R,
 }
 
 // Take a list of secret keys and generate a mapping from public key -> secret.
-static bool generate_keys_map(secret_keys_map& out,
-    const secret_list& secrets) noexcept
+static bool generate_keys_map(
+    secret_keys_map& out, const secret_list& secrets) noexcept
 {
-    for (const auto& secret: secrets)
+    for (const auto& secret : secrets)
     {
         ec_compressed public_key;
         if (!secret_to_public(public_key, secret))
             return false;
 
-        out.insert({ public_key, secret });
+        out.insert({public_key, secret});
     }
 
     return true;
@@ -74,7 +76,7 @@ static const compressed_list known_keys_in_ring(
     compressed_list known_ring;
     known_ring.reserve(ring.size());
 
-    for (const auto& key: ring)
+    for (const auto& key : ring)
         if (secret_keys.find(key) != secret_keys.end())
             known_ring.push_back(key);
 
@@ -83,13 +85,13 @@ static const compressed_list known_keys_in_ring(
 }
 
 // For all rings, make a list of known public keys corresponding to each ring.
-static key_rings partition_keys_into_rings(const secret_keys_map& secret_keys,
-    const key_rings& rings) noexcept
+static key_rings partition_keys_into_rings(
+    const secret_keys_map& secret_keys, const key_rings& rings) noexcept
 {
     key_rings known_keys;
     known_keys.reserve(rings.size());
 
-    for (const auto& ring: rings)
+    for (const auto& ring : rings)
         known_keys.push_back(known_keys_in_ring(secret_keys, ring));
 
     return known_keys;
@@ -99,7 +101,8 @@ static key_rings partition_keys_into_rings(const secret_keys_map& secret_keys,
 // public keys. That is given a ring of {A, B, C} where we know the
 // private key of B, it will return 1 (the index in the ring).
 // This function computes this for all rings.
-static bool create_key_indexes(index_list& out, const key_rings& rings,
+static bool create_key_indexes(
+    index_list& out, const key_rings& rings,
     const key_rings& known_keys_by_ring) noexcept
 {
     BC_ASSERT(known_keys_by_ring.size() == rings.size());
@@ -120,7 +123,8 @@ static bool create_key_indexes(index_list& out, const key_rings& rings,
     return true;
 }
 
-static bool generate_known_indexes(index_list& out, const key_rings& rings,
+static bool generate_known_indexes(
+    index_list& out, const key_rings& rings,
     const secret_keys_map& secret_keys) noexcept
 {
     auto known_keys_by_ring = partition_keys_into_rings(secret_keys, rings);
@@ -132,22 +136,23 @@ static bool generate_known_indexes(index_list& out, const key_rings& rings,
     };
 
     // Check there is a known secret key in each ring.
-    const auto has_empty = std::any_of(known_keys_by_ring.begin(),
-        known_keys_by_ring.end(), empty);
+    const auto has_empty = std::any_of(
+        known_keys_by_ring.begin(), known_keys_by_ring.end(), empty);
 
     // Compute indexes for known keys inside the rings.
     return !has_empty && create_key_indexes(out, rings, known_keys_by_ring);
 }
 
-static ec_point calculate_R(const ec_scalar& s, const ec_scalar& e,
-    const ec_point& P) noexcept
+static ec_point calculate_R(
+    const ec_scalar& s, const ec_scalar& e, const ec_point& P) noexcept
 {
     return s * ec_point::generator + e * P;
 }
 
-static ec_point calculate_last_R_signing(const compressed_list& ring,
-    uint32_t i, const hash_digest& digest, const ring_signature& signature,
-    const uint32_t known_key_index, const secret_list& salts) noexcept
+static ec_point calculate_last_R_signing(
+    const compressed_list& ring, uint32_t i, const hash_digest& digest,
+    const ring_signature& signature, const uint32_t known_key_index,
+    const secret_list& salts) noexcept
 {
     auto R_i_j = salts[i] * ec_point::generator;
     if (!R_i_j)
@@ -174,9 +179,9 @@ static ec_point calculate_last_R_signing(const compressed_list& ring,
     return R_i_j;
 }
 
-static bool calculate_e0(ring_signature& out, const key_rings& rings,
-    const hash_digest& digest, const secret_list& salts,
-    const index_list& known_key_indexes) noexcept
+static bool calculate_e0(
+    ring_signature& out, const key_rings& rings, const hash_digest& digest,
+    const secret_list& salts, const index_list& known_key_indexes) noexcept
 {
     hash_digest hash;
     hash::sha256::copy sink(hash);
@@ -191,8 +196,8 @@ static bool calculate_e0(ring_signature& out, const key_rings& rings,
         const auto known_key_index = known_key_indexes[i];
 
         // Calculate the last R value.
-        const auto last_R = calculate_last_R_signing(ring, i, digest, out,
-            known_key_index, salts);
+        const auto last_R = calculate_last_R_signing(
+            ring, i, digest, out, known_key_index, salts);
 
         if (!last_R)
             return false;
@@ -208,9 +213,9 @@ static bool calculate_e0(ring_signature& out, const key_rings& rings,
     return true;
 }
 
-static bool calculate_e_at_known_key_index(ec_scalar& e_i_j,
-    const ring_signature& signature, const compressed_list& ring,
-    const hash_digest& digest, const uint32_t i,
+static bool calculate_e_at_known_key_index(
+    ec_scalar& e_i_j, const ring_signature& signature,
+    const compressed_list& ring, const hash_digest& digest, const uint32_t i,
     const uint32_t known_key_index) noexcept
 {
     BC_ASSERT(signature.proofs[i].size() > known_key_index);
@@ -219,7 +224,7 @@ static bool calculate_e_at_known_key_index(ec_scalar& e_i_j,
     // Loop until index of known key.
     for (uint32_t j = 0; j < known_key_index; ++j)
     {
-        const ec_scalar s{ signature.proofs[i][j] };
+        const ec_scalar s{signature.proofs[i][j]};
         if (!s)
             return false;
 
@@ -236,9 +241,10 @@ static bool calculate_e_at_known_key_index(ec_scalar& e_i_j,
     return true;
 }
 
-static bool join_rings(ring_signature& out, const key_rings& rings,
-    const hash_digest& digest, const secret_list& salts,
-    const index_list& known_key_indexes, secret_keys_map& secret_keys) noexcept
+static bool join_rings(
+    ring_signature& out, const key_rings& rings, const hash_digest& digest,
+    const secret_list& salts, const index_list& known_key_indexes,
+    secret_keys_map& secret_keys) noexcept
 {
     for (uint32_t i = 0; i < rings.size(); ++i)
     {
@@ -250,8 +256,8 @@ static bool join_rings(ring_signature& out, const key_rings& rings,
         if (!e_i_j)
             return false;
 
-        if (!calculate_e_at_known_key_index(e_i_j, out, ring, digest, i,
-            known_key_index))
+        if (!calculate_e_at_known_key_index(
+                e_i_j, out, ring, digest, i, known_key_index))
             return false;
 
         // Find secret key used for calculation in the next step.
@@ -276,9 +282,9 @@ static bool join_rings(ring_signature& out, const key_rings& rings,
     return true;
 }
 
-static ec_point calculate_last_R_verify(const compressed_list& ring,
-    ec_scalar e_i_j, uint32_t i, const hash_digest& digest,
-    const ring_signature& signature) noexcept
+static ec_point calculate_last_R_verify(
+    const compressed_list& ring, ec_scalar e_i_j, uint32_t i,
+    const hash_digest& digest, const ring_signature& signature) noexcept
 {
     ec_point R_i_j;
     BC_ASSERT(signature.proofs[i].size() == ring.size());
@@ -315,17 +321,17 @@ hash_digest digest(const data_slice& message, const key_rings& rings) noexcept
 
     sink.write_bytes(message);
 
-    for (const auto& ring: rings)
-        for (const auto& key: ring)
+    for (const auto& ring : rings)
+        for (const auto& key : ring)
             sink.write_bytes(key);
 
     sink.flush();
     return hash;
 }
 
-bool sign(ring_signature& out, const secret_list& secrets,
-    const key_rings& rings, const hash_digest& digest,
-    const secret_list& salts) noexcept
+bool sign(
+    ring_signature& out, const secret_list& secrets, const key_rings& rings,
+    const hash_digest& digest, const secret_list& salts) noexcept
 {
     // Guard against overflow.
     if (rings.size() >= max_uint32)
@@ -343,8 +349,8 @@ bool sign(ring_signature& out, const secret_list& secrets,
         return false;
 
     // Join each ring at the index where the secret key is known.
-    return join_rings(out, rings, digest, salts, known_key_indexes,
-        secret_keys);
+    return join_rings(
+        out, rings, digest, salts, known_key_indexes, secret_keys);
 }
 
 // As compared with signing, we only have to perform a single step.
@@ -352,7 +358,8 @@ bool sign(ring_signature& out, const secret_list& secrets,
 // it by calculating e0, and looping all the way until the end R value
 // which we use to recalculate e0.
 // If the values match then we have a valid ring signature.
-bool verify(const key_rings& rings, const hash_digest& digest,
+bool verify(
+    const key_rings& rings, const hash_digest& digest,
     const ring_signature& signature) noexcept
 {
     // Guard against overflow.
@@ -372,8 +379,8 @@ bool verify(const key_rings& rings, const hash_digest& digest,
             return false;
 
         // Calculate the last R value.
-        const auto last_R = calculate_last_R_verify(rings[i], e_i_0, i, digest,
-            signature);
+        const auto last_R =
+            calculate_last_R_verify(rings[i], e_i_0, i, digest, signature);
 
         if (!last_R)
             return false;

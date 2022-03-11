@@ -43,9 +43,12 @@
 #include <bitcoin/system/settings.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 static default_allocator<hash_digest> no_fill_hash_allocator{};
 
@@ -53,68 +56,69 @@ static default_allocator<hash_digest> no_fill_hash_allocator{};
 // ----------------------------------------------------------------------------
 
 block::block() noexcept
-  : block(to_shared<chain::header>(), to_shared<chain::transaction_ptrs>(),
-      false)
+    : block(
+        to_shared<chain::header>(), to_shared<chain::transaction_ptrs>(), false)
 {
 }
 
-block::block(block&& other) noexcept
-  : block(other)
+block::block(block&& other) noexcept : block(other)
 {
 }
 
 block::block(const block& other) noexcept
-  : block(other.header_, other.txs_, other.valid_)
+    : block(other.header_, other.txs_, other.valid_)
 {
 }
 
 block::block(chain::header&& header, chain::transactions&& txs) noexcept
-  : block(to_shared(std::move(header)), to_shareds(std::move(txs)), true)
+    : block(to_shared(std::move(header)), to_shareds(std::move(txs)), true)
 {
 }
 
-block::block(const chain::header& header,
-    const chain::transactions& txs) noexcept
-  : block(to_shared<chain::header>(header), to_shareds(txs), true)
+block::block(
+    const chain::header& header, const chain::transactions& txs) noexcept
+    : block(to_shared<chain::header>(header), to_shareds(txs), true)
 {
 }
 
-block::block(const chain::header::ptr& header,
-    const transactions_ptr& txs) noexcept
-  : block(header ? header : to_shared<chain::header>(),
-      txs ? txs : to_shared<transaction_ptrs>(), true)
+block::block(
+    const chain::header::ptr& header, const transactions_ptr& txs) noexcept
+    : block(
+        header ? header : to_shared<chain::header>(),
+        txs ? txs : to_shared<transaction_ptrs>(), true)
 {
 }
 
 block::block(const data_slice& data, bool witness) noexcept
-  : block(stream::in::copy(data), witness)
+    : block(stream::in::copy(data), witness)
 {
 }
 
 block::block(std::istream&& stream, bool witness) noexcept
-  : block(read::bytes::istream(stream), witness)
+    : block(read::bytes::istream(stream), witness)
 {
 }
 
 block::block(std::istream& stream, bool witness) noexcept
-  : block(read::bytes::istream(stream), witness)
+    : block(read::bytes::istream(stream), witness)
 {
 }
 
 block::block(reader&& source, bool witness) noexcept
-  : block(from_data(source, witness))
+    : block(from_data(source, witness))
 {
 }
 
 block::block(reader& source, bool witness) noexcept
-  : block(from_data(source, witness))
+    : block(from_data(source, witness))
 {
 }
 
 // protected
-block::block(const chain::header::ptr& header, const transactions_ptr& txs,
+block::block(
+    const chain::header::ptr& header, const transactions_ptr& txs,
     bool valid) noexcept
-  : header_(header), txs_(txs), valid_(valid)
+    : header_(header), txs_(txs), valid_(valid)
 {
 }
 
@@ -138,8 +142,7 @@ block& block::operator=(const block& other) noexcept
 bool block::operator==(const block& other) const noexcept
 {
     // Compares transaction elements, not pointers.
-    return (*header_ == *other.header_)
-        && equal_points(*txs_, *other.txs_);
+    return (*header_ == *other.header_) && equal_points(*txs_, *other.txs_);
 }
 
 bool block::operator!=(const block& other) const noexcept
@@ -159,17 +162,14 @@ block block::from_data(reader& source, bool witness) noexcept
         txs->reserve(source.read_size(max_block_size));
 
         for (size_t tx = 0; tx < txs->capacity(); ++tx)
-            txs->emplace_back(new transaction{ source, witness });
+            txs->emplace_back(new transaction{source, witness});
 
         return txs;
     };
 
-    return
-    {
-        to_shared(new chain::header{ source }),
-        read_transactions(source),
-        source
-    };
+    return {
+        to_shared(new chain::header{source}), read_transactions(source),
+        source};
 }
 
 // Serialization.
@@ -195,7 +195,7 @@ void block::to_data(writer& sink, bool witness) const noexcept
     header_->to_data(sink);
     sink.write_variable(txs_->size());
 
-    for (const auto& tx: *txs_)
+    for (const auto& tx : *txs_)
         tx->to_data(sink, witness);
 }
 
@@ -207,7 +207,7 @@ bool block::is_valid() const noexcept
     return valid_;
 }
 
-const chain::header&block::header() const noexcept
+const chain::header& block::header() const noexcept
 {
     return *header_;
 }
@@ -254,10 +254,8 @@ size_t block::serialized_size(bool witness) const noexcept
         return ceilinged_add(total, tx->serialized_size(witness));
     };
 
-    return header_->serialized_size()
-        + variable_size(txs_->size())
-        + std::accumulate(txs_->begin(), txs_->end(), zero, sum);
-
+    return header_->serialized_size() + variable_size(txs_->size())
+           + std::accumulate(txs_->begin(), txs_->end(), zero, sum);
 }
 
 // Connect.
@@ -318,7 +316,7 @@ bool block::is_forward_reference() const noexcept
         return !is_zero(hashes.count(input->point().hash()));
     };
 
-    for (const auto& tx: boost::adaptors::reverse(*txs_))
+    for (const auto& tx : boost::adaptors::reverse(*txs_))
     {
         hashes.emplace(tx->hash(false), bool{});
         if (std::any_of(tx->inputs()->begin(), tx->inputs()->end(), is_forward))
@@ -351,7 +349,7 @@ bool block::is_internal_double_spend() const noexcept
     // Move the points of all non-coinbase transactions into one set.
     for (auto tx = std::next(txs_->begin()); tx != txs_->end(); ++tx)
     {
-        auto out =(*tx)->points();
+        auto out = (*tx)->points();
         std::move(out.begin(), out.end(), std::inserter(outs, outs.end()));
     }
 
@@ -392,8 +390,8 @@ bool block::is_invalid_merkle_root() const noexcept
 size_t block::weight() const noexcept
 {
     // Block weight is 3 * Base size * + 1 * Total size (bip141).
-    return base_size_contribution * serialized_size(false) +
-        total_size_contribution * serialized_size(true);
+    return base_size_contribution * serialized_size(false)
+           + total_size_contribution * serialized_size(true);
 }
 
 bool block::is_overweight() const noexcept
@@ -431,7 +429,7 @@ bool block::is_hash_limit_exceeded() const noexcept
         hashes.insert((*tx)->hash(false));
 
         // Insert all input point hashes.
-        for (const auto& in: *(*tx)->inputs())
+        for (const auto& in : *(*tx)->inputs())
             hashes.insert(in->point().hash());
     }
 
@@ -458,15 +456,15 @@ bool block::is_invalid_witness_commitment() const noexcept
 
     // Last output of commitment pattern holds committed value (bip141).
     if (coinbase->inputs()->front()->reserved_hash(reserved))
-        for (const auto& output: boost::adaptors::reverse(*coinbase->outputs()))
+        for (const auto& output :
+             boost::adaptors::reverse(*coinbase->outputs()))
             if (output->committed_hash(committed))
-                return committed == bitcoin_hash(generate_merkle_root(true),
-                    reserved);
-    
+                return committed
+                       == bitcoin_hash(generate_merkle_root(true), reserved);
+
     // If no block tx has witness data the commitment is optional (bip141).
     return !is_segregated();
 }
-
 
 //*****************************************************************************
 // CONSENSUS:
@@ -476,7 +474,8 @@ bool block::is_invalid_witness_commitment() const noexcept
 // explicitly implements presumed pre-bip42 behavior (shift overflow modulo) by
 // default, and specified bip42 behavior (shift overflow to zero) with bip42.
 //*****************************************************************************
-static uint64_t block_subsidy(size_t height, uint64_t subsidy_interval,
+static uint64_t block_subsidy(
+    size_t height, uint64_t subsidy_interval,
     uint64_t initial_block_subsidy_satoshi, bool bip42) noexcept
 {
     // Guard: quotient domain cannot increase with positive integer divisor.
@@ -502,23 +501,27 @@ uint64_t block::claim() const noexcept
     return txs_->empty() ? zero : txs_->front()->value();
 }
 
-uint64_t block::reward(size_t height, uint64_t subsidy_interval,
+uint64_t block::reward(
+    size_t height, uint64_t subsidy_interval,
     uint64_t initial_block_subsidy_satoshi, bool bip42) const noexcept
 {
     // Overflow returns max_uint64.
-    return ceilinged_add(fees(), block_subsidy(height, subsidy_interval,
-        initial_block_subsidy_satoshi, bip42));
+    return ceilinged_add(
+        fees(),
+        block_subsidy(
+            height, subsidy_interval, initial_block_subsidy_satoshi, bip42));
 }
 
-bool block::is_overspent(size_t height, uint64_t subsidy_interval,
+bool block::is_overspent(
+    size_t height, uint64_t subsidy_interval,
     uint64_t initial_block_subsidy_satoshi, bool bip42) const noexcept
 {
-    return claim() > reward(height, subsidy_interval,
-        initial_block_subsidy_satoshi, bip42);
+    return claim() > reward(
+               height, subsidy_interval, initial_block_subsidy_satoshi, bip42);
 }
 
-bool block::is_signature_operations_limited(bool bip16,
-    bool bip141) const noexcept
+bool block::is_signature_operations_limited(
+    bool bip16, bool bip141) const noexcept
 {
     const auto limit = bip141 ? max_fast_sigops : max_block_sigops;
 
@@ -557,7 +560,7 @@ code block::check_transactions() const noexcept
 {
     code ec;
 
-    for (const auto& tx: *txs_)
+    for (const auto& tx : *txs_)
         if ((ec = tx->check()))
             return ec;
 
@@ -568,7 +571,7 @@ code block::accept_transactions(const context& state) const noexcept
 {
     code ec;
 
-    for (const auto& tx: *txs_)
+    for (const auto& tx : *txs_)
         if ((ec = tx->accept(state)))
             return ec;
 
@@ -579,7 +582,7 @@ code block::connect_transactions(const context& state) const noexcept
 {
     code ec;
 
-    for (const auto& tx: *txs_)
+    for (const auto& tx : *txs_)
         if ((ec = tx->connect(state)))
             return ec;
 
@@ -634,7 +637,8 @@ code block::check() const noexcept
 
 // The block header is accepted independently using chain_state.
 // These checks assume that prevout caching is completed on all tx.inputs.
-code block::accept(const context& state, size_t subsidy_interval,
+code block::accept(
+    const context& state, size_t subsidy_interval,
     uint64_t initial_subsidy) const noexcept
 {
     code ec;
@@ -694,33 +698,30 @@ code block::connect(const context& state) const noexcept
 
 namespace json = boost::json;
 
-block tag_invoke(json::value_to_tag<block>,
-    const json::value& value) noexcept
+block tag_invoke(json::value_to_tag<block>, const json::value& value) noexcept
 {
-    return
-    {
+    return {
         json::value_to<header>(value.at("header")),
-        json::value_to<chain::transactions>(value.at("transactions"))
-    };
+        json::value_to<chain::transactions>(value.at("transactions"))};
 }
 
-void tag_invoke(json::value_from_tag, json::value& value,
-    const block& block) noexcept
+void tag_invoke(
+    json::value_from_tag, json::value& value, const block& block) noexcept
 {
-    value =
-    {
-        { "header", block.header() },
-        { "transactions", *block.transactions() },
+    value = {
+        {"header", block.header()},
+        {"transactions", *block.transactions()},
     };
 }
 
-block::ptr tag_invoke(json::value_to_tag<block::ptr>,
-    const json::value& value) noexcept
+block::ptr tag_invoke(
+    json::value_to_tag<block::ptr>, const json::value& value) noexcept
 {
     return to_shared(tag_invoke(json::value_to_tag<block>{}, value));
 }
 
-void tag_invoke(json::value_from_tag tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag tag, json::value& value,
     const block::ptr& block) noexcept
 {
     tag_invoke(tag, value, *block);

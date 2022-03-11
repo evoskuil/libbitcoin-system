@@ -29,16 +29,17 @@
 using namespace bc;
 using namespace bc::system;
 
-namespace std {
+namespace std
+{
 
 // data_slice -> base16(data)
-std::ostream& operator<<(std::ostream& stream,
-    const data_slice& slice) noexcept;
+std::ostream& operator<<(
+    std::ostream& stream, const data_slice& slice) noexcept;
 
 // vector<Type> -> join(<<Type)
 template <typename Type>
-std::ostream& operator<<(std::ostream& stream,
-    const std::vector<Type>& values) noexcept
+std::ostream& operator<<(
+    std::ostream& stream, const std::vector<Type>& values) noexcept
 {
     // Ok when testing serialize because only used for error message out.
     stream << serialize(values);
@@ -47,8 +48,8 @@ std::ostream& operator<<(std::ostream& stream,
 
 // array<Type, Size> -> join(<<Type)
 template <typename Type, size_t Size>
-std::ostream& operator<<(std::ostream& stream,
-    const std::array<Type, Size>& values) noexcept
+std::ostream& operator<<(
+    std::ostream& stream, const std::array<Type, Size>& values) noexcept
 {
     // Ok when testing serialize because only used for error message out.
     stream << serialize(values);
@@ -57,16 +58,14 @@ std::ostream& operator<<(std::ostream& stream,
 
 } // namespace std
 
-#define TEST_NAME \
-    boost::unit_test::framework::current_test_case().p_name.get()
-#define SUITE_NAME \
+#define TEST_NAME boost::unit_test::framework::current_test_case().p_name.get()
+#define SUITE_NAME                                                             \
     boost::unit_test::framework::current_auto_test_suite().p_name.get()
-#define TEST_DIRECTORY \
-    test::directory
-#define TEST_PATH \
-    TEST_DIRECTORY + "/" + TEST_NAME
+#define TEST_DIRECTORY test::directory
+#define TEST_PATH TEST_DIRECTORY + "/" + TEST_NAME
 
-namespace test {
+namespace test
+{
 
 // Common directory for all test file creations.
 // Subdirectories and/or files must be differentiated (i.e. by TEST_NAME).

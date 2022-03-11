@@ -28,9 +28,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// A class for working with stealth payment addresses.
 class BC_API stealth_address
@@ -53,9 +56,10 @@ public:
     stealth_address(const data_chunk& decoded) noexcept;
     stealth_address(const std::string& encoded) noexcept;
     stealth_address(const stealth_address& other) noexcept;
-    stealth_address(const binary& filter, const ec_compressed& scan_key,
-        const compressed_list& spend_keys, uint8_t signatures=0,
-        uint8_t version=mainnet_p2kh) noexcept;
+    stealth_address(
+        const binary& filter, const ec_compressed& scan_key,
+        const compressed_list& spend_keys, uint8_t signatures = 0,
+        uint8_t version = mainnet_p2kh) noexcept;
 
     /// Operators.
     bool operator<(const stealth_address& other) const noexcept;
@@ -63,8 +67,8 @@ public:
     bool operator!=(const stealth_address& other) const noexcept;
     stealth_address& operator=(const stealth_address& other) noexcept;
     friend std::istream& operator>>(std::istream& in, stealth_address& to);
-    friend std::ostream& operator<<(std::ostream& out,
-        const stealth_address& of) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& out, const stealth_address& of) noexcept;
 
     /// Cast operators.
     operator bool() const noexcept;
@@ -87,19 +91,19 @@ private:
     /// Factories.
     static stealth_address from_string(const std::string& encoded) noexcept;
     static stealth_address from_stealth(const data_chunk& decoded) noexcept;
-    static stealth_address from_stealth(const binary& filter,
-        const ec_compressed& scan_key, const compressed_list& spend_keys,
-        uint8_t signatures, uint8_t version) noexcept;
+    static stealth_address from_stealth(
+        const binary& filter, const ec_compressed& scan_key,
+        const compressed_list& spend_keys, uint8_t signatures,
+        uint8_t version) noexcept;
 
     /// Parameter order is used to change the constructor signature.
-    stealth_address(uint8_t version, const binary& filter,
-        const ec_compressed& scan_key, const compressed_list& spend_keys,
-        uint8_t signatures) noexcept;
+    stealth_address(
+        uint8_t version, const binary& filter, const ec_compressed& scan_key,
+        const compressed_list& spend_keys, uint8_t signatures) noexcept;
 
     /// Helpers.
     bool reuse_key() const noexcept;
     uint8_t options() const noexcept;
-
 
     /// Members.
     /// These should be const, apart from the need to implement assignment.

@@ -88,8 +88,7 @@ static const auto tx4_hash = base16_hash(
     "cb1e303db604f066225eb14d59d3f8d2231200817bc9d4610d2802586bd93f8a");
 
 // Access protected validation methods.
-class accessor
-  : public transaction
+class accessor : public transaction
 {
 public:
     // Use base class constructors.
@@ -130,11 +129,12 @@ public:
         return transaction::is_invalid_coinbase_size();
     }
 
-    bool is_non_final(size_t height, uint32_t timestamp,
-        uint32_t median_time_past, bool bip113) const
+    bool is_non_final(
+        size_t height, uint32_t timestamp, uint32_t median_time_past,
+        bool bip113) const
     {
-        return transaction::is_non_final(height, timestamp, median_time_past,
-            bip113);
+        return transaction::is_non_final(
+            height, timestamp, median_time_past, bip113);
     }
 
     bool is_missing_prevouts() const
@@ -166,7 +166,6 @@ public:
     {
         return transaction::is_confirmed_double_spend(height);
     }
-
 };
 
 // constructors
@@ -207,7 +206,7 @@ BOOST_AUTO_TEST_CASE(transaction__constructor__move_parameters__expected)
     const output output(tx0_last_output);
     BOOST_REQUIRE(output.is_valid());
 
-    const transaction instance(version, { input }, { output }, locktime);
+    const transaction instance(version, {input}, {output}, locktime);
     BOOST_REQUIRE(instance.is_valid());
     BOOST_REQUIRE_EQUAL(version, instance.version());
     BOOST_REQUIRE_EQUAL(locktime, instance.locktime());
@@ -228,8 +227,8 @@ BOOST_AUTO_TEST_CASE(transaction__constructor__copy_parameters__expected)
     const output output(tx0_last_output);
     BOOST_REQUIRE(output.is_valid());
 
-    const inputs inputs{ input };
-    const outputs outputs{ output };
+    const inputs inputs{input};
+    const outputs outputs{output};
     const transaction instance(version, inputs, outputs, locktime);
     BOOST_REQUIRE(instance.is_valid());
     BOOST_REQUIRE_EQUAL(version, instance.version());
@@ -395,13 +394,7 @@ BOOST_AUTO_TEST_CASE(transaction__to_data__writer__expected)
 
 BOOST_AUTO_TEST_CASE(transaction__fee__empty__zero)
 {
-    const transaction instance
-    {
-        0,
-        inputs{},
-        {},
-        0
-    };
+    const transaction instance{0, inputs{}, {}, 0};
 
     // floored_subtract(0, 0)
     BOOST_REQUIRE_EQUAL(instance.fee(), 0u);
@@ -409,13 +402,7 @@ BOOST_AUTO_TEST_CASE(transaction__fee__empty__zero)
 
 BOOST_AUTO_TEST_CASE(transaction__fee__default_input__max_uint64)
 {
-    const transaction instance
-    {
-        0,
-        inputs{ {} },
-        {},
-        0
-    };
+    const transaction instance{0, inputs{{}}, {}, 0};
 
     // floored_subtract(max_uint64, 0)
     BOOST_REQUIRE_EQUAL(instance.fee(), max_uint64);
@@ -423,13 +410,7 @@ BOOST_AUTO_TEST_CASE(transaction__fee__default_input__max_uint64)
 
 BOOST_AUTO_TEST_CASE(transaction__fee__default_output__zero)
 {
-    const transaction instance
-    {
-        0,
-        inputs{},
-        { {} },
-        0
-    };
+    const transaction instance{0, inputs{}, {{}}, 0};
 
     // floored_subtract(0, max_uint64)
     BOOST_REQUIRE_EQUAL(instance.fee(), 0u);
@@ -445,23 +426,18 @@ BOOST_AUTO_TEST_CASE(transaction__fee__nonempty__outputs_minus_inputs)
 
     input input0;
     input input1;
-    *input0.prevout = prevout{ value0, script{} };
-    *input1.prevout = { value1, script{} };
+    *input0.prevout = prevout{value0, script{}};
+    *input1.prevout = {value1, script{}};
 
-    const transaction instance
-    {
+    const transaction instance{
         0,
-        { input0, input1 },
-        {
-            { claim0, script{} },
-            { claim1, script{} },
-            { claim2, script{} }
-        },
-        0
-    };
+        {input0, input1},
+        {{claim0, script{}}, {claim1, script{}}, {claim2, script{}}},
+        0};
 
     // floored_subtract(values, claims)
-    BOOST_REQUIRE_EQUAL(instance.fee(), value0 + value1 - claim0 - claim1 - claim2);
+    BOOST_REQUIRE_EQUAL(
+        instance.fee(), value0 + value1 - claim0 - claim1 - claim2);
 }
 
 BOOST_AUTO_TEST_CASE(transaction__claim__empty_outputs__zero)
@@ -474,17 +450,11 @@ BOOST_AUTO_TEST_CASE(transaction__claim__two_outputs__sum)
 {
     const uint64_t claim0 = 123;
     const uint64_t claim1 = 321;
-    const transaction instance
-    {
+    const transaction instance{
         0,
         {},
-        {
-            { claim0, script{} },
-            { claim1, script{} }
-        },
-        0
-    };
-
+        {{claim0, script{}}, {claim1, script{}}},
+        0};
 
     // ceilinged_add(claim0, claim1)
     BOOST_REQUIRE_EQUAL(instance.claim(), claim0 + claim1);
@@ -498,13 +468,7 @@ BOOST_AUTO_TEST_CASE(transaction__value__no_inputs__zero)
 
 BOOST_AUTO_TEST_CASE(transaction__value__default_input2__max_uint64)
 {
-    transaction instance
-    {
-        0,
-        inputs{ {}, {} },
-        {},
-        0
-    };
+    transaction instance{0, inputs{{}, {}}, {}, 0};
 
     // ceilinged_add(max_uint64, max_uint64)
     BOOST_REQUIRE_EQUAL(instance.value(), max_uint64);
@@ -517,16 +481,10 @@ BOOST_AUTO_TEST_CASE(transaction__value__two_prevouts__sum)
 
     const input input0;
     const input input1;
-    *input0.prevout = { value0, script{} };
-    *input1.prevout = { value1, script{} };
+    *input0.prevout = {value0, script{}};
+    *input1.prevout = {value1, script{}};
 
-    transaction instance
-    {
-        0,
-        { input0, input1 },
-        {},
-        0
-    };
+    transaction instance{0, {input0, input1}, {}, 0};
 
     // ceilinged_add(value0, value1)
     BOOST_REQUIRE_EQUAL(instance.value(), value0 + value1);
@@ -548,90 +506,56 @@ BOOST_AUTO_TEST_CASE(transaction__is_coinbase__empty__false)
 
 BOOST_AUTO_TEST_CASE(transaction__is_coinbase__default_point__true)
 {
-    const transaction instance
-    {
-        0,
-        {
-            { {}, script{}, 0 }
-        },
-        {},
-        0
-    };
+    const transaction instance{0, {{{}, script{}, 0}}, {}, 0};
 
     BOOST_REQUIRE(instance.is_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_coinbase__default_input__true)
 {
-    const transaction instance
-    {
-        0,
-        inputs{ {} },
-        {},
-        0
-    };
+    const transaction instance{0, inputs{{}}, {}, 0};
 
     BOOST_REQUIRE(instance.is_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_coinbase__null_input__true)
 {
-    const transaction instance
-    {
+    const transaction instance{
         0,
-        {
-            { { hash_digest{}, point::null_index }, {}, 0 }
-        },
+        {{{hash_digest{}, point::null_index}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(instance.is_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_coinbase__non_null_input__false)
 {
-    const transaction instance
-    {
-        0,
-        {
-            { { hash_digest{}, 42 }, {}, 0 }
-        },
-        {},
-        0
-    };
+    const transaction instance{0, {{{hash_digest{}, 42}, {}, 0}}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_coinbase__first_null_input__false)
 {
-    const transaction instance
-    {
+    const transaction instance{
         0,
-        {
-            { { hash_digest{}, point::null_index }, {}, 0 },
-            { { hash_digest{}, 42 }, {}, 0 }
-        },
+        {{{hash_digest{}, point::null_index}, {}, 0},
+         {{hash_digest{}, 42}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_coinbase__null_inputs__false)
 {
-    const transaction instance
-    {
+    const transaction instance{
         0,
-        {
-            { { hash_digest{}, point::null_index }, {}, 0 },
-            { { hash_digest{}, point::null_index }, {}, 0 }
-        },
+        {{{hash_digest{}, point::null_index}, {}, 0},
+         {{hash_digest{}, point::null_index}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_coinbase());
 }
@@ -676,7 +600,8 @@ BOOST_AUTO_TEST_CASE(transaction__is_dusty__two_outputs_limit_at_lower__false)
     BOOST_REQUIRE(!instance.is_dusty(258000000));
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_dusty__two_outputs_limit_between_both__true)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_dusty__two_outputs_limit_between_both__true)
 {
     const transaction instance(tx1_data, true);
     BOOST_REQUIRE(instance.is_valid());
@@ -684,9 +609,10 @@ BOOST_AUTO_TEST_CASE(transaction__is_dusty__two_outputs_limit_between_both__true
 }
 
 // TODO: tests with initialized data
-BOOST_AUTO_TEST_CASE(transaction__signature_operations__empty_input_output__zero)
+BOOST_AUTO_TEST_CASE(
+    transaction__signature_operations__empty_input_output__zero)
 {
-    const transaction instance{ 0, inputs{}, {}, 0 };
+    const transaction instance{0, inputs{}, {}, 0};
     BOOST_REQUIRE_EQUAL(instance.signature_operations(false, false), 0u);
 }
 
@@ -716,52 +642,38 @@ BOOST_AUTO_TEST_CASE(transaction__is_internal_double_spend__empty__false)
     BOOST_REQUIRE(!instance.is_internal_double_spend());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_internal_double_spend__unique_point_hashes__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_internal_double_spend__unique_point_hashes__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        {
-            {},
-            { { tx1_hash, 42 }, {}, 0 },
-            { { tx2_hash, 42 }, {}, 0 }
-        },
+        {{}, {{tx1_hash, 42}, {}, 0}, {{tx2_hash, 42}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_internal_double_spend());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_internal_double_spend__unique_points__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_internal_double_spend__unique_points__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        {
-            {},
-            { { tx1_hash, 42 }, {}, 0 },
-            { { tx1_hash, 43 }, {}, 0 }
-        },
+        {{}, {{tx1_hash, 42}, {}, 0}, {{tx1_hash, 43}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_internal_double_spend());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_internal_double_spend__nonunique_points__true)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_internal_double_spend__nonunique_points__true)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        {
-            { { tx1_hash, 42 }, {}, 0 },
-            { { tx1_hash, 42 }, {}, 0 }
-        },
+        {{{tx1_hash, 42}, {}, 0}, {{tx1_hash, 42}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(instance.is_internal_double_spend());
 }
@@ -778,210 +690,167 @@ BOOST_AUTO_TEST_CASE(transaction__is_empty__default__true)
 
 BOOST_AUTO_TEST_CASE(transaction__is_empty__one_input__true)
 {
-    const accessor instance
-    {
-        0,
-        inputs{ {} },
-        {},
-        0
-    };
+    const accessor instance{0, inputs{{}}, {}, 0};
 
     BOOST_REQUIRE(instance.is_empty());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_empty__one_output__true)
 {
-    const accessor instance
-    {
-        0,
-        inputs{},
-        { {} },
-        0
-    };
+    const accessor instance{0, inputs{}, {{}}, 0};
 
     BOOST_REQUIRE(instance.is_empty());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_empty__one_input_one_output__false)
 {
-    const accessor instance
-    {
-        0,
-        inputs{ {} },
-        { {} },
-        0
-    };
+    const accessor instance{0, inputs{{}}, {{}}, 0};
 
     BOOST_REQUIRE(!instance.is_empty());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_null_non_coinbase__non_null_input__false)
 {
-    const accessor instance
-    {
-        0,
-        {
-            { { tx1_hash, point::null_index }, {}, 0 }
-        },
-        {},
-        0
-    };
+    const accessor instance{0, {{{tx1_hash, point::null_index}, {}, 0}}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_null_non_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_null_non_coinbase__non_null_inputs__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        {
-            { { hash_digest{}, 42 }, {}, 0 },
-            { { hash_digest{}, 42 }, {}, 0 }
-        },
+        {{{hash_digest{}, 42}, {}, 0}, {{hash_digest{}, 42}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_null_non_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_null_non_coinbase__first_null_input__true)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        {
-            { { hash_digest{}, point::null_index }, {}, 0 },
-            { { hash_digest{}, 42 }, {}, 0 }
-        },
+        {{{hash_digest{}, point::null_index}, {}, 0},
+         {{hash_digest{}, 42}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(instance.is_null_non_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_null_non_coinbase__second_null_input__true)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        {
-            { { hash_digest{}, 42 }, {}, 0 },
-            { { hash_digest{}, point::null_index }, {}, 0 }
-        },
+        {{{hash_digest{}, 42}, {}, 0},
+         {{hash_digest{}, point::null_index}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(instance.is_null_non_coinbase());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_null_non_coinbase__null_inputs__true)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        {
-            { { hash_digest{}, point::null_index }, {}, 0 },
-            { { hash_digest{}, point::null_index }, {}, 0 }
-        },
+        {{{hash_digest{}, point::null_index}, {}, 0},
+         {{hash_digest{}, point::null_index}, {}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(instance.is_null_non_coinbase());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_invalid_coinbase_size__script_size_below_min__true)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_invalid_coinbase_size__script_size_below_min__true)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
         {
-            { {}, { data_chunk(sub1(min_coinbase_size), 0x00), false }, 0 },
+            {{}, {data_chunk(sub1(min_coinbase_size), 0x00), false}, 0},
         },
         {},
-        0
-    };
+        0};
 
-    BOOST_REQUIRE_LT(instance.inputs()->back()->script().serialized_size(false), min_coinbase_size);
+    BOOST_REQUIRE_LT(
+        instance.inputs()->back()->script().serialized_size(false),
+        min_coinbase_size);
     BOOST_REQUIRE(instance.is_invalid_coinbase_size());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_invalid_coinbase_size__script_size_above_max__true)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_invalid_coinbase_size__script_size_above_max__true)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
         {
-            { { hash_digest{}, point::null_index }, { data_chunk(add1(max_coinbase_size), 0x00), false }, 0 },
+            {{hash_digest{}, point::null_index},
+             {data_chunk(add1(max_coinbase_size), 0x00), false},
+             0},
         },
         {},
-        0
-    };
+        0};
 
-    BOOST_REQUIRE_GT(instance.inputs()->back()->script().serialized_size(false), max_coinbase_size);
+    BOOST_REQUIRE_GT(
+        instance.inputs()->back()->script().serialized_size(false),
+        max_coinbase_size);
     BOOST_REQUIRE(instance.is_invalid_coinbase_size());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_invalid_coinbase_size__script_size_max__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_invalid_coinbase_size__script_size_max__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
         {
-            { {}, { data_chunk(max_coinbase_size, 0x00), false }, 0 },
+            {{}, {data_chunk(max_coinbase_size, 0x00), false}, 0},
         },
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_invalid_coinbase_size());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_invalid_coinbase_size__script_size_min__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_invalid_coinbase_size__script_size_min__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
         {
-            { {}, { data_chunk(min_coinbase_size, 0x00), false }, 0 },
+            {{}, {data_chunk(min_coinbase_size, 0x00), false}, 0},
         },
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_invalid_coinbase_size());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_invalid_coinbase_size__script_size_below_max__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_invalid_coinbase_size__script_size_below_max__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
         {
-            { {}, { data_chunk(sub1(max_coinbase_size), 0x00), false }, 0 },
+            {{}, {data_chunk(sub1(max_coinbase_size), 0x00), false}, 0},
         },
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_invalid_coinbase_size());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_invalid_coinbase_size__script_size_above_min__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_invalid_coinbase_size__script_size_above_min__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         0,
         {
-            { {}, { data_chunk(add1(min_coinbase_size), 0x00), false }, 0 },
+            {{}, {data_chunk(add1(min_coinbase_size), 0x00), false}, 0},
         },
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_invalid_coinbase_size());
 }
@@ -994,19 +863,13 @@ BOOST_AUTO_TEST_CASE(transaction__is_non_final__locktime_zero__false)
     const uint32_t past = 0;
     const uint32_t locktime = 0;
 
-    const accessor instance
-    {
-        0,
-        inputs{},
-        {},
-        locktime
-    };
+    const accessor instance{0, inputs{}, {}, locktime};
 
     BOOST_REQUIRE(!instance.is_non_final(height, time, past, bip113));
 }
 
-
-BOOST_AUTO_TEST_CASE(transaction__is_non_final__locktime_less_block_time_greater_threshold__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_non_final__locktime_less_block_time_greater_threshold__false)
 {
     const bool bip113 = false;
     const size_t height = locktime_threshold + 100;
@@ -1014,18 +877,13 @@ BOOST_AUTO_TEST_CASE(transaction__is_non_final__locktime_less_block_time_greater
     const uint32_t past = 0;
     const uint32_t locktime = locktime_threshold + 50;
 
-    const accessor instance
-    {
-        0,
-        inputs{},
-        {},
-        locktime
-    };
+    const accessor instance{0, inputs{}, {}, locktime};
 
     BOOST_REQUIRE(!instance.is_non_final(height, time, past, bip113));
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_non_final__locktime_less_block_height_less_threshold_false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_non_final__locktime_less_block_height_less_threshold_false)
 {
     const bool bip113 = false;
     const size_t height = 100;
@@ -1033,13 +891,7 @@ BOOST_AUTO_TEST_CASE(transaction__is_non_final__locktime_less_block_height_less_
     const uint32_t past = 0;
     const uint32_t locktime = 50;
 
-    const accessor instance
-    {
-        0,
-        inputs{},
-        {},
-        locktime
-    };
+    const accessor instance{0, inputs{}, {}, locktime};
 
     BOOST_REQUIRE(!instance.is_non_final(height, time, past, bip113));
 }
@@ -1053,10 +905,9 @@ BOOST_AUTO_TEST_CASE(transaction__is_non_final__locktime_input_not_final__true)
     const uint32_t locktime = 101;
     const uint32_t sequence = 1;
 
-    const accessor instance
-    {
+    const accessor instance{
         0,
-        { { {}, script{}, sequence } },
+        {{{}, script{}, sequence}},
         {},
         locktime,
     };
@@ -1073,15 +924,7 @@ BOOST_AUTO_TEST_CASE(transaction__is_non_final__locktime_inputs_final__false)
     const uint32_t locktime = 101;
     const uint32_t sequence = max_input_sequence;
 
-    const accessor instance
-    {
-        0,
-        {
-            { {}, script{}, sequence }
-        },
-        {},
-        locktime
-    };
+    const accessor instance{0, {{{}, script{}, sequence}}, {}, locktime};
 
     BOOST_REQUIRE(!instance.is_non_final(height, time, past, bip113));
 }
@@ -1094,33 +937,22 @@ BOOST_AUTO_TEST_CASE(transaction__is_missing_prevouts__empty_inputs__false)
 
 BOOST_AUTO_TEST_CASE(transaction__is_missing_prevouts__default_inputs__true)
 {
-    const accessor instance
-    {
-        0,
-        inputs{ {}, {} },
-        {},
-        0
-    };
+    const accessor instance{0, inputs{{}, {}}, {}, 0};
 
     BOOST_REQUIRE(instance.is_missing_prevouts());
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_missing_prevouts__valid_prevout__false)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
-    *input.prevout = { 42, script{} };
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const input input{{hash_digest{}, 42}, {}, 0};
+    *input.prevout = {42, script{}};
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_missing_prevouts());
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_overspent__output_does_not_exceed_input__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_overspent__output_does_not_exceed_input__false)
 {
     const accessor instance;
     BOOST_REQUIRE(!instance.is_overspent());
@@ -1128,13 +960,7 @@ BOOST_AUTO_TEST_CASE(transaction__is_overspent__output_does_not_exceed_input__fa
 
 BOOST_AUTO_TEST_CASE(transaction__is_overspent__output_exceeds_input__true)
 {
-    const accessor instance
-    {
-        0,
-        {},
-        { { 1, script{} }, { 0, script{} } },
-        0
-    };
+    const accessor instance{0, {}, {{1, script{}}, {0, script{}}}, 0};
 
     BOOST_REQUIRE(instance.is_overspent());
 }
@@ -1147,80 +973,50 @@ BOOST_AUTO_TEST_CASE(transaction__is_immature__no_inputs__false)
 
 BOOST_AUTO_TEST_CASE(transaction__is_immature__mature_genesis__true)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
+    const input input{{hash_digest{}, 42}, {}, 0};
     input.prevout->height = 0;
     input.prevout->coinbase = true;
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(instance.is_immature(coinbase_maturity));
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_immature__premature_coinbase__true)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
+    const input input{{hash_digest{}, 42}, {}, 0};
     input.prevout->height = 1;
     input.prevout->coinbase = true;
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(instance.is_immature(coinbase_maturity));
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_immature__premature_non_coinbase__false)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
+    const input input{{hash_digest{}, 42}, {}, 0};
     input.prevout->height = 1;
     input.prevout->coinbase = false;
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_immature(coinbase_maturity));
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_immature__mature_coinbase__false)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
+    const input input{{hash_digest{}, 42}, {}, 0};
     input.prevout->height = 1;
     input.prevout->coinbase = true;
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_immature(add1(coinbase_maturity)));
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_immature__mature_non_coinbase__false)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
+    const input input{{hash_digest{}, 42}, {}, 0};
     input.prevout->height = 1;
     input.prevout->coinbase = false;
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_immature(add1(coinbase_maturity)));
 }
@@ -1228,15 +1024,7 @@ BOOST_AUTO_TEST_CASE(transaction__is_immature__mature_non_coinbase__false)
 BOOST_AUTO_TEST_CASE(transaction__is_locked__version_1_empty__false)
 {
     const uint32_t version = 1;
-    const accessor instance
-    {
-        version,
-        {
-            { { hash_digest{}, 42 }, {}, 0 }
-        },
-        {},
-        0
-    };
+    const accessor instance{version, {{{hash_digest{}, 42}, {}, 0}}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_locked(0, 0));
 }
@@ -1244,32 +1032,20 @@ BOOST_AUTO_TEST_CASE(transaction__is_locked__version_1_empty__false)
 BOOST_AUTO_TEST_CASE(transaction__is_locked__version_2_empty__false)
 {
     const uint32_t version = 2;
-    const accessor instance
-    {
-        version,
-        {
-            { { hash_digest{}, 42 }, {}, 0 }
-        },
-        {},
-        0
-    };
+    const accessor instance{version, {{{hash_digest{}, 42}, {}, 0}}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_locked(0, 0));
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_locked__version_1_one_of_two_locked_locked__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_locked__version_1_one_of_two_locked_locked__false)
 {
     const uint32_t version = 1;
-    const accessor instance
-    {
+    const accessor instance{
         version,
-        {
-            { {}, script{}, 1 },
-            { {}, script{}, 0 }
-        },
+        {{{}, script{}, 1}, {{}, script{}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(!instance.is_locked(0, 0));
 }
@@ -1277,67 +1053,47 @@ BOOST_AUTO_TEST_CASE(transaction__is_locked__version_1_one_of_two_locked_locked_
 BOOST_AUTO_TEST_CASE(transaction__is_locked__version_4_one_of_two_locked__true)
 {
     const uint32_t version = 4;
-    const accessor instance
-    {
+    const accessor instance{
         version,
-        {
-            { {}, script{}, 1 },
-            { {}, script{}, 0 }
-        },
+        {{{}, script{}, 1}, {{}, script{}, 0}},
         {},
-        0
-    };
+        0};
 
     BOOST_REQUIRE(instance.is_locked(0, 0));
 }
 
 // is_unconfirmed_spend
 
-BOOST_AUTO_TEST_CASE(transaction__is_confirmed_double_spend__empty_inputs__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_confirmed_double_spend__empty_inputs__false)
 {
     const accessor instance;
     BOOST_REQUIRE(!instance.is_confirmed_double_spend(42));
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_confirmed_double_spend__default_inputs__true)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_confirmed_double_spend__default_inputs__true)
 {
-    const accessor instance
-    {
-        0,
-        inputs{ {}, {} },
-        {},
-        0
-    };
+    const accessor instance{0, inputs{{}, {}}, {}, 0};
 
     BOOST_REQUIRE(instance.is_confirmed_double_spend(42));
 }
 
-BOOST_AUTO_TEST_CASE(transaction__is_confirmed_double_spend__unspent_input__false)
+BOOST_AUTO_TEST_CASE(
+    transaction__is_confirmed_double_spend__unspent_input__false)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
+    const input input{{hash_digest{}, 42}, {}, 0};
     input.prevout->spent = false;
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(!instance.is_confirmed_double_spend(42));
 }
 
 BOOST_AUTO_TEST_CASE(transaction__is_confirmed_double_spend__spent_input__true)
 {
-    const input input{ { hash_digest{}, 42 }, {}, 0 };
+    const input input{{hash_digest{}, 42}, {}, 0};
     input.prevout->spent = true;
-    const accessor instance
-    {
-        0,
-        { input },
-        {},
-        0
-    };
+    const accessor instance{0, {input}, {}, 0};
 
     BOOST_REQUIRE(instance.is_confirmed_double_spend(42));
 }
@@ -1347,13 +1103,28 @@ BOOST_AUTO_TEST_CASE(transaction__is_confirmed_double_spend__spent_input__true)
 BOOST_AUTO_TEST_CASE(transaction__check_signature__single__uses_one_hash)
 {
     // input 315ac7d4c26d69668129cc352851d9389b4a6868f1509c6c8b66bead11e2619f:1
-    const auto tx_data = base16_chunk("0100000002dc38e9359bd7da3b58386204e186d9408685f427f5e513666db735aa8a6b2169000000006a47304402205d8feeb312478e468d0b514e63e113958d7214fa572acd87079a7f0cc026fc5c02200fa76ea05bf243af6d0f9177f241caf606d01fcfd5e62d6befbca24e569e5c27032102100a1a9ca2c18932d6577c58f225580184d0e08226d41959874ac963e3c1b2feffffffffdc38e9359bd7da3b58386204e186d9408685f427f5e513666db735aa8a6b2169010000006b4830450220087ede38729e6d35e4f515505018e659222031273b7366920f393ee3ab17bc1e022100ca43164b757d1a6d1235f13200d4b5f76dd8fda4ec9fc28546b2df5b1211e8df03210275983913e60093b767e85597ca9397fb2f418e57f998d6afbbc536116085b1cbffffffff0140899500000000001976a914fcc9b36d38cf55d7d5b4ee4dddb6b2c17612f48c88ac00000000");
+    const auto tx_data = base16_chunk(
+        "0100000002dc38e9359bd7da3b58386204e186d9408685f427f5e513666db735aa8a6b"
+        "2169000000006a47304402205d8feeb312478e468d0b514e63e113958d7214fa572acd"
+        "87079a7f0cc026fc5c02200fa76ea05bf243af6d0f9177f241caf606d01fcfd5e62d6b"
+        "efbca24e569e5c27032102100a1a9ca2c18932d6577c58f225580184d0e08226d41959"
+        "874ac963e3c1b2feffffffffdc38e9359bd7da3b58386204e186d9408685f427f5e513"
+        "666db735aa8a6b2169010000006b4830450220087ede38729e6d35e4f515505018e659"
+        "222031273b7366920f393ee3ab17bc1e022100ca43164b757d1a6d1235f13200d4b5f7"
+        "6dd8fda4ec9fc28546b2df5b1211e8df03210275983913e60093b767e85597ca9397fb"
+        "2f418e57f998d6afbbc536116085b1cbffffffff0140899500000000001976a914fcc9"
+        "b36d38cf55d7d5b4ee4dddb6b2c17612f48c88ac00000000");
     const transaction parent_tx(tx_data, true);
     BOOST_REQUIRE(parent_tx.is_valid());
 
-    const auto distinguished = base16_chunk("30450220087ede38729e6d35e4f515505018e659222031273b7366920f393ee3ab17bc1e022100ca43164b757d1a6d1235f13200d4b5f76dd8fda4ec9fc28546b2df5b1211e8df");
-    const auto pubkey = base16_chunk("0275983913e60093b767e85597ca9397fb2f418e57f998d6afbbc536116085b1cb");
-    const auto script_data = base16_chunk("76a91433cef61749d11ba2adf091a5e045678177fe3a6d88ac");
+    const auto distinguished =
+        base16_chunk("30450220087ede38729e6d35e4f515505018e659222031273b7366920"
+                     "f393ee3ab17bc1e022100ca43164b757d1a6d1235f13200d4b5f76dd8"
+                     "fda4ec9fc28546b2df5b1211e8df");
+    const auto pubkey = base16_chunk(
+        "0275983913e60093b767e85597ca9397fb2f418e57f998d6afbbc536116085b1cb");
+    const auto script_data =
+        base16_chunk("76a91433cef61749d11ba2adf091a5e045678177fe3a6d88ac");
     const script subscript(script_data, false);
     BOOST_REQUIRE(parent_tx.is_valid());
 
@@ -1363,19 +1134,36 @@ BOOST_AUTO_TEST_CASE(transaction__check_signature__single__uses_one_hash)
     const auto bip143 = false;
     ec_signature signature;
     BOOST_REQUIRE(parse_signature(signature, distinguished, bip66));
-    BOOST_REQUIRE(parent_tx.check_signature(signature, pubkey, subscript, index, value, coverage::hash_single, script_version::unversioned, bip143));
+    BOOST_REQUIRE(parent_tx.check_signature(
+        signature, pubkey, subscript, index, value, coverage::hash_single,
+        script_version::unversioned, bip143));
 }
 
 BOOST_AUTO_TEST_CASE(transaction__check_signature__normal__success)
 {
     // input 315ac7d4c26d69668129cc352851d9389b4a6868f1509c6c8b66bead11e2619f:0
-    const auto tx_data = base16_chunk("0100000002dc38e9359bd7da3b58386204e186d9408685f427f5e513666db735aa8a6b2169000000006a47304402205d8feeb312478e468d0b514e63e113958d7214fa572acd87079a7f0cc026fc5c02200fa76ea05bf243af6d0f9177f241caf606d01fcfd5e62d6befbca24e569e5c27032102100a1a9ca2c18932d6577c58f225580184d0e08226d41959874ac963e3c1b2feffffffffdc38e9359bd7da3b58386204e186d9408685f427f5e513666db735aa8a6b2169010000006b4830450220087ede38729e6d35e4f515505018e659222031273b7366920f393ee3ab17bc1e022100ca43164b757d1a6d1235f13200d4b5f76dd8fda4ec9fc28546b2df5b1211e8df03210275983913e60093b767e85597ca9397fb2f418e57f998d6afbbc536116085b1cbffffffff0140899500000000001976a914fcc9b36d38cf55d7d5b4ee4dddb6b2c17612f48c88ac00000000");
+    const auto tx_data = base16_chunk(
+        "0100000002dc38e9359bd7da3b58386204e186d9408685f427f5e513666db735aa8a6b"
+        "2169000000006a47304402205d8feeb312478e468d0b514e63e113958d7214fa572acd"
+        "87079a7f0cc026fc5c02200fa76ea05bf243af6d0f9177f241caf606d01fcfd5e62d6b"
+        "efbca24e569e5c27032102100a1a9ca2c18932d6577c58f225580184d0e08226d41959"
+        "874ac963e3c1b2feffffffffdc38e9359bd7da3b58386204e186d9408685f427f5e513"
+        "666db735aa8a6b2169010000006b4830450220087ede38729e6d35e4f515505018e659"
+        "222031273b7366920f393ee3ab17bc1e022100ca43164b757d1a6d1235f13200d4b5f7"
+        "6dd8fda4ec9fc28546b2df5b1211e8df03210275983913e60093b767e85597ca9397fb"
+        "2f418e57f998d6afbbc536116085b1cbffffffff0140899500000000001976a914fcc9"
+        "b36d38cf55d7d5b4ee4dddb6b2c17612f48c88ac00000000");
     const transaction parent_tx(tx_data, true);
     BOOST_REQUIRE(parent_tx.is_valid());
 
-    const auto distinguished = base16_chunk("304402205d8feeb312478e468d0b514e63e113958d7214fa572acd87079a7f0cc026fc5c02200fa76ea05bf243af6d0f9177f241caf606d01fcfd5e62d6befbca24e569e5c27");
-    const auto pubkey = base16_chunk("02100a1a9ca2c18932d6577c58f225580184d0e08226d41959874ac963e3c1b2fe");
-    const auto script_data = base16_chunk("76a914fcc9b36d38cf55d7d5b4ee4dddb6b2c17612f48c88ac");
+    const auto distinguished =
+        base16_chunk("304402205d8feeb312478e468d0b514e63e113958d7214fa572acd870"
+                     "79a7f0cc026fc5c02200fa76ea05bf243af6d0f9177f241caf606d01f"
+                     "cfd5e62d6befbca24e569e5c27");
+    const auto pubkey = base16_chunk(
+        "02100a1a9ca2c18932d6577c58f225580184d0e08226d41959874ac963e3c1b2fe");
+    const auto script_data =
+        base16_chunk("76a914fcc9b36d38cf55d7d5b4ee4dddb6b2c17612f48c88ac");
     const script subscript(script_data, false);
     BOOST_REQUIRE(parent_tx.is_valid());
 
@@ -1385,48 +1173,73 @@ BOOST_AUTO_TEST_CASE(transaction__check_signature__normal__success)
     const auto bip143 = false;
     ec_signature signature;
     BOOST_REQUIRE(parse_signature(signature, distinguished, bip66));
-    BOOST_REQUIRE(parent_tx.check_signature(signature, pubkey, subscript, index, value, coverage::hash_single, script_version::unversioned, bip143));
+    BOOST_REQUIRE(parent_tx.check_signature(
+        signature, pubkey, subscript, index, value, coverage::hash_single,
+        script_version::unversioned, bip143));
 }
 
 // create_endorsement
 
-BOOST_AUTO_TEST_CASE(transaction__create_endorsement__single_input_single_output__expected)
+BOOST_AUTO_TEST_CASE(
+    transaction__create_endorsement__single_input_single_output__expected)
 {
-    const auto tx_data = base16_chunk("0100000001b3807042c92f449bbf79b33ca59d7dfec7f4cc71096704a9c526dddf496ee0970100000000ffffffff01905f0100000000001976a91418c0bd8d1818f1bf99cb1df2269c645318ef7b7388ac00000000");
+    const auto tx_data = base16_chunk(
+        "0100000001b3807042c92f449bbf79b33ca59d7dfec7f4cc71096704a9c526dddf496e"
+        "e0970100000000ffffffff01905f0100000000001976a91418c0bd8d1818f1bf99cb1d"
+        "f2269c645318ef7b7388ac00000000");
     const transaction test_tx(tx_data, true);
     BOOST_REQUIRE(test_tx.is_valid());
 
-    const script prevout_script(std::string{ "dup hash160 [88350574280395ad2c3e2ee20e322073d94e5e40] equalverify checksig" });
+    const script prevout_script(
+        std::string{"dup hash160 [88350574280395ad2c3e2ee20e322073d94e5e40] "
+                    "equalverify checksig"});
     BOOST_REQUIRE(prevout_script.is_valid());
 
-    const ec_secret secret = base16_hash("ce8f4b713ffdd2658900845251890f30371856be201cd1f5b3d970f793634333");
+    const ec_secret secret = base16_hash(
+        "ce8f4b713ffdd2658900845251890f30371856be201cd1f5b3d970f793634333");
     const auto index = 0u;
     const auto value = 0u;
     const auto bip143 = false;
     endorsement out;
-    BOOST_REQUIRE(test_tx.create_endorsement(out, secret, prevout_script, index, value, coverage::hash_all, script_version::unversioned, bip143));
+    BOOST_REQUIRE(test_tx.create_endorsement(
+        out, secret, prevout_script, index, value, coverage::hash_all,
+        script_version::unversioned, bip143));
 
-    const auto expected = base16_chunk("3045022100e428d3cc67a724cb6cfe8634aa299e58f189d9c46c02641e936c40cc16c7e8ed0220083949910fe999c21734a1f33e42fca15fb463ea2e08f0a1bccd952aacaadbb801");
+    const auto expected =
+        base16_chunk("3045022100e428d3cc67a724cb6cfe8634aa299e58f189d9c46c02641"
+                     "e936c40cc16c7e8ed0220083949910fe999c21734a1f33e42fca15fb4"
+                     "63ea2e08f0a1bccd952aacaadbb801");
     BOOST_REQUIRE_EQUAL(out, expected);
 }
 
-BOOST_AUTO_TEST_CASE(transaction__create_endorsement__single_input_no_output__expected)
+BOOST_AUTO_TEST_CASE(
+    transaction__create_endorsement__single_input_no_output__expected)
 {
-    const auto tx_data = base16_chunk("0100000001b3807042c92f449bbf79b33ca59d7dfec7f4cc71096704a9c526dddf496ee0970000000000ffffffff0000000000");
+    const auto tx_data =
+        base16_chunk("0100000001b3807042c92f449bbf79b33ca59d7dfec7f4cc71096704a"
+                     "9c526dddf496ee0970000000000ffffffff0000000000");
     const transaction test_tx(tx_data, true);
     BOOST_REQUIRE(test_tx.is_valid());
 
-    const script prevout_script(std::string{ "dup hash160 [88350574280395ad2c3e2ee20e322073d94e5e40] equalverify checksig" });
+    const script prevout_script(
+        std::string{"dup hash160 [88350574280395ad2c3e2ee20e322073d94e5e40] "
+                    "equalverify checksig"});
     BOOST_REQUIRE(prevout_script.is_valid());
 
-    const ec_secret secret = base16_hash("ce8f4b713ffdd2658900845251890f30371856be201cd1f5b3d970f793634333");
+    const ec_secret secret = base16_hash(
+        "ce8f4b713ffdd2658900845251890f30371856be201cd1f5b3d970f793634333");
     const auto index = 0u;
     const auto value = 0u;
     const auto bip143 = false;
     endorsement out;
-    BOOST_REQUIRE(test_tx.create_endorsement(out, secret, prevout_script, index, value, coverage::hash_all, script_version::unversioned, bip143));
+    BOOST_REQUIRE(test_tx.create_endorsement(
+        out, secret, prevout_script, index, value, coverage::hash_all,
+        script_version::unversioned, bip143));
 
-    const auto expected = base16_chunk("3045022100ba57820be5f0b93a0d5b880fbf2a86f819d959ecc24dc31b6b2d4f6ed286f253022071ccd021d540868ee10ca7634f4d270dfac7aea0d5912cf2b104111ac9bc756b01");
+    const auto expected =
+        base16_chunk("3045022100ba57820be5f0b93a0d5b880fbf2a86f819d959ecc24dc31"
+                     "b6b2d4f6ed286f253022071ccd021d540868ee10ca7634f4d270dfac7"
+                     "aea0d5912cf2b104111ac9bc756b01");
     BOOST_REQUIRE_EQUAL(out, expected);
 }
 
@@ -1434,18 +1247,25 @@ BOOST_AUTO_TEST_CASE(transaction__create_endorsement__single_input_no_output__ex
 
 BOOST_AUTO_TEST_CASE(transaction__signature_hash__all__expected)
 {
-    const auto tx_data = base16_chunk("0100000001b3807042c92f449bbf79b33ca59d7dfec7f4cc71096704a9c526dddf496ee0970000000000ffffffff0000000000");
+    const auto tx_data =
+        base16_chunk("0100000001b3807042c92f449bbf79b33ca59d7dfec7f4cc71096704a"
+                     "9c526dddf496ee0970000000000ffffffff0000000000");
     transaction test_tx(tx_data, true);
     BOOST_REQUIRE(test_tx.is_valid());
 
-    const script prevout_script(std::string{ "dup hash160 [88350574280395ad2c3e2ee20e322073d94e5e40] equalverify checksig" });
+    const script prevout_script(
+        std::string{"dup hash160 [88350574280395ad2c3e2ee20e322073d94e5e40] "
+                    "equalverify checksig"});
     BOOST_REQUIRE(prevout_script.is_valid());
 
     const auto index = 0u;
     const auto value = 0u;
     const auto bip143 = false;
-    const auto sighash = test_tx.signature_hash(index, prevout_script, value, coverage::hash_all, script_version::unversioned, bip143);
-    const auto expected = base16_array("f89572635651b2e4f89778350616989183c98d1a721c911324bf9f17a0cf5bf0");
+    const auto sighash = test_tx.signature_hash(
+        index, prevout_script, value, coverage::hash_all,
+        script_version::unversioned, bip143);
+    const auto expected = base16_array(
+        "f89572635651b2e4f89778350616989183c98d1a721c911324bf9f17a0cf5bf0");
     BOOST_REQUIRE_EQUAL(sighash, expected);
 }
 
@@ -1454,83 +1274,63 @@ BOOST_AUTO_TEST_CASE(transaction__signature_hash__all__expected)
 
 BOOST_AUTO_TEST_CASE(transaction__json__conversions__expected)
 {
-    const std::string text
-    {
+    const std::string text{
         "{"
-            "\"version\":42,"
-            "\"inputs\":"
-            "["
-                "{"
-                    "\"point\":"
-                    "{"
-                        "\"hash\":\"0000000000000000000000000000000000000000000000000000000000000000\","
-                        "\"index\":24"
-                    "},"
-                    "\"script\":\"return pick\","
-                    "\"witness\":\"[242424]\","
-                    "\"sequence\":42"
-                "},"
-                "{"
-                    "\"point\":"
-                    "{"
-                        "\"hash\":\"0000000000000000000000000000000000000000000000000000000000000001\","
-                        "\"index\":42"
-                    "},"
-                    "\"script\":\"return roll\","
-                    "\"witness\":\"[424242]\","
-                    "\"sequence\":24"
-                "}"
-            "],"
-            "\"outputs\":"
-            "["
-                "{"
-                    "\"value\":24,"
-                    "\"script\":\"pick\""
-                "},"
-                "{"
-                    "\"value\":42,"
-                    "\"script\":\"roll\""
-                "}"
-            "],"
-            "\"locktime\":24"
+        "\"version\":42,"
+        "\"inputs\":"
+        "["
+        "{"
+        "\"point\":"
+        "{"
+        "\"hash\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000000\","
+        "\"index\":24"
+        "},"
+        "\"script\":\"return pick\","
+        "\"witness\":\"[242424]\","
+        "\"sequence\":42"
+        "},"
+        "{"
+        "\"point\":"
+        "{"
+        "\"hash\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000001\","
+        "\"index\":42"
+        "},"
+        "\"script\":\"return roll\","
+        "\"witness\":\"[424242]\","
+        "\"sequence\":24"
         "}"
-    };
+        "],"
+        "\"outputs\":"
+        "["
+        "{"
+        "\"value\":24,"
+        "\"script\":\"pick\""
+        "},"
+        "{"
+        "\"value\":42,"
+        "\"script\":\"roll\""
+        "}"
+        "],"
+        "\"locktime\":24"
+        "}"};
 
-    const chain::transaction instance
-    {
+    const chain::transaction instance{
         42,
-        chain::inputs
-        {
-            chain::input
-            {
-                chain::point{ null_hash, 24 },
-                chain::script{ { { opcode::op_return }, { opcode::pick } } },
-                chain::witness{ "[242424]" },
-                42
-            },
-            chain::input
-            {
-                chain::point{ one_hash, 42 },
-                chain::script{ { { opcode::op_return }, { opcode::roll } } },
-                chain::witness{ "[424242]" },
-                24
-            }
-        },
-        chain::outputs
-        {
-            chain::output
-            {
-                24,
-                chain::script{ { { opcode::pick } } }
-            },
-            chain::output
-            {
-                42,
-                chain::script{ { { opcode::roll } } }
-            }
-        },
-        24
-    };
+        chain::inputs{
+            chain::input{
+                chain::point{null_hash, 24},
+                chain::script{{{opcode::op_return}, {opcode::pick}}},
+                chain::witness{"[242424]"}, 42},
+            chain::input{
+                chain::point{one_hash, 42},
+                chain::script{{{opcode::op_return}, {opcode::roll}}},
+                chain::witness{"[424242]"}, 24}},
+        chain::outputs{
+            chain::output{24, chain::script{{{opcode::pick}}}},
+            chain::output{42, chain::script{{{opcode::roll}}}}},
+        24};
 
     const auto value = json::value_from(instance);
 

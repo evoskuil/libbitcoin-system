@@ -19,14 +19,17 @@
 #ifndef LIBBITCOIN_SYSTEM_CHAIN_ENUMS_SCRIPT_VERSION_HPP
 #define LIBBITCOIN_SYSTEM_CHAIN_ENUMS_SCRIPT_VERSION_HPP
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 /// Script versions (bip141).
 enum class script_version
 {
-    /// Defined by bip141. 
+    /// Defined by bip141.
     zero,
 
     /// All reserved script versions (1..16).

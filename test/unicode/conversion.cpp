@@ -235,14 +235,16 @@ BOOST_AUTO_TEST_CASE(conversion__to_utf16__to_utf8_ascii_round_trip__unchanged)
     BOOST_REQUIRE_EQUAL(converted, utf8_ascii);
 }
 
-BOOST_AUTO_TEST_CASE(conversion__to_utf16__to_utf8_japanese_round_trip__unchanged)
+BOOST_AUTO_TEST_CASE(
+    conversion__to_utf16__to_utf8_japanese_round_trip__unchanged)
 {
     const auto utf8 = "テスト";
     const auto converted = to_utf8(to_utf16(utf8));
     BOOST_REQUIRE_EQUAL(converted, utf8);
 }
 
-BOOST_AUTO_TEST_CASE(conversion__to_utf16__utf8_and_utf16_japanese_literals_round_trip__fails_on_win32)
+BOOST_AUTO_TEST_CASE(
+    conversion__to_utf16__utf8_and_utf16_japanese_literals_round_trip__fails_on_win32)
 {
     const auto utf8 = "テスト";
     const auto utf16 = L"テスト";

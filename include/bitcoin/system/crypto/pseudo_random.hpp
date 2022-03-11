@@ -28,20 +28,24 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 class BC_API pseudo_random
 {
-  public:
+public:
     /// Fill a byte array with randomness using the default random engine.
-    template<size_t Size>
+    template <size_t Size>
     static void fill(data_array<Size>& out) noexcept
     {
-        std::transform(out.begin(), out.end(), out.begin(), [](uint8_t) noexcept
-        {
-            return next();
-        });
+        std::transform(
+            out.begin(), out.end(), out.begin(),
+            [](uint8_t) noexcept
+            {
+                return next();
+            });
     }
 
     /// Fill a byte vector with randomness using the default random engine.
@@ -56,15 +60,15 @@ class BC_API pseudo_random
     static uint8_t next(uint8_t begin, uint8_t end) noexcept;
 
     /// Generate a pseudo random number within the Type domain.
-    template<typename Type, if_integer<Type> = true>
+    template <typename Type, if_integer<Type> = true>
     static Type next() noexcept
     {
-        return next(std::numeric_limits<Type>::min(),
-            std::numeric_limits<Type>::max());
+        return next(
+            std::numeric_limits<Type>::min(), std::numeric_limits<Type>::max());
     }
 
     /// Generate a pseudo random integer value within [begin, end].
-    template<typename Integer, if_integer<Integer> = true>
+    template <typename Integer, if_integer<Integer> = true>
     static Integer next(Integer begin, Integer end) noexcept
     {
         std::uniform_int_distribution<Integer> distribution(begin, end);
@@ -72,7 +76,7 @@ class BC_API pseudo_random
     }
 
     /// Shuffle a container elements using the random engine.
-    template<class Container>
+    template <class Container>
     static void shuffle(Container& out) noexcept
     {
         std::shuffle(out.begin(), out.end(), get_twister());
@@ -84,7 +88,7 @@ class BC_API pseudo_random
     /// duration. Returns the randomized duration.
     static std::chrono::steady_clock::duration duration(
         const std::chrono::steady_clock::duration& maximum,
-        uint8_t ratio=2) noexcept;
+        uint8_t ratio = 2) noexcept;
 
 private:
     static std::mt19937& get_twister() noexcept;

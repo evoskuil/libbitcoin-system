@@ -28,17 +28,19 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 using namespace boost::program_options;
 
 const std::string point::delimiter = ":";
 
 // Point format is currently private to bx.
-static bool decode_point(chain::point& point,
-    const std::string& tuple) noexcept
+static bool decode_point(chain::point& point, const std::string& tuple) noexcept
 {
     uint32_t index;
     const auto tokens = split(tuple, point::delimiter);
@@ -46,7 +48,7 @@ static bool decode_point(chain::point& point,
         return false;
 
     // Validate and deserialize the transaction hash.
-    point = chain::point{ hash256{ tokens[0] }, index };
+    point = chain::point{hash256{tokens[0]}, index};
     return true;
 }
 
@@ -58,18 +60,15 @@ static std::string encode_point(const chain::point& point) noexcept
     return result.str();
 }
 
-point::point() noexcept
-  : value_()
+point::point() noexcept : value_()
 {
 }
 
-point::point(const chain::point& value) noexcept
-  : value_(value)
+point::point(const chain::point& value) noexcept : value_(value)
 {
 }
 
-point::point(const point& other) noexcept
-  : point(other.value_)
+point::point(const point& other) noexcept : point(other.value_)
 {
 }
 

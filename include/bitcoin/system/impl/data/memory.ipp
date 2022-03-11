@@ -24,8 +24,10 @@
 #include <utility>
 #include <vector>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Create shared pointer to vector of const shared ptr from the moved vector.
 template <typename Type>
@@ -35,7 +37,8 @@ std::shared_ptr<std::vector<std::shared_ptr<const Type>>> to_shareds(
     auto out = std::make_shared<std::vector<std::shared_ptr<const Type>>>(
         values.size());
 
-    std::transform(values.begin(), values.end(), out->begin(),
+    std::transform(
+        values.begin(), values.end(), out->begin(),
         [](Type& value)
         {
             return to_shared(std::move(value));
@@ -52,7 +55,8 @@ std::shared_ptr<std::vector<std::shared_ptr<const Type>>> to_shareds(
     auto out = std::make_shared<std::vector<std::shared_ptr<const Type>>>(
         values.size());
 
-    std::transform(values.begin(), values.end(), out->begin(),
+    std::transform(
+        values.begin(), values.end(), out->begin(),
         [](const Type& value)
         {
             return to_shared(value);

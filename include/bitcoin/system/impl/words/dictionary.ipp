@@ -28,9 +28,12 @@
 #include <bitcoin/system/words/language.hpp>
 #include <bitcoin/system/words/languages.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
 
 // C++20: deprecated.
 // en.cppreference.com/w/cpp/named_req/PODType
@@ -40,9 +43,9 @@ static_assert(std::is_pod<dictionary<1>::words>(), "performance");
 // Constructor.
 // ----------------------------------------------------------------------------
 
-template<size_t Size>
+template <size_t Size>
 dictionary<Size>::dictionary(language identifier, const words& words) noexcept
-  : identifier_(identifier), words_(words)
+    : identifier_(identifier), words_(words)
 {
 }
 
@@ -73,10 +76,11 @@ string_list dictionary<Size>::at(const search& indexes) const noexcept
     string_list out(indexes.size());
 
     // std::transform can be parallel but maintains order.
-    std::transform(indexes.begin(), indexes.end(), out.begin(),
+    std::transform(
+        indexes.begin(), indexes.end(), out.begin(),
         [&](size_t index)
         {
-            // index is signed because we reuse indexes data type. 
+            // index is signed because we reuse indexes data type.
             return at(index);
         });
 
@@ -93,18 +97,20 @@ int32_t dictionary<Size>::index(const std::string& word) const noexcept
 
     // std::find returns first match, though words should be unique.
     const auto it = std::find(words_.word.begin(), words_.word.end(), word);
-    return it == words_.word.end() ? -1 : 
-        static_cast<int32_t>(std::distance(words_.word.begin(), it));
+    return it == words_.word.end()
+               ? -1
+               : static_cast<int32_t>(std::distance(words_.word.begin(), it));
 }
 
 template <size_t Size>
-typename dictionary<Size>::result
-dictionary<Size>::index(const string_list& words) const noexcept
+typename dictionary<Size>::result dictionary<Size>::index(
+    const string_list& words) const noexcept
 {
     dictionary<Size>::result out(words.size());
 
     // std::transform can be parallel but maintains order.
-    std::transform(words.begin(), words.end(), out.begin(),
+    std::transform(
+        words.begin(), words.end(), out.begin(),
         [&](const std::string& word)
         {
             return index(word);
@@ -123,7 +129,8 @@ template <size_t Size>
 bool dictionary<Size>::contains(const string_list& words) const noexcept
 {
     // std::all_of can be parallel and order doesn't matter.
-    return std::all_of(words.begin(), words.end(),
+    return std::all_of(
+        words.begin(), words.end(),
         [&](const std::string& word)
         {
             return contains(word);

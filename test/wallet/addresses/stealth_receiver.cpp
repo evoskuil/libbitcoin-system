@@ -23,14 +23,21 @@ BOOST_AUTO_TEST_SUITE(stealth_receiver_tests)
 
 using namespace bc::system::wallet;
 
-#define MAIN_KEY "tprv8ctN3HAF9dCgX9ggdCwiZHa7c3UHuG2Ev4jgYWDhTHDUVWKKsg7znbr3vYtmCzVqcMQsjd9cSKsyKGaDvTAUMkw1UphETe1j8LcT21eWPkH"
-#define STEALTH_ADDRESS "vJmudwspxzmEoz1AP5tTrRMcuop6XjNWa1SnjHFmLeSc9DAkro6J6oYnD7MubLHx9wT3rm7D6xgA8U9Lr9zjzijhVSuUbYdMNYUN27"
-#define EPHEMERAL_PRIVATE "f91e673103863bbeb0ef1852cd8eade6b73ea55afc9b1873be62bf628eac072a"
-#define RECEIVER_PRIVATE "fc696c9f7143916f24977210c806101866c7fa13cc06982978d80518c91af2fb"
+#define MAIN_KEY                                                               \
+    "tprv8ctN3HAF9dCgX9ggdCwiZHa7c3UHuG2Ev4jgYWDhTHDUVWKKsg7znbr3vYtmCzVqcMQs" \
+    "jd9cSKsyKGaDvTAUMkw1UphETe1j8LcT21eWPkH"
+#define STEALTH_ADDRESS                                                        \
+    "vJmudwspxzmEoz1AP5tTrRMcuop6XjNWa1SnjHFmLeSc9DAkro6J6oYnD7MubLHx9wT3rm7D" \
+    "6xgA8U9Lr9zjzijhVSuUbYdMNYUN27"
+#define EPHEMERAL_PRIVATE                                                      \
+    "f91e673103863bbeb0ef1852cd8eade6b73ea55afc9b1873be62bf628eac072a"
+#define RECEIVER_PRIVATE                                                       \
+    "fc696c9f7143916f24977210c806101866c7fa13cc06982978d80518c91af2fb"
 #define DERIVED_ADDRESS "mtKffkQLTw2D6f6mTkrWfi8qxLv4jL1LrK"
 
 // TODO: test individual methods in isolation.
-BOOST_AUTO_TEST_CASE(stealth_receiver__exchange_between_sender_and_receiver__always__round_trips)
+BOOST_AUTO_TEST_CASE(
+    stealth_receiver__exchange_between_sender_and_receiver__always__round_trips)
 {
     static const auto version = payment_address::testnet_p2kh;
     const hd_private main_key(MAIN_KEY, hd_private::testnet);
@@ -39,7 +46,8 @@ BOOST_AUTO_TEST_CASE(stealth_receiver__exchange_between_sender_and_receiver__alw
     const auto& scan_private = scan_key.secret();
     const auto& spend_private = spend_key.secret();
 
-    const stealth_receiver receiver(scan_private, spend_private, binary{}, version);
+    const stealth_receiver receiver(
+        scan_private, spend_private, binary{}, version);
     BOOST_REQUIRE(receiver);
 
     const auto& address = receiver.stealth_address();
@@ -51,7 +59,8 @@ BOOST_AUTO_TEST_CASE(stealth_receiver__exchange_between_sender_and_receiver__alw
 
     // Sender sends BTC to send_address and the preceding output is
     // ephemeral_public right-padded up to 80 bytes total (max standard op_return).
-    const stealth_sender sender(ephemeral_private, address, data_chunk{}, binary{}, version);
+    const stealth_sender sender(
+        ephemeral_private, address, data_chunk{}, binary{}, version);
     BOOST_REQUIRE(sender);
 
     const auto& payment = sender.payment_address();
@@ -62,7 +71,8 @@ BOOST_AUTO_TEST_CASE(stealth_receiver__exchange_between_sender_and_receiver__alw
     // [ephemkey:32] [address:20] [tx_hash:32]
     // Normally this is obtained by the server via client.fetch_stealth.
     ec_compressed ephemeral_public;
-    BOOST_REQUIRE(extract_ephemeral_key(ephemeral_public, sender.stealth_script()));
+    BOOST_REQUIRE(
+        extract_ephemeral_key(ephemeral_public, sender.stealth_script()));
 
     // The receiver can regenerate send_address using just ephemeral_public.
     payment_address derived_address;
@@ -79,7 +89,8 @@ BOOST_AUTO_TEST_CASE(stealth_receiver__exchange_between_sender_and_receiver__alw
 
     // The receiver now has the stealth private key and the send address.
     BOOST_REQUIRE_EQUAL(encode_base16(receiver_private), RECEIVER_PRIVATE);
-    BOOST_REQUIRE_EQUAL(payment_address(receiver_public, version), derived_address);
+    BOOST_REQUIRE_EQUAL(
+        payment_address(receiver_public, version), derived_address);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

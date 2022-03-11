@@ -28,51 +28,53 @@
 #include <bitcoin/system/wallet/addresses/payment_address.hpp>
 #include <bitcoin/system/wallet/keys/ec_private.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 const uint8_t ec_public::mainnet_p2kh = 0x00;
 const uint8_t ec_public::testnet_p2kh = 0x6f;
 
-ec_public::ec_public() noexcept
-  : ec_public(ec_point{})
+ec_public::ec_public() noexcept : ec_public(ec_point{})
 {
 }
 
 ec_public::ec_public(const ec_point& point) noexcept
-  : ec_point(point), compress_(true)
+    : ec_point(point), compress_(true)
 {
 }
 
 ec_public::ec_public(const ec_public& other) noexcept
-  : ec_point(other), compress_(other.compress_)
+    : ec_point(other), compress_(other.compress_)
 {
 }
 
 ec_public::ec_public(const ec_private& secret) noexcept
-  : ec_public(from_private(secret))
+    : ec_public(from_private(secret))
 {
 }
 
 ec_public::ec_public(const data_chunk& decoded) noexcept
-  : ec_public(from_data(decoded))
+    : ec_public(from_data(decoded))
 {
 }
 
 ec_public::ec_public(const std::string& base16) noexcept
-  : ec_public(from_string(base16))
+    : ec_public(from_string(base16))
 {
 }
 
 ec_public::ec_public(const ec_compressed& compressed, bool compress) noexcept
-  : ec_point(compressed), compress_(compress)
+    : ec_point(compressed), compress_(compress)
 {
 }
 
-ec_public::ec_public(const ec_uncompressed& uncompressed,
-    bool compress) noexcept
-  : ec_public(from_point(uncompressed, compress))
+ec_public::ec_public(
+    const ec_uncompressed& uncompressed, bool compress) noexcept
+    : ec_public(from_point(uncompressed, compress))
 {
 }
 
@@ -92,7 +94,7 @@ ec_public ec_public::from_private(const ec_private& secret) noexcept
     if (!secret)
         return {};
 
-    return { secret.to_public() };
+    return {secret.to_public()};
 }
 
 ec_public ec_public::from_string(const std::string& base16) noexcept
@@ -101,7 +103,7 @@ ec_public ec_public::from_string(const std::string& base16) noexcept
     if (!decode_base16(decoded, base16))
         return {};
 
-    return { decoded };
+    return {decoded};
 }
 
 ec_public ec_public::from_data(const data_chunk& decoded) noexcept
@@ -110,17 +112,17 @@ ec_public ec_public::from_data(const data_chunk& decoded) noexcept
         return {};
 
     if (is_compressed_key(decoded))
-        return ec_public{ to_array<ec_compressed_size>(decoded), true };
+        return ec_public{to_array<ec_compressed_size>(decoded), true};
 
     ec_compressed compressed;
     if (!system::compress(compressed, to_array<ec_uncompressed_size>(decoded)))
-         return {};
+        return {};
 
-    return { compressed, false };
+    return {compressed, false};
 }
 
-ec_public ec_public::from_point(const ec_uncompressed& point,
-    bool compress) noexcept
+ec_public ec_public::from_point(
+    const ec_uncompressed& point, bool compress) noexcept
 {
     if (!is_point(point))
         return {};
@@ -129,7 +131,7 @@ ec_public ec_public::from_point(const ec_uncompressed& point,
     if (!system::compress(compressed, point))
         return {};
 
-    return { compressed, compress };
+    return {compressed, compress};
 }
 
 // Serializer.
@@ -190,7 +192,7 @@ bool ec_public::to_uncompressed(ec_uncompressed& out) const noexcept
 
 payment_address ec_public::to_payment_address(uint8_t version) const noexcept
 {
-    return { *this, version };
+    return {*this, version};
 }
 
 // Operators.

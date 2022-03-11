@@ -43,95 +43,92 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // Constructors.
 // ----------------------------------------------------------------------------
 
 transaction::transaction() noexcept
-  : transaction(
-      false, 0,
-      to_shared<input_ptrs>(),
-      to_shared<output_ptrs>(),
-      0, false)
+    : transaction(
+        false, 0, to_shared<input_ptrs>(), to_shared<output_ptrs>(), 0, false)
 {
 }
 
-transaction::transaction(transaction&& other) noexcept
-  : transaction(other)
+transaction::transaction(transaction&& other) noexcept : transaction(other)
 {
 }
 
 // Cache not copied or moved.
 transaction::transaction(const transaction& other) noexcept
-  : transaction(
-      other.segregated_,
-      other.version_,
-      other.inputs_,
-      other.outputs_,
-      other.locktime_,
-      other.valid_)
+    : transaction(
+        other.segregated_, other.version_, other.inputs_, other.outputs_,
+        other.locktime_, other.valid_)
 {
 }
 
 // segregated_ is the first property because of this constructor.
-transaction::transaction(uint32_t version, chain::inputs&& inputs,
-    chain::outputs&& outputs, uint32_t locktime) noexcept
-  : transaction(segregated(inputs), version, to_shareds(std::move(inputs)),
-      to_shareds(std::move(outputs)), locktime, true)
+transaction::transaction(
+    uint32_t version, chain::inputs&& inputs, chain::outputs&& outputs,
+    uint32_t locktime) noexcept
+    : transaction(
+        segregated(inputs), version, to_shareds(std::move(inputs)),
+        to_shareds(std::move(outputs)), locktime, true)
 {
 }
 
-transaction::transaction(uint32_t version, const chain::inputs& inputs,
+transaction::transaction(
+    uint32_t version, const chain::inputs& inputs,
     const chain::outputs& outputs, uint32_t locktime) noexcept
-  : transaction(segregated(inputs), version, to_shareds(inputs),
-      to_shareds(outputs), locktime, true)
+    : transaction(
+        segregated(inputs), version, to_shareds(inputs), to_shareds(outputs),
+        locktime, true)
 {
 }
 
-transaction::transaction(uint32_t version, const inputs_ptr& inputs,
-    const outputs_ptr& outputs, uint32_t locktime) noexcept
-  : transaction(segregated(inputs), version, inputs, outputs, locktime, true)
+transaction::transaction(
+    uint32_t version, const inputs_ptr& inputs, const outputs_ptr& outputs,
+    uint32_t locktime) noexcept
+    : transaction(segregated(inputs), version, inputs, outputs, locktime, true)
 {
 }
 
 transaction::transaction(const data_slice& data, bool witness) noexcept
-  : transaction(stream::in::copy(data), witness)
+    : transaction(stream::in::copy(data), witness)
 {
 }
 
 transaction::transaction(std::istream&& stream, bool witness) noexcept
-  : transaction(read::bytes::istream(stream), witness)
+    : transaction(read::bytes::istream(stream), witness)
 {
 }
 
 transaction::transaction(std::istream& stream, bool witness) noexcept
-  : transaction(read::bytes::istream(stream), witness)
+    : transaction(read::bytes::istream(stream), witness)
 {
 }
 
 transaction::transaction(reader&& source, bool witness) noexcept
-  : transaction(from_data(source, witness))
+    : transaction(from_data(source, witness))
 {
 }
 
 transaction::transaction(reader& source, bool witness) noexcept
-  : transaction(from_data(source, witness))
+    : transaction(from_data(source, witness))
 {
 }
 
 // protected
-transaction::transaction(bool segregated, uint32_t version,
-    const inputs_ptr& inputs, const outputs_ptr& outputs, uint32_t locktime,
-    bool valid) noexcept
-  : version_(version),
-    inputs_(inputs ? inputs : to_shared<input_ptrs>()),
-    outputs_(outputs ? outputs : to_shared<output_ptrs>()),
-    locktime_(locktime),
-    segregated_(segregated),
-    valid_(valid)
+transaction::transaction(
+    bool segregated, uint32_t version, const inputs_ptr& inputs,
+    const outputs_ptr& outputs, uint32_t locktime, bool valid) noexcept
+    : version_(version), inputs_(inputs ? inputs : to_shared<input_ptrs>()),
+      outputs_(outputs ? outputs : to_shared<output_ptrs>()),
+      locktime_(locktime), segregated_(segregated), valid_(valid)
 {
 }
 
@@ -159,10 +156,9 @@ transaction& transaction::operator=(const transaction& other) noexcept
 bool transaction::operator==(const transaction& other) const noexcept
 {
     // Compares input/output elements, not pointers, cache not compared.
-    return (version_ == other.version_)
-        && (locktime_ == other.locktime_)
-        && equal_points(*inputs_, *other.inputs_)
-        && equal_points(*outputs_, *other.outputs_);
+    return (version_ == other.version_) && (locktime_ == other.locktime_)
+           && equal_points(*inputs_, *other.inputs_)
+           && equal_points(*outputs_, *other.outputs_);
 }
 
 bool transaction::operator!=(const transaction& other) const noexcept
@@ -173,15 +169,15 @@ bool transaction::operator!=(const transaction& other) const noexcept
 // Deserialization.
 // ----------------------------------------------------------------------------
 
-template<class Put, class Source>
-std::shared_ptr<std::vector<std::shared_ptr<const Put>>>
-read_puts(Source& source) noexcept
+template <class Put, class Source>
+std::shared_ptr<std::vector<std::shared_ptr<const Put>>> read_puts(
+    Source& source) noexcept
 {
     auto puts = to_shared<std::vector<std::shared_ptr<const Put>>>();
     puts->reserve(source.read_size(max_block_size));
 
     for (auto put = zero; put < puts->capacity(); ++put)
-        puts->emplace_back(new Put{ source });
+        puts->emplace_back(new Put{source});
 
     return puts;
 }
@@ -196,9 +192,8 @@ transaction transaction::from_data(reader& source, bool witness) noexcept
     outputs_ptr outputs;
 
     // Expensive repeated recomputation, so cache segregated state.
-    const auto segregated =
-        inputs->size() == witness_marker &&
-        source.peek_byte() == witness_enabled;
+    const auto segregated = inputs->size() == witness_marker
+                            && source.peek_byte() == witness_enabled;
 
     // Detect witness as no inputs (marker) and expected flag (bip144).
     if (segregated)
@@ -211,14 +206,14 @@ transaction transaction::from_data(reader& source, bool witness) noexcept
         outputs = read_puts<output>(source);
 
         // Read or skip witnesses as specified.
-        for (auto& input: *inputs)
+        for (auto& input : *inputs)
         {
             if (witness)
             {
                 // Safe to cast as this method exclusively owns the input and
                 // input::witness_ a mutable public property of the instance.
                 const auto setter = const_cast<chain::input*>(input.get());
-                setter->witness_ = to_shared(new chain::witness{ source, true });
+                setter->witness_ = to_shared(new chain::witness{source, true});
             }
             else
             {
@@ -237,7 +232,7 @@ transaction transaction::from_data(reader& source, bool witness) noexcept
     const auto locktime = source.read_4_bytes_little_endian();
 
     // to_const is overhead, creating an extra shared pointer per input.
-    return { segregated, version, inputs, outputs, locktime, source };
+    return {segregated, version, inputs, outputs, locktime, source};
 }
 
 // Serialization.
@@ -277,15 +272,15 @@ void transaction::to_data(writer& sink, bool witness) const noexcept
     }
 
     sink.write_variable(inputs_->size());
-    for (const auto& input: *inputs_)
+    for (const auto& input : *inputs_)
         input->to_data(sink);
 
     sink.write_variable(outputs_->size());
-    for (const auto& output: *outputs_)
+    for (const auto& output : *outputs_)
         output->to_data(sink);
 
     if (witness)
-        for (auto& input: *inputs_)
+        for (auto& input : *inputs_)
             input->witness().to_data(sink, true);
 
     sink.write_4_bytes_little_endian(locktime_);
@@ -297,7 +292,7 @@ size_t transaction::serialized_size(bool witness) const noexcept
 
     const auto ins = [=](size_t total, const input::ptr& input) noexcept
     {
-        // Inputs account for witness bytes. 
+        // Inputs account for witness bytes.
         return total + input->serialized_size(witness);
     };
 
@@ -307,12 +302,12 @@ size_t transaction::serialized_size(bool witness) const noexcept
     };
 
     return sizeof(version_)
-        + (witness ? sizeof(witness_marker) + sizeof(witness_enabled) : zero)
-        + variable_size(inputs_->size())
-        + std::accumulate(inputs_->begin(), inputs_->end(), zero, ins)
-        + variable_size(outputs_->size())
-        + std::accumulate(outputs_->begin(), outputs_->end(), zero, outs)
-        + sizeof(locktime_);
+           + (witness ? sizeof(witness_marker) + sizeof(witness_enabled) : zero)
+           + variable_size(inputs_->size())
+           + std::accumulate(inputs_->begin(), inputs_->end(), zero, ins)
+           + variable_size(outputs_->size())
+           + std::accumulate(outputs_->begin(), outputs_->end(), zero, outs)
+           + sizeof(locktime_);
 }
 
 // Properties.
@@ -390,8 +385,8 @@ size_t transaction::signature_operations(bool bip16, bool bip141) const noexcept
     };
 
     // Overflow returns max_size_t.
-    return std::accumulate(inputs_->begin(), inputs_->end(), zero, in) +
-        std::accumulate(outputs_->begin(), outputs_->end(), zero, out);
+    return std::accumulate(inputs_->begin(), inputs_->end(), zero, in)
+           + std::accumulate(outputs_->begin(), outputs_->end(), zero, out);
 }
 
 chain::points transaction::points() const noexcept
@@ -431,7 +426,7 @@ hash_digest transaction::outputs_hash() const noexcept
     hash_digest sha256;
     hash::sha256::copy sink(sha256);
 
-    for (const auto& output: *outputs())
+    for (const auto& output : *outputs())
         output->to_data(sink);
 
     sink.flush();
@@ -443,7 +438,7 @@ hash_digest transaction::points_hash() const noexcept
     hash_digest sha256;
     hash::sha256::copy sink(sha256);
 
-    for (const auto& input: *inputs())
+    for (const auto& input : *inputs())
         input->point().to_data(sink);
 
     sink.flush();
@@ -455,7 +450,7 @@ hash_digest transaction::sequences_hash() const noexcept
     hash_digest sha256;
     hash::sha256::copy sink(sha256);
 
-    for (const auto& input: *inputs())
+    for (const auto& input : *inputs())
         sink.write_4_bytes_little_endian(input->sequence());
 
     sink.flush();
@@ -480,17 +475,18 @@ inline coverage mask_sighash(uint8_t flags) noexcept
 {
     switch (flags & coverage::mask)
     {
-        case coverage::hash_single:
-            return coverage::hash_single;
-        case coverage::hash_none:
-            return coverage::hash_none;
-        default:
-            return coverage::hash_all;
+    case coverage::hash_single:
+        return coverage::hash_single;
+    case coverage::hash_none:
+        return coverage::hash_none;
+    default:
+        return coverage::hash_all;
     }
 }
 
-void transaction::signature_hash_single(writer& sink, uint32_t index,
-    const script& sub, uint8_t flags) const noexcept
+void transaction::signature_hash_single(
+    writer& sink, uint32_t index, const script& sub,
+    uint8_t flags) const noexcept
 {
     const auto write_inputs = [&](writer& sink) noexcept
     {
@@ -538,8 +534,9 @@ void transaction::signature_hash_single(writer& sink, uint32_t index,
     sink.write_4_bytes_little_endian(flags);
 }
 
-void transaction::signature_hash_none(writer& sink, uint32_t index,
-    const script& sub, uint8_t flags) const noexcept
+void transaction::signature_hash_none(
+    writer& sink, uint32_t index, const script& sub,
+    uint8_t flags) const noexcept
 {
     const auto write_inputs = [&](writer& sink) noexcept
     {
@@ -576,8 +573,9 @@ void transaction::signature_hash_none(writer& sink, uint32_t index,
     sink.write_4_bytes_little_endian(flags);
 }
 
-void transaction::signature_hash_all(writer& sink, uint32_t index,
-    const script& sub, uint8_t flags) const noexcept
+void transaction::signature_hash_all(
+    writer& sink, uint32_t index, const script& sub,
+    uint8_t flags) const noexcept
 {
     const auto write_inputs = [&](writer& sink) noexcept
     {
@@ -610,7 +608,7 @@ void transaction::signature_hash_all(writer& sink, uint32_t index,
     const auto write_outputs = [&](writer& sink) noexcept
     {
         sink.write_variable(outputs_->size());
-        for (const auto& output: *outputs_)
+        for (const auto& output : *outputs_)
             output->to_data(sink);
     };
 
@@ -622,8 +620,8 @@ void transaction::signature_hash_all(writer& sink, uint32_t index,
 }
 
 // private
-hash_digest transaction::unversioned_signature_hash(uint32_t index,
-    const script& sub, uint8_t flags) const noexcept
+hash_digest transaction::unversioned_signature_hash(
+    uint32_t index, const script& sub, uint8_t flags) const noexcept
 {
     // Set options.
     const auto flag = mask_sighash(flags);
@@ -640,15 +638,15 @@ hash_digest transaction::unversioned_signature_hash(uint32_t index,
 
     switch (flag)
     {
-        case coverage::hash_single:
-            signature_hash_single(sink, index, sub, flags);
-            break;
-        case coverage::hash_none:
-            signature_hash_none(sink, index, sub, flags);
-            break;
-        default:
-        case coverage::hash_all:
-            signature_hash_all(sink, index, sub, flags);
+    case coverage::hash_single:
+        signature_hash_single(sink, index, sub, flags);
+        break;
+    case coverage::hash_none:
+        signature_hash_none(sink, index, sub, flags);
+        break;
+    default:
+    case coverage::hash_all:
+        signature_hash_all(sink, index, sub, flags);
     }
 
     sink.flush();
@@ -665,17 +663,13 @@ void transaction::initialize_hash_cache() const noexcept
     // This overconstructs the cache (anyone or !all), however it is simple and
     // the same criteria applied by satoshi.
     if (segregated_)
-        cache_.reset(new hash_cache
-            {
-                outputs_hash(),
-                points_hash(),
-                sequences_hash()
-            });
+        cache_.reset(
+            new hash_cache{outputs_hash(), points_hash(), sequences_hash()});
 }
 
 // private
-hash_digest transaction::version_0_signature_hash(uint32_t index,
-    const script& sub, uint64_t value, uint8_t flags,
+hash_digest transaction::version_0_signature_hash(
+    uint32_t index, const script& sub, uint64_t value, uint8_t flags,
     bool bip143) const noexcept
 {
     // bip143/v0: the way of serialization is changed.
@@ -739,9 +733,9 @@ hash_digest transaction::version_0_signature_hash(uint32_t index,
 // bytes in the signature hash preimage serialization.
 // ****************************************************************************
 
-hash_digest transaction::signature_hash(uint32_t index, const script& sub,
-    uint64_t value, uint8_t flags, script_version version,
-    bool bip143) const noexcept
+hash_digest transaction::signature_hash(
+    uint32_t index, const script& sub, uint64_t value, uint8_t flags,
+    script_version version, bool bip143) const noexcept
 {
     // There is no rational interpretation of a signature hash for a coinbase.
     BC_ASSERT(!is_coinbase());
@@ -752,39 +746,40 @@ hash_digest transaction::signature_hash(uint32_t index, const script& sub,
 
     switch (version)
     {
-        case script_version::unversioned:
-            return unversioned_signature_hash(index, sub, flags);
-        case script_version::zero:
-            return version_0_signature_hash(index, sub, value, flags, bip143);
-        case script_version::reserved:
-        default:
-            return {};
+    case script_version::unversioned:
+        return unversioned_signature_hash(index, sub, flags);
+    case script_version::zero:
+        return version_0_signature_hash(index, sub, value, flags, bip143);
+    case script_version::reserved:
+    default:
+        return {};
     }
 }
 
-bool transaction::check_signature(const ec_signature& signature,
-    const data_slice& public_key, const script& sub, uint32_t index,
-    uint64_t value, uint8_t flags, script_version version,
-    bool bip143) const noexcept
+bool transaction::check_signature(
+    const ec_signature& signature, const data_slice& public_key,
+    const script& sub, uint32_t index, uint64_t value, uint8_t flags,
+    script_version version, bool bip143) const noexcept
 {
     if (signature.empty() || public_key.empty())
         return false;
 
-    const auto sighash = signature_hash(index, sub, value, flags, version,
-        bip143);
+    const auto sighash =
+        signature_hash(index, sub, value, flags, version, bip143);
 
     // Validate the EC signature.
     return verify_signature(public_key, sighash, signature);
 }
 
-bool transaction::create_endorsement(endorsement& out, const ec_secret& secret,
-    const script& sub, uint32_t index, uint64_t value, uint8_t flags,
-    script_version version, bool bip143) const noexcept
+bool transaction::create_endorsement(
+    endorsement& out, const ec_secret& secret, const script& sub,
+    uint32_t index, uint64_t value, uint8_t flags, script_version version,
+    bool bip143) const noexcept
 {
     out.reserve(max_endorsement_size);
 
-    const auto sighash = signature_hash(index, sub, value, flags, version,
-        bip143);
+    const auto sighash =
+        signature_hash(index, sub, value, flags, version, bip143);
 
     // Create the EC signature and encode as DER.
     ec_signature signature;
@@ -852,8 +847,8 @@ bool transaction::is_segregated() const noexcept
 size_t transaction::weight() const noexcept
 {
     // Block weight is 3 * base size * + 1 * total size (bip141).
-    return base_size_contribution * serialized_size(false) +
-        total_size_contribution * serialized_size(true);
+    return base_size_contribution * serialized_size(false)
+           + total_size_contribution * serialized_size(true);
 }
 
 bool transaction::is_overweight() const noexcept
@@ -866,8 +861,8 @@ bool transaction::is_overweight() const noexcept
 // that coinbase input scripts are never executed. There is no need to exclude
 // p2sh coinbase sigops since there is never a script to count.
 //*****************************************************************************
-bool transaction::is_signature_operations_limit(bool bip16,
-    bool bip141) const noexcept
+bool transaction::is_signature_operations_limit(
+    bool bip16, bool bip141) const noexcept
 {
     const auto limit = bip141 ? max_fast_sigops : max_block_sigops;
     return signature_operations(bip16, bip141) > limit;
@@ -906,8 +901,9 @@ bool transaction::is_invalid_coinbase_size() const noexcept
 // Accept (contextual).
 // ----------------------------------------------------------------------------
 
-bool transaction::is_non_final(size_t height, uint32_t timestamp,
-    uint32_t median_time_past, bool bip113) const noexcept
+bool transaction::is_non_final(
+    size_t height, uint32_t timestamp, uint32_t median_time_past,
+    bool bip113) const noexcept
 {
     // BIP113: comparing the locktime against the median of the past 11 block
     // timestamps, rather than the timestamp of the block including the tx.
@@ -920,8 +916,9 @@ bool transaction::is_non_final(size_t height, uint32_t timestamp,
 
     const auto height_time = locktime_ < locktime_threshold ? height : time;
 
-    return !(is_zero(locktime_) || locktime_ < height_time ||
-        std::all_of(inputs_->begin(), inputs_->end(), finalized));
+    return !(
+        is_zero(locktime_) || locktime_ < height_time
+        || std::all_of(inputs_->begin(), inputs_->end(), finalized));
 }
 
 bool transaction::is_missing_prevouts() const noexcept
@@ -946,7 +943,8 @@ uint64_t transaction::claim() const noexcept
     };
 
     // The amount claimed by outputs.
-    return std::accumulate(outputs_->begin(), outputs_->end(), uint64_t(0), sum);
+    return std::accumulate(
+        outputs_->begin(), outputs_->end(), uint64_t(0), sum);
 }
 
 uint64_t transaction::value() const noexcept
@@ -980,15 +978,17 @@ bool transaction::is_immature(size_t height) const noexcept
     // Spends internal to a block are handled by block validation.
     const auto immature = [=](const input::ptr& input) noexcept
     {
-        return input->prevout->coinbase && (is_zero(input->prevout->height) ||
-            height < ceilinged_add(input->prevout->height, coinbase_maturity));
+        return input->prevout->coinbase
+               && (is_zero(input->prevout->height)
+                   || height < ceilinged_add(
+                          input->prevout->height, coinbase_maturity));
     };
 
     return std::any_of(inputs_->begin(), inputs_->end(), immature);
 }
 
-bool transaction::is_locked(size_t height,
-    uint32_t median_time_past) const noexcept
+bool transaction::is_locked(
+    size_t height, uint32_t median_time_past) const noexcept
 {
     // BIP68: not applied to the sequence of the input of a coinbase.
     BC_ASSERT(!is_coinbase());
@@ -1018,8 +1018,8 @@ bool transaction::is_unconfirmed_spend(size_t height) const noexcept
     // Spends internal to a block are handled by block validation.
     const auto unconfirmed = [=](const input::ptr& input) noexcept
     {
-        return is_zero(input->prevout->height) &&
-            !(height > input->prevout->height);
+        return is_zero(input->prevout->height)
+               && !(height > input->prevout->height);
     };
 
     return std::any_of(inputs_->begin(), inputs_->end(), unconfirmed);
@@ -1111,7 +1111,8 @@ code transaction::accept(const context& state) const noexcept
     const auto bip113 = state.is_enabled(forks::bip113_rule);
 
     // Store note: timestamp and mtp should be merged to single field.
-    if (is_non_final(state.height, state.timestamp, state.median_time_past, bip113))
+    if (is_non_final(
+            state.height, state.timestamp, state.median_time_past, bip113))
         return error::transaction_non_final;
 
     // Coinbases do not have prevouts.
@@ -1196,34 +1197,35 @@ code transaction::connect(const context& state, uint32_t index) const noexcept
         // Validate the native script.
         switch (in->prevout->script().version())
         {
-            case script_version::zero:
-            {
-                chunk_ptrs stack;
-                script witness_script;
-                if (!in->witness().extract_script(witness_script, stack,
-                    in->prevout->script()))
-                    return error::invalid_witness;
+        case script_version::zero:
+        {
+            chunk_ptrs stack;
+            script witness_script;
+            if (!in->witness().extract_script(
+                    witness_script, stack, in->prevout->script()))
+                return error::invalid_witness;
 
-                // A defined version indicates bip141 is active (not bip143).
-                program witness(to_shared<script>(witness_script), *this,
-                    index, state.forks, std::move(stack), in->prevout->value(),
-                    in->prevout->script().version());
+            // A defined version indicates bip141 is active (not bip143).
+            program witness(
+                to_shared<script>(witness_script), *this, index, state.forks,
+                std::move(stack), in->prevout->value(),
+                in->prevout->script().version());
 
-                if ((ec = interpreter::run(witness)))
-                    return ec;
+            if ((ec = interpreter::run(witness)))
+                return ec;
 
-                // A v0 script must succeed with a clean true stack (bip141).
-                return witness.stack_result(true) ? error::script_success :
-                    error::stack_false;
-            }
+            // A v0 script must succeed with a clean true stack (bip141).
+            return witness.stack_result(true) ? error::script_success
+                                              : error::stack_false;
+        }
 
-            // These versions are reserved for future extensions (bip141).
-            case script_version::reserved:
-                return error::script_success;
+        // These versions are reserved for future extensions (bip141).
+        case script_version::reserved:
+            return error::script_success;
 
-            case script_version::unversioned:
-            default:
-                return error::unversioned_script;
+        case script_version::unversioned:
+        default:
+            return error::unversioned_script;
         }
     }
 
@@ -1254,34 +1256,35 @@ code transaction::connect(const context& state, uint32_t index) const noexcept
             // Validate the non-native script.
             switch (embedded_script.version())
             {
-                case script_version::zero:
-                {
-                    chunk_ptrs stack;
-                    script witness_script;
-                    if (!in->witness().extract_script(witness_script, stack,
-                        embedded_script))
-                        return error::invalid_witness;
+            case script_version::zero:
+            {
+                chunk_ptrs stack;
+                script witness_script;
+                if (!in->witness().extract_script(
+                        witness_script, stack, embedded_script))
+                    return error::invalid_witness;
 
-                    // A defined version indicates bip141 is active (not bip143).
-                    program witness(to_shared<script>(witness_script), *this,
-                        index, state.forks, std::move(stack),
-                        in->prevout->value(), embedded_script.version());
+                // A defined version indicates bip141 is active (not bip143).
+                program witness(
+                    to_shared<script>(witness_script), *this, index,
+                    state.forks, std::move(stack), in->prevout->value(),
+                    embedded_script.version());
 
-                    if ((ec = interpreter::run(witness)))
-                        return ec;
+                if ((ec = interpreter::run(witness)))
+                    return ec;
 
-                    // A v0 script must succeed with a clean true stack (bip141).
-                    return witness.stack_result(true) ? error::script_success :
-                        error::stack_false;
-                }
+                // A v0 script must succeed with a clean true stack (bip141).
+                return witness.stack_result(true) ? error::script_success
+                                                  : error::stack_false;
+            }
 
-                // These versions are reserved for future extensions (bip141).
-                case script_version::reserved:
-                    return error::script_success;
+            // These versions are reserved for future extensions (bip141).
+            case script_version::reserved:
+                return error::script_success;
 
-                case script_version::unversioned:
-                default:
-                    return error::unversioned_script;
+            case script_version::unversioned:
+            default:
+                return error::unversioned_script;
             }
         }
     }
@@ -1298,37 +1301,34 @@ code transaction::connect(const context& state, uint32_t index) const noexcept
 
 namespace json = boost::json;
 
-transaction tag_invoke(json::value_to_tag<transaction>,
-    const json::value& value) noexcept
+transaction tag_invoke(
+    json::value_to_tag<transaction>, const json::value& value) noexcept
 {
-    return
-    {
+    return {
         value.at("version").to_number<uint32_t>(),
         json::value_to<chain::inputs>(value.at("inputs")),
         json::value_to<chain::outputs>(value.at("outputs")),
-        value.at("locktime").to_number<uint32_t>()
-    };
+        value.at("locktime").to_number<uint32_t>()};
 }
 
-void tag_invoke(json::value_from_tag, json::value& value,
-    const transaction& tx) noexcept
+void tag_invoke(
+    json::value_from_tag, json::value& value, const transaction& tx) noexcept
 {
-    value =
-    {
-        { "version", tx.version() },
-        { "inputs", *tx.inputs() },
-        { "outputs", *tx.outputs() },
-        { "locktime", tx.locktime() }
-    };
+    value = {
+        {"version", tx.version()},
+        {"inputs", *tx.inputs()},
+        {"outputs", *tx.outputs()},
+        {"locktime", tx.locktime()}};
 }
 
-transaction::ptr tag_invoke(json::value_to_tag<transaction::ptr>,
-    const json::value& value) noexcept
+transaction::ptr tag_invoke(
+    json::value_to_tag<transaction::ptr>, const json::value& value) noexcept
 {
     return to_shared(tag_invoke(json::value_to_tag<transaction>{}, value));
 }
 
-void tag_invoke(json::value_from_tag tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag tag, json::value& value,
     const transaction::ptr& tx) noexcept
 {
     tag_invoke(tag, value, *tx);

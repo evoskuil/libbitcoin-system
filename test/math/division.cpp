@@ -18,27 +18,27 @@
  */
 #include "../test.hpp"
 
- // These helpers otherwise create comparison of unsigned types warnings.
+// These helpers otherwise create comparison of unsigned types warnings.
 
 template <typename Dividend, typename Divisor>
 constexpr bool ceilinged_identity(Dividend x, Divisor y)
 {
-    return ceilinged_divide(x, y) * y + ceilinged_modulo(x, y) ==
-        static_cast<decltype((x / y) * y + (x / y))>(x);
+    return ceilinged_divide(x, y) * y + ceilinged_modulo(x, y)
+           == static_cast<decltype((x / y) * y + (x / y))>(x);
 }
 
 template <typename Dividend, typename Divisor>
 constexpr bool floored_identity(Dividend x, Divisor y)
 {
-    return floored_divide(x, y) * y + floored_modulo(x, y) ==
-        static_cast<decltype((x / y) * y + (x / y))>(x);
+    return floored_divide(x, y) * y + floored_modulo(x, y)
+           == static_cast<decltype((x / y) * y + (x / y))>(x);
 }
 
 template <typename Dividend, typename Divisor>
 constexpr bool truncated_identity(Dividend x, Divisor y)
 {
-    return truncated_divide(x, y) * y + truncated_modulo(x, y) ==
-        static_cast<decltype((x / y) * y + (x / y))>(x);
+    return truncated_divide(x, y) * y + truncated_modulo(x, y)
+           == static_cast<decltype((x / y) * y + (x / y))>(x);
 }
 
 #define DIVISION_MODULO
@@ -434,10 +434,22 @@ static_assert((+x / -y) * (-y) + (+x % -y) == +x, "-");
 // ----------------------------------------------------------------------------
 
 // Ceilinged divide: (increment truncated quotient if positive and remainder)
-static_assert((+x / +y) + (((+x < 0) == (+y < 0)) ? ((+x % +y) != 0 ? +i : 0) : 0) == +1 + i, "+");
-static_assert((-x / -y) + (((-x < 0) == (-y < 0)) ? ((-x % -y) != 0 ? +i : 0) : 0) == +1 + i, "+");
-static_assert((-x / +y) + (((-x < 0) == (+y < 0)) ? ((-x % +y) != 0 ? +i : 0) : 0) == -1 + 0, "-");
-static_assert((+x / -y) + (((+x < 0) == (-y < 0)) ? ((+x % -y) != 0 ? +i : 0) : 0) == -1 + 0, "-");
+static_assert(
+    (+x / +y) + (((+x < 0) == (+y < 0)) ? ((+x % +y) != 0 ? +i : 0) : 0)
+        == +1 + i,
+    "+");
+static_assert(
+    (-x / -y) + (((-x < 0) == (-y < 0)) ? ((-x % -y) != 0 ? +i : 0) : 0)
+        == +1 + i,
+    "+");
+static_assert(
+    (-x / +y) + (((-x < 0) == (+y < 0)) ? ((-x % +y) != 0 ? +i : 0) : 0)
+        == -1 + 0,
+    "-");
+static_assert(
+    (+x / -y) + (((+x < 0) == (-y < 0)) ? ((+x % -y) != 0 ? +i : 0) : 0)
+        == -1 + 0,
+    "-");
 
 // Ceilinged modulo: (decrease truncated modulo by divisor if positive and remainder)
 static_assert((+x % +y) - (((+x < 0) == (+y < 0)) ? +y : 0) == +1 - +y, "+");
@@ -454,10 +466,22 @@ static_assert((-1 + 0) * (-y) + (+1 - -0) == +x, "-");
 // ----------------------------------------------------------------------------
 
 // Floored divide: (decrement truncated quotient if negative and remainder)
-static_assert((+x / +y) - (((+x < 0) != (+y < 0)) ? ((+x % +y) != 0 ? +i : 0) : 0) == +1 - 0, "+");
-static_assert((-x / -y) - (((-x < 0) != (-y < 0)) ? ((-x % -y) != 0 ? +i : 0) : 0) == +1 - 0, "+");
-static_assert((-x / +y) - (((-x < 0) != (+y < 0)) ? ((-x % +y) != 0 ? +i : 0) : 0) == -1 - i, "-");
-static_assert((+x / -y) - (((+x < 0) != (-y < 0)) ? ((+x % -y) != 0 ? +i : 0) : 0) == -1 - i, "-");
+static_assert(
+    (+x / +y) - (((+x < 0) != (+y < 0)) ? ((+x % +y) != 0 ? +i : 0) : 0)
+        == +1 - 0,
+    "+");
+static_assert(
+    (-x / -y) - (((-x < 0) != (-y < 0)) ? ((-x % -y) != 0 ? +i : 0) : 0)
+        == +1 - 0,
+    "+");
+static_assert(
+    (-x / +y) - (((-x < 0) != (+y < 0)) ? ((-x % +y) != 0 ? +i : 0) : 0)
+        == -1 - i,
+    "-");
+static_assert(
+    (+x / -y) - (((+x < 0) != (-y < 0)) ? ((+x % -y) != 0 ? +i : 0) : 0)
+        == -1 - i,
+    "-");
 
 // Floored modulo: (increase truncated modulo by divisor if negative and remainder)
 static_assert((+x % +y) + (((+x < 0) != (+y < 0)) ? +y : 0) == +1 + +0, "+");
@@ -484,4 +508,3 @@ static_assert(((+x / -y) + 1) * -y + ((+x % -y) - -y) == +x, "+1+-");
 static_assert(((+x / -y) - 1) * -y + ((+x % -y) + -y) == +x, "-1+-");
 
 #endif // DIVISION_MATRIX
-

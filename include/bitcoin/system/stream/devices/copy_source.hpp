@@ -26,26 +26,25 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/device.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Source for ios::stream, copies bytes from Container.
 template <typename Container, if_base_of<data_reference, Container> = true>
-class copy_source
-  : public device<Container>
+class copy_source : public device<Container>
 {
 public:
     typedef const Container& container;
-    struct category
-      : ios::input_seekable, ios::direct_tag
+    struct category : ios::input_seekable, ios::direct_tag
     {
     };
 
     copy_source(const Container& data) noexcept
-      : device<Container>(limit<typename device<Container>::size_type>(
-          data.size())),
-        container_(data),
-        next_(data.begin())
+        : device<Container>(
+            limit<typename device<Container>::size_type>(data.size())),
+          container_(data), next_(data.begin())
     {
     }
 

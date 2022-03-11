@@ -23,9 +23,12 @@
 #include <bitcoin/system/crypto/crypto.hpp>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // TODO: use this template to define all checked wallet primitives.
 // For example: typedef checked<1, short_hash_size, 4> payment;
@@ -34,10 +37,9 @@ namespace wallet {
 /// that leverage the same technique. The behavior is unique to bitcoin.
 /// This class is optimized to transport value_type (only) at no material
 /// cost over a simple array, while simplifying parsing and checksumming.
-template <size_t Prefix, size_t Payload,
-    size_t Checksum = checksum_default_size>
-class checked
-  : public data_slice
+template <
+    size_t Prefix, size_t Payload, size_t Checksum = checksum_default_size>
+class checked : public data_slice
 {
 public:
     static constexpr size_t value_size = (Prefix + Payload + Checksum);
@@ -75,16 +77,16 @@ public:
     const value_type& value() const noexcept;
 
 private:
-    static checked from_payload(const prefix_type& version,
-        const payload_type& payload) noexcept;
+    static checked from_payload(
+        const prefix_type& version, const payload_type& payload) noexcept;
 
     value_type value_;
 };
 
 /// Comparison operators.
 
-template <size_t Prefix, size_t Payload,
-    size_t Checksum = checksum_default_size>
+template <
+    size_t Prefix, size_t Payload, size_t Checksum = checksum_default_size>
 bool operator==(
     const checked<Prefix, Payload, Checksum>& left,
     const checked<Prefix, Payload, Checksum>& right) noexcept
@@ -92,8 +94,8 @@ bool operator==(
     return left.value() == right.value();
 }
 
-template <size_t Prefix, size_t Payload,
-    size_t Checksum = checksum_default_size>
+template <
+    size_t Prefix, size_t Payload, size_t Checksum = checksum_default_size>
 bool operator!=(
     const checked<Prefix, Payload, Checksum>& left,
     const checked<Prefix, Payload, Checksum>& right) noexcept

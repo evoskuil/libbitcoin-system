@@ -25,22 +25,22 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/exceptions.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
-script::script() noexcept
-  : value_()
+script::script() noexcept : value_()
 {
 }
 
-script::script(const script& other) noexcept
-  : script(other.value_)
+script::script(const script& other) noexcept : script(other.value_)
 {
 }
 
-script::script(const chain::script& value) noexcept
-  : value_(value)
+script::script(const chain::script& value) noexcept : value_(value)
 {
 }
 
@@ -49,8 +49,7 @@ script::script(const data_chunk& value) noexcept
     value_ = chain::script(value, false);
 }
 
-script::script(const std::vector<std::string>& tokens)
-  : script(join(tokens))
+script::script(const std::vector<std::string>& tokens) : script(join(tokens))
 {
 }
 

@@ -64,8 +64,14 @@ BOOST_AUTO_TEST_CASE(intrinsics__sha256_paired_double__vs_sha256x2__same)
         uint8_t in[64 * 32];
         uint8_t out1[32 * 32];
         uint8_t out2[32 * 32];
-        const auto to = [&](int j) { return out1 + 32 * j; };
-        const auto from = [&](int j) { return in + 64 * j; };
+        const auto to = [&](int j)
+        {
+            return out1 + 32 * j;
+        };
+        const auto from = [&](int j)
+        {
+            return in + 64 * j;
+        };
 
         // random fill
         for (int j = 0; j < 64 * i; ++j)
@@ -74,8 +80,8 @@ BOOST_AUTO_TEST_CASE(intrinsics__sha256_paired_double__vs_sha256x2__same)
         // streaming double hash
         for (int j = 0; j < i; ++j)
         {
-            hash::sha256x2::copy sink({ to(j), to(j) + 32 });
-            sink.write_bytes({ from(j), from(j) + 64 });
+            hash::sha256x2::copy sink({to(j), to(j) + 32});
+            sink.write_bytes({from(j), from(j) + 64});
             sink.flush();
         }
 

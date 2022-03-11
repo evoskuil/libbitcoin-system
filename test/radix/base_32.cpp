@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_unpack__vector1__expected)
     // [11111111]=>
     // [11111][111pp]
     const data_chunk packed(1, 0xff);
-    const base32_chunk expected{ 0x1f, 0x1c };
+    const base32_chunk expected{0x1f, 0x1c};
     BOOST_REQUIRE_EQUAL(base32_unpack(packed), expected);
 }
 
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_unpack__vector2__expected)
     // [11111111][11111111]=>
     // [11111][11111][11111][1pppp]
     const data_chunk packed(2, 0xff);
-    const base32_chunk expected{ 0x1f, 0x1f, 0x1f, 0x10 };
+    const base32_chunk expected{0x1f, 0x1f, 0x1f, 0x10};
     BOOST_REQUIRE_EQUAL(base32_unpack(packed), expected);
 }
 
@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_unpack__vector3__expected)
     // [11111111][11111111][11111111]=>
     // [11111][11111][11111][11111][1111p]
     const data_chunk packed(3, 0xff);
-    const base32_chunk expected{ 0x1f, 0x1f, 0x1f, 0x1f, 0x1e };
+    const base32_chunk expected{0x1f, 0x1f, 0x1f, 0x1f, 0x1e};
     BOOST_REQUIRE_EQUAL(base32_unpack(packed), expected);
 }
 
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_unpack__vector4__expected)
     // [11111111][11111111][11111111][11111111]=>
     // [11111][11111][11111][11111][11111][11111][11ppp]
     const data_chunk packed(4, 0xff);
-    const base32_chunk expected{ 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x18 };
+    const base32_chunk expected{0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x18};
     BOOST_REQUIRE_EQUAL(base32_unpack(packed), expected);
 }
 
@@ -193,7 +193,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_pack__vector1__expected)
 {
     // [11111][111xx]=>
     // [11111111][xxpppppp]
-    const base32_chunk unpacked{ 0x1f, 0x1c };
+    const base32_chunk unpacked{0x1f, 0x1c};
     const data_chunk expected(1, 0xff);
     BOOST_REQUIRE_EQUAL(base32_pack(unpacked), expected);
 }
@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_pack__vector2__expected)
 {
     // [11111][11111][11111][1xxxx]=>
     // [11111111][11111111][xxxxpppp]
-    const base32_chunk unpacked{ 0x1f, 0x1f, 0x1f, 0x10 };
+    const base32_chunk unpacked{0x1f, 0x1f, 0x1f, 0x10};
     const data_chunk expected(2, 0xff);
     BOOST_REQUIRE_EQUAL(base32_pack(unpacked), expected);
 }
@@ -211,7 +211,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_pack__vector3__expected)
 {
     // [11111][11111][11111][11111][1111x]=>
     // [11111111][11111111][11111111][xppppppp]
-    const base32_chunk unpacked{ 0x1f, 0x1f, 0x1f, 0x1f, 0x1e };
+    const base32_chunk unpacked{0x1f, 0x1f, 0x1f, 0x1f, 0x1e};
     const data_chunk expected(3, 0xff);
     BOOST_REQUIRE_EQUAL(base32_pack(unpacked), expected);
 }
@@ -220,7 +220,7 @@ BOOST_AUTO_TEST_CASE(base_32__base32_pack__vector4__expected)
 {
     // [11111][11111][11111][11111][11111][11111][11xxx]=>
     // [11111111][11111111][11111111][11111111][xxxppppp]
-    const base32_chunk unpacked{ 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x18 };
+    const base32_chunk unpacked{0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x18};
     const data_chunk expected(4, 0xff);
     BOOST_REQUIRE_EQUAL(base32_pack(unpacked), expected);
 }

@@ -23,9 +23,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/wallet/addresses/uri.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /**
  * Interface for URI deserialization.
@@ -35,7 +38,6 @@ namespace wallet {
 class BC_API uri_reader
 {
 public:
-
     /**
      * Parses any URI string into its individual components.
      * @param[in]  uri     The URI to parse.
@@ -44,7 +46,7 @@ public:
      * according to the  `UriReader`.
      */
     template <class UriReader>
-    static UriReader parse(const std::string& uri, bool strict=true) noexcept
+    static UriReader parse(const std::string& uri, bool strict = true) noexcept
     {
         wallet::uri parsed;
         if (!parsed.decode(uri, strict))
@@ -63,7 +65,7 @@ public:
             return UriReader();
 
         const auto query = parsed.decode_query();
-        for (const auto& term: query)
+        for (const auto& term : query)
         {
             const auto& key = term.first;
             const auto& value = term.second;
@@ -80,8 +82,8 @@ public:
     virtual bool set_authority(const std::string& authority) noexcept = 0;
     virtual bool set_path(const std::string& path) noexcept = 0;
     virtual bool set_fragment(const std::string& fragment) noexcept = 0;
-    virtual bool set_parameter(const std::string& key,
-        const std::string& value) noexcept = 0;
+    virtual bool set_parameter(
+        const std::string& key, const std::string& value) noexcept = 0;
 };
 
 } // namespace wallet

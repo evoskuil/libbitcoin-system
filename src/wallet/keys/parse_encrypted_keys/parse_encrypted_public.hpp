@@ -25,13 +25,15 @@
 #include <bitcoin/system/data/data.hpp>
 #include "parse_encrypted_key.hpp"
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // Swap not defined.
-class parse_encrypted_public
-  : public parse_encrypted_key<5u>
+class parse_encrypted_public : public parse_encrypted_key<5u>
 {
 public:
     static data_array<prefix_size> prefix_factory(uint8_t address) noexcept;

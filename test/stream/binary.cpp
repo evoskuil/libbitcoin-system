@@ -138,7 +138,7 @@ BOOST_AUTO_TEST_CASE(binary__construct_string__bits__expected)
 BOOST_AUTO_TEST_CASE(binary__construct_data__32_bits__expected)
 {
     const auto expected = "10111010101011011111000000001101";
-    const binary instance(32, { 0xba, 0xad, 0xf0, 0x0d });
+    const binary instance(32, {0xba, 0xad, 0xf0, 0x0d});
     BOOST_REQUIRE_EQUAL(instance.encoded(), expected);
 }
 
@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(binary__construct_data__zero_not_empty__zero_empty)
 
 BOOST_AUTO_TEST_CASE(binary__construct_data__matched_size__expected)
 {
-    const data_chunk data{ 0xba, 0xad, 0xf0, 0xfd };
+    const data_chunk data{0xba, 0xad, 0xf0, 0xfd};
     const auto bytes = data.size();
     const auto bits = to_bits(bytes);
     const binary instance(bits, data);
@@ -178,8 +178,8 @@ BOOST_AUTO_TEST_CASE(binary__construct_data__matched_size__expected)
 
 BOOST_AUTO_TEST_CASE(binary__construct_data__lower_size__expected)
 {
-    const data_chunk data{ 0xba, 0xad, 0xf0, 0xfd };
-    const data_chunk expected{ 0xba, 0xad, 0xf0, mask_right<uint8_t>(0xfd, 4) };
+    const data_chunk data{0xba, 0xad, 0xf0, 0xfd};
+    const data_chunk expected{0xba, 0xad, 0xf0, mask_right<uint8_t>(0xfd, 4)};
     const auto bits = to_bits(data.size()) - 4;
     const binary instance(bits, data);
     BOOST_REQUIRE_EQUAL(instance.encoded(), "1011101010101101111100001111");
@@ -191,11 +191,12 @@ BOOST_AUTO_TEST_CASE(binary__construct_data__lower_size__expected)
 
 BOOST_AUTO_TEST_CASE(binary__construct_data__higher_size__expected)
 {
-    const data_chunk data{ 0xba, 0xad, 0xf0, 0x0d };
-    const data_chunk expected{ 0xba, 0xad, 0xf0, 0x0d, 0x00 };
+    const data_chunk data{0xba, 0xad, 0xf0, 0x0d};
+    const data_chunk expected{0xba, 0xad, 0xf0, 0x0d, 0x00};
     const auto bits = to_bits(data.size()) + 4;
     const binary instance(bits, data);
-    BOOST_REQUIRE_EQUAL(instance.encoded(), "101110101010110111110000000011010000");
+    BOOST_REQUIRE_EQUAL(
+        instance.encoded(), "101110101010110111110000000011010000");
     BOOST_REQUIRE_EQUAL((const data_chunk&)instance, expected);
     BOOST_REQUIRE_EQUAL(instance.data(), expected);
     BOOST_REQUIRE_EQUAL(instance.bytes(), expected.size());
@@ -298,7 +299,7 @@ BOOST_AUTO_TEST_CASE(binary__index__overflow__false)
 
 BOOST_AUTO_TEST_CASE(binary__index__contained__expected)
 {
-    const binary instance{ "1010111010" };
+    const binary instance{"1010111010"};
     BOOST_REQUIRE_EQUAL(instance[0], true);
     BOOST_REQUIRE_EQUAL(instance[1], false);
     BOOST_REQUIRE_EQUAL(instance[2], true);
@@ -316,7 +317,7 @@ BOOST_AUTO_TEST_CASE(binary__index__contained__expected)
 BOOST_AUTO_TEST_CASE(binary__stream__in__expected)
 {
     const auto expected = "101";
-    std::stringstream in{ expected };
+    std::stringstream in{expected};
     binary instance;
     in >> instance;
     BOOST_REQUIRE_EQUAL(instance.encoded(), expected);
@@ -328,7 +329,7 @@ BOOST_AUTO_TEST_CASE(binary__stream__out__expected)
 {
     const auto expected = "101";
     std::stringstream out;
-    const binary instance{ expected };
+    const binary instance{expected};
     out << instance;
     BOOST_REQUIRE_EQUAL(out.str(), expected);
 }

@@ -20,10 +20,14 @@
 
 #include <bitcoin/system/words/catalogs/mnemonic.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
-namespace electrum {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
+namespace electrum
+{
 
 // github.com/spesmilo/electrum/tree/master/electrum/wordlist
 // The portuguese wordlist in the Electrum v1 repo is for Electrum v2.

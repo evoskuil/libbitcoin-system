@@ -26,12 +26,14 @@
 #include <utility>
 #include <vector>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Find the position of an element in a *lexically sorted* collection.
 /// It is the responsibility of the caller to ensure that parameters implement
-/// sufficient comparison operator overloads (LT and GT). Either the 'list' 
+/// sufficient comparison operator overloads (LT and GT). Either the 'list'
 /// elements must implement (at least) member comparison operator overloads or
 /// the 'value' parameter must implement binary comparison operator overloads.
 /// Be aware that C-style arrays/strings are compared by pointers, not values.
@@ -39,8 +41,8 @@ namespace system {
 /// std::string comparisons are not locale aware.
 /// Returns the position or negative if not found or list size > max_int32.
 template <typename Collection, typename Element>
-typename Collection::difference_type
-binary_search(const Collection& list, const Element& element) noexcept;
+typename Collection::difference_type binary_search(
+    const Collection& list, const Element& element) noexcept;
 
 /// Cast collection of From members to a new collection of To members.
 template <typename To, typename From>
@@ -50,7 +52,8 @@ std::array<To, Size> cast(const std::array<From, Size>& source) noexcept;
 
 /// Determine if a collection contains the specified element.
 template <typename Collection>
-bool contains(const Collection& list,
+bool contains(
+    const Collection& list,
     const typename Collection::value_type& element) noexcept;
 
 /// Determine if a vector of shared pointers to elements have equal elements.
@@ -61,31 +64,30 @@ bool equal_points(
 
 /// Find the position of a std::pair in an ordered list.
 template <typename Collection>
-typename Collection::difference_type
-find_pair_position(const Collection& list,
+typename Collection::difference_type find_pair_position(
+    const Collection& list,
     const typename Collection::value_type::first_type& key) noexcept;
 
 /// Find the position of an element in an ordered collection.
 template <typename Collection>
-typename Collection::difference_type
-find_position(const Collection& list,
+typename Collection::difference_type find_position(
+    const Collection& list,
     const typename Collection::value_type& value) noexcept;
 
 /// Facilitate a list insertion sort by inserting into a sorted position.
 template <typename Collection, typename Predicate>
-typename Collection::iterator
-insert_sorted(Collection& list, const typename Collection::value_type& element,
+typename Collection::iterator insert_sorted(
+    Collection& list, const typename Collection::value_type& element,
     Predicate predicate) noexcept;
 
-/// Move members of a source list to end of a target list. Source members are 
+/// Move members of a source list to end of a target list. Source members are
 /// undefined upon return.
 template <typename Collection>
 void move_append(Collection& target, Collection& source) noexcept;
 
 /// Pop an element from the stack and return its value.
 template <typename Collection>
-typename Collection::value_type
-pop(Collection& stack) noexcept;
+typename Collection::value_type pop(Collection& stack) noexcept;
 
 /// Determine if a collection contains only distinct members.
 template <typename Collection>
@@ -107,8 +109,8 @@ Collection distinct_copy(const Collection& list) noexcept;
 
 /// Obtain the set difference of minuend less subtrahend.
 template <typename Collection>
-Collection difference(const Collection& minuend,
-    const Collection& subtrahend) noexcept;
+Collection difference(
+    const Collection& minuend, const Collection& subtrahend) noexcept;
 template <typename Collection>
 Collection difference(
     const typename Collection::const_iterator& first_minuend,

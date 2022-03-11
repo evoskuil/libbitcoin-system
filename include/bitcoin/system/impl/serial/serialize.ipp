@@ -30,41 +30,44 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Cannot use a data_slice override for data_array/data_chunk because it would
 // pick up string and serialize as bytes vs. chars.
-    
+
 template <typename Value>
-void serialize(std::ostream& output, const Value& value,
+void serialize(
+    std::ostream& output, const Value& value,
     const std::string& fallback) noexcept
 {
     output << serialize(value, fallback);
 }
 
-inline std::string serialize(uint8_t value,
-    const std::string& fallback) noexcept
+inline std::string serialize(
+    uint8_t value, const std::string& fallback) noexcept
 {
     return serialize(static_cast<uint16_t>(value), fallback);
 }
 
 template <size_t Size>
-std::string serialize(const data_array<Size>& value,
-    const std::string&) noexcept
+std::string serialize(
+    const data_array<Size>& value, const std::string&) noexcept
 {
     return encode_base16(value);
 }
 
-inline std::string serialize(const data_chunk& value,
-    const std::string&) noexcept
+inline std::string serialize(
+    const data_chunk& value, const std::string&) noexcept
 {
     return encode_base16(value);
 }
 
 template <typename Value, size_t Size>
-std::string serialize(const std::array<Value, Size>& values,
-    const std::string& fallback) noexcept
+std::string serialize(
+    const std::array<Value, Size>& values, const std::string& fallback) noexcept
 {
     string_list tokens(values.size());
     const auto serializer = [&fallback](const Value& value) noexcept
@@ -77,8 +80,8 @@ std::string serialize(const std::array<Value, Size>& values,
 }
 
 template <typename Value>
-std::string serialize(const std::vector<Value>& values,
-    const std::string& fallback) noexcept
+std::string serialize(
+    const std::vector<Value>& values, const std::string& fallback) noexcept
 {
     string_list tokens(values.size());
     const auto serializer = [&fallback](const Value& value) noexcept

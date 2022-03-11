@@ -25,9 +25,12 @@
 // Transaction sequences are limited to 0xff for single byte store encoding.
 // With the uint8_t domain specified the compiler enforces this guard.
 
-namespace libbitcoin {
-namespace system {
-namespace error {
+namespace libbitcoin
+{
+namespace system
+{
+namespace error
+{
 
 enum transaction_error_t
 {

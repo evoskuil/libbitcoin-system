@@ -31,9 +31,12 @@
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 #include <bitcoin/system/words/words.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// Helper class for managing decoding overflow bug.
 /// github.com/spesmilo/electrum/issues/3149
@@ -62,8 +65,7 @@ private:
 /// Converts menemonic to entropy.
 /// Converts entropy to mnemonic.
 /// Derives master keys from menemonic or entropy.
-class BC_API electrum_v1
-  : public words::languages
+class BC_API electrum_v1 : public words::languages
 {
 public:
     typedef words::electrum_v1::catalog dictionary;
@@ -85,8 +87,9 @@ public:
 
     /// The dictionary, limited by identifier, that contains all words.
     /// If 'none' is specified all dictionaries are searched.
-    static language contained_by(const string_list& words,
-        language identifier=language::none) noexcept;
+    static language contained_by(
+        const string_list& words,
+        language identifier = language::none) noexcept;
 
     /// Valid dictionaries (en, pt).
     static bool is_valid_dictionary(language identifier) noexcept;
@@ -102,28 +105,33 @@ public:
 
     /// Construct from the "recovery seed" (mnemonic phrase or entropy).
     /// Validity should be checked after construction.
-    electrum_v1(const std::string& sentence,
-        language identifier=language::none) noexcept;
-    electrum_v1(const string_list& words,
-        language identifier=language::none) noexcept;
-    electrum_v1(const data_chunk& entropy,
-        language identifier=language::en) noexcept;
-    electrum_v1(const minimum_entropy& entropy,
-        language identifier=language::en) noexcept;
-    electrum_v1(const maximum_entropy& entropy,
-        language identifier=language::en) noexcept;
+    electrum_v1(
+        const std::string& sentence,
+        language identifier = language::none) noexcept;
+    electrum_v1(
+        const string_list& words,
+        language identifier = language::none) noexcept;
+    electrum_v1(
+        const data_chunk& entropy, language identifier = language::en) noexcept;
+    electrum_v1(
+        const minimum_entropy& entropy,
+        language identifier = language::en) noexcept;
+    electrum_v1(
+        const maximum_entropy& entropy,
+        language identifier = language::en) noexcept;
 
     /// Derive the "wallet seed"/"master private key" from mnemonic entropy.
     /// ec_private.secret() is the "wallet seed"/"master private key".
     /// ec_private.to_public().point() is the compressed "master public key".
     /// Context sets the version byte for derived payment addresses.
-    ec_private to_seed(const context& context=btc_mainnet_p2kh) const noexcept;
+    ec_private to_seed(
+        const context& context = btc_mainnet_p2kh) const noexcept;
 
     /// Derive the wallet "master public key" from entropy.
     /// ec_public.point() is the compressed "master public key".
     /// Context sets the version byte for derived payment addresses.
     ec_public to_public_key(
-        const context& context=btc_mainnet_p2kh) const noexcept;
+        const context& context = btc_mainnet_p2kh) const noexcept;
 
     /// True if the mnemonic words were incorrectly generated.
     /// An overflow does not affect the validity of the object.
@@ -158,9 +166,11 @@ protected:
     /// =======================================================================
 
     /// Constructors.
-    electrum_v1(const data_chunk& entropy, const string_list& words,
+    electrum_v1(
+        const data_chunk& entropy, const string_list& words,
         language identifier) noexcept;
-    electrum_v1(const v1_decoding& decoding, const string_list& words,
+    electrum_v1(
+        const v1_decoding& decoding, const string_list& words,
         language identifier) noexcept;
 
     /// Map entropy to entropy bit count (128 or 256 bits).
@@ -175,22 +185,22 @@ protected:
     /// Map entropy size to word count (12 or 24 words).
     static size_t word_count(const data_slice& entropy) noexcept;
 
-    static v1_decoding decoder(const string_list& words,
-        language identifier) noexcept;
-    static string_list encoder(const data_chunk& entropy,
-        language identifier) noexcept;
+    static v1_decoding decoder(
+        const string_list& words, language identifier) noexcept;
+    static string_list encoder(
+        const data_chunk& entropy, language identifier) noexcept;
     static ec_secret strecher(const data_chunk& seed_entropy) noexcept;
 
-    static electrum_v1 from_words(const string_list& words,
-        language identifier) noexcept;
-    static electrum_v1 from_entropy(const data_chunk& entropy,
-        language identifier) noexcept;
+    static electrum_v1 from_words(
+        const string_list& words, language identifier) noexcept;
+    static electrum_v1 from_entropy(
+        const data_chunk& entropy, language identifier) noexcept;
 
 private:
     // All Electrum v1 dictionaries, from <dictionaries/electrum_v1.cpp>.
     static const dictionaries dictionaries_;
 
-    // Retain the overflow state for a manually-generated mnemonic. 
+    // Retain the overflow state for a manually-generated mnemonic.
     v1_decoding::overflow overflows_;
 };
 

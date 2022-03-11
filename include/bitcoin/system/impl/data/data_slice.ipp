@@ -25,39 +25,41 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
-   
+namespace libbitcoin
+{
+namespace system
+{
+
 // constructors
 // ----------------------------------------------------------------------------
 
 template <data_slice::size_type Size>
-data_slice::data_slice(const char(&bytes)[Size]) noexcept
-  : data_slice(from_literal(bytes))
+data_slice::data_slice(const char (&bytes)[Size]) noexcept
+    : data_slice(from_literal(bytes))
 {
 }
 
 template <data_slice::size_type Size, typename Byte, if_byte<Byte>>
 data_slice::data_slice(const std::array<Byte, Size>& data) noexcept
-  : data_slice(from_size(data.begin(), Size))
+    : data_slice(from_size(data.begin(), Size))
 {
 }
 
 template <typename Byte, if_byte<Byte>>
 data_slice::data_slice(const std::vector<Byte>& data) noexcept
-  : data_slice(from_size(data.begin(), data.size()))
+    : data_slice(from_size(data.begin(), data.size()))
 {
 }
 
 template <typename Iterator>
 data_slice::data_slice(const Iterator& begin, const Iterator& end) noexcept
-  : data_slice(from_iterators(begin, end))
+    : data_slice(from_iterators(begin, end))
 {
 }
 
 template <typename Byte, if_byte<Byte>>
 data_slice::data_slice(const Byte* begin, const Byte* end) noexcept
-  : data_slice(from_iterators(begin, end))
+    : data_slice(from_iterators(begin, end))
 {
 }
 
@@ -65,7 +67,7 @@ data_slice::data_slice(const Byte* begin, const Byte* end) noexcept
 // ----------------------------------------------------------------------------
 
 template <data_slice::size_type Size, typename Byte>
-data_slice data_slice::from_literal(const Byte(&bytes)[Size]) noexcept
+data_slice data_slice::from_literal(const Byte (&bytes)[Size]) noexcept
 {
     // Guard 0 for lack of null terminator (see below).
     if (is_zero(Size))
@@ -80,8 +82,8 @@ data_slice data_slice::from_literal(const Byte(&bytes)[Size]) noexcept
 
 // static
 template <typename Iterator>
-data_slice data_slice::from_iterators(const Iterator& begin,
-    const Iterator& end) noexcept
+data_slice data_slice::from_iterators(
+    const Iterator& begin, const Iterator& end) noexcept
 {
     // An end iterator can be anything, so convert to size.
     const auto size = std::distance(begin, end);
@@ -104,15 +106,15 @@ data_slice data_slice::from_size(Pointer begin, size_type size) noexcept
 
     // Pointer may be a char or uin8_t pointer or iterator type.
     const auto start = reinterpret_cast<pointer>(&begin[0]);
-    return { start, std::next(start, size), size };
+    return {start, std::next(start, size), size};
 }
 
 // properties
 // ----------------------------------------------------------------------------
 
 template <data_slice::size_type Size>
-std::array<typename data_slice::value_type, Size>
-data_slice::to_array() const noexcept
+std::array<typename data_slice::value_type, Size> data_slice::to_array()
+    const noexcept
 {
     std::array<data_slice::value_type, Size> out;
 
@@ -127,8 +129,8 @@ data_slice::to_array() const noexcept
 // ----------------------------------------------------------------------------
 
 template <data_slice::size_type Size>
-data_slice::operator
-std::array<typename data_slice::value_type, Size>() const noexcept
+data_slice::operator std::array<typename data_slice::value_type, Size>()
+    const noexcept
 {
     return to_array<Size>();
 }

@@ -30,34 +30,34 @@
 #include <cstddef>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace intrinsics {
+namespace libbitcoin
+{
+namespace system
+{
+namespace intrinsics
+{
 
-#define Ch(x, y, z)  ((x & (y ^ z)) ^ z)
+#define Ch(x, y, z) ((x & (y ^ z)) ^ z)
 #define Maj(x, y, z) ((x & (y | z)) | (y & z))
-#define SHR(x, n)    (x >> n)
-#define ROTR(x, n)   ((x >> n) | (x << (32 - n)))
-#define S0(x)        (ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
-#define S1(x)        (ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
-#define s0(x)        (ROTR(x, 7) ^ ROTR(x, 18) ^ SHR(x, 3))
-#define s1(x)        (ROTR(x, 17) ^ ROTR(x, 19) ^ SHR(x, 10))
+#define SHR(x, n) (x >> n)
+#define ROTR(x, n) ((x >> n) | (x << (32 - n)))
+#define S0(x) (ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
+#define S1(x) (ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
+#define s0(x) (ROTR(x, 7) ^ ROTR(x, 18) ^ SHR(x, 3))
+#define s1(x) (ROTR(x, 17) ^ ROTR(x, 19) ^ SHR(x, 10))
 
-#define RND(a, b, c, d, e, f, g, h, k) \
-    t0 = h + S1(e) + Ch(e, f, g) + k;  \
-    t1 = S0(a) + Maj(a, b, c); \
-    d += t0; \
+#define RND(a, b, c, d, e, f, g, h, k)                                         \
+    t0 = h + S1(e) + Ch(e, f, g) + k;                                          \
+    t1 = S0(a) + Maj(a, b, c);                                                 \
+    d += t0;                                                                   \
     h = t0 + t1;
 
-#define RNDr(S, W, i, k) \
-    RND(S[(64 - i) % 8], S[(65 - i) % 8], \
-    S[(66 - i) % 8], S[(67 - i) % 8], \
-    S[(68 - i) % 8], S[(69 - i) % 8], \
-    S[(70 - i) % 8], S[(71 - i) % 8], \
-    W[i] + k)
+#define RNDr(S, W, i, k)                                                       \
+    RND(S[(64 - i) % 8], S[(65 - i) % 8], S[(66 - i) % 8], S[(67 - i) % 8],    \
+        S[(68 - i) % 8], S[(69 - i) % 8], S[(70 - i) % 8], S[(71 - i) % 8],    \
+        W[i] + k)
 
-#define Wi(W, i) \
-    W[i] = s1(W[i - 2]) + W[i - 7] + s0(W[i - 15]) + W[i - 16]
+#define Wi(W, i) W[i] = s1(W[i - 2]) + W[i - 7] + s0(W[i - 15]) + W[i - 16]
 
 constexpr size_t hash_size = 32;
 constexpr size_t block_size = 64;
@@ -214,8 +214,8 @@ void sha256_x1_portable(uint32_t state[8], const uint8_t block[64]) noexcept
 
 // This calls single_sha256, which may call any of the instrinsic transforms or
 // may call sha256_x1_portable (above), depending on platform configuration.
-void sha256_update(sha256_context& context, const uint8_t* input,
-    size_t size) noexcept
+void sha256_update(
+    sha256_context& context, const uint8_t* input, size_t size) noexcept
 {
     uint32_t bit_length[2];
     uint32_t r = (context.count[1] >> 3) & 0x3f;
@@ -271,7 +271,7 @@ void sha256_finalize(sha256_context& context, uint8_t digest[32]) noexcept
 
 void sha256(const uint8_t* input, size_t size, uint8_t digest[32]) noexcept
 {
-    sha256_context context{ sha256_initial };
+    sha256_context context{sha256_initial};
     sha256_update(context, input, size);
     sha256_finalize(context, digest);
 }

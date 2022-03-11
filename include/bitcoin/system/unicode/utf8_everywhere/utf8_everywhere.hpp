@@ -75,7 +75,7 @@
 // the expectation that argv is utf8.
 
 // Regarding console I/O:
-// 
+//
 // BC_USE_LIBBITCOIN_MAIN sets up three UTF8 streams in Win32 builds and on
 // other builds these are aliased to the standard streams.
 // Never use std::cout|std::cerr|std::cin (aborts on assertion):
@@ -93,46 +93,48 @@
 // bc::system::main(), which should be implemented as if it was main() with
 // the expectation that argv is utf8.
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 #ifdef _MSC_VER
 
-#define BC_USE_LIBBITCOIN_MAIN \
-    namespace libbitcoin \
-    { \
-    namespace system \
-    { \
-        std::istream& cin = cin_stream(); \
-        std::ostream& cout = cout_stream(); \
-        std::ostream& cerr = cerr_stream(); \
-        int main(int argc, char* argv[]); \
-    } \
-    } \
-    \
-    int wmain(int argc, wchar_t* argv[]) \
-    { \
-        return libbitcoin::system::call_utf8_main(argc, argv, \
-            &libbitcoin::system::main); \
+#define BC_USE_LIBBITCOIN_MAIN                                                 \
+    namespace libbitcoin                                                       \
+    {                                                                          \
+    namespace system                                                           \
+    {                                                                          \
+    std::istream& cin = cin_stream();                                          \
+    std::ostream& cout = cout_stream();                                        \
+    std::ostream& cerr = cerr_stream();                                        \
+    int main(int argc, char* argv[]);                                          \
+    }                                                                          \
+    }                                                                          \
+                                                                               \
+    int wmain(int argc, wchar_t* argv[])                                       \
+    {                                                                          \
+        return libbitcoin::system::call_utf8_main(                             \
+            argc, argv, &libbitcoin::system::main);                            \
     }
 
 #else
 
-#define BC_USE_LIBBITCOIN_MAIN \
-    namespace libbitcoin \
-    { \
-    namespace system \
-    { \
-        std::istream& cin = std::cin; \
-        std::ostream& cout = std::cout; \
-        std::ostream& cerr = std::cerr; \
-        int main(int argc, char* argv[]); \
-    } \
-    } \
-    \
-    int main(int argc, char* argv[]) \
-    { \
-        return libbitcoin::system::main(argc, argv); \
+#define BC_USE_LIBBITCOIN_MAIN                                                 \
+    namespace libbitcoin                                                       \
+    {                                                                          \
+    namespace system                                                           \
+    {                                                                          \
+    std::istream& cin = std::cin;                                              \
+    std::ostream& cout = std::cout;                                            \
+    std::ostream& cerr = std::cerr;                                            \
+    int main(int argc, char* argv[]);                                          \
+    }                                                                          \
+    }                                                                          \
+                                                                               \
+    int main(int argc, char* argv[])                                           \
+    {                                                                          \
+        return libbitcoin::system::main(argc, argv);                           \
     }
 
 #endif

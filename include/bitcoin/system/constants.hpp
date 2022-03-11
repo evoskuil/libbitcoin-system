@@ -24,11 +24,13 @@
 #include <limits>
 #include <type_traits>
 
-namespace libbitcoin {
+namespace libbitcoin
+{
 
 // Guard assumptions within the codebase.
-static_assert(sizeof(size_t) == sizeof(uint32_t) ||
-    sizeof(size_t) == sizeof(uint64_t), "unsupported size_t");
+static_assert(
+    sizeof(size_t) == sizeof(uint32_t) || sizeof(size_t) == sizeof(uint64_t),
+    "unsupported size_t");
 
 // Integral value limits.
 constexpr int64_t min_int64 = std::numeric_limits<int64_t>::min();
@@ -87,8 +89,8 @@ constexpr bool is_odd(Type value) noexcept
 template <typename Type>
 constexpr bool is_integer()
 {
-    return std::numeric_limits<Type>::is_integer &&
-        !std::is_same<bool, Type>::value;
+    return std::numeric_limits<Type>::is_integer
+           && !std::is_same<bool, Type>::value;
 }
 
 template <typename Type>
@@ -167,10 +169,13 @@ constexpr uint8_t varint_eight_bytes = 0xff;
 constexpr size_t variable_size(uint64_t value) noexcept
 {
     // C++11: single return required for constexpr.
-    return (value < varint_two_bytes) ? sizeof(uint8_t) :
-        ((value <= max_uint16) ? sizeof(uint8_t) + sizeof(uint16_t) :
-            ((value <= max_uint32) ? sizeof(uint8_t) + sizeof(uint32_t) :
-                sizeof(uint8_t) + sizeof(uint64_t)));
+    return (value < varint_two_bytes)
+               ? sizeof(uint8_t)
+               : ((value <= max_uint16)
+                      ? sizeof(uint8_t) + sizeof(uint16_t)
+                      : ((value <= max_uint32)
+                             ? sizeof(uint8_t) + sizeof(uint32_t)
+                             : sizeof(uint8_t) + sizeof(uint64_t)));
 }
 
 } // namespace libbitcoin

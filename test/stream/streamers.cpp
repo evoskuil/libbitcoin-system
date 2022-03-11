@@ -31,14 +31,14 @@ BOOST_AUTO_TEST_SUITE(stream_tests)
 
 BOOST_AUTO_TEST_CASE(read__bytes__istream__expected)
 {
-    std::istringstream istream{ "*" };
+    std::istringstream istream{"*"};
     read::bytes::istream reader(istream);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), '*');
 }
 
 BOOST_AUTO_TEST_CASE(read__bytes__copy__expected)
 {
-    const data_chunk source{ '*' };
+    const data_chunk source{'*'};
     read::bytes::copy reader(source);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), '*');
 }
@@ -47,14 +47,14 @@ BOOST_AUTO_TEST_CASE(read__bytes__copy__expected)
 
 BOOST_AUTO_TEST_CASE(read__bits__istream__expected)
 {
-    std::istringstream istream{ "*" };
+    std::istringstream istream{"*"};
     read::bits::istream reader(istream);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), '*');
 }
 
 BOOST_AUTO_TEST_CASE(read__bits__copy__expected)
 {
-    const data_chunk source{ '*' };
+    const data_chunk source{'*'};
     read::bits::copy reader(source);
     BOOST_REQUIRE_EQUAL(reader.read_byte(), '*');
 }
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(write__bytes__ostream__expected)
 
 BOOST_AUTO_TEST_CASE(write__bytes__copy__expected)
 {
-    data_chunk sink{ 'x' };
+    data_chunk sink{'x'};
     write::bytes::copy writer(sink);
     writer.write_byte('*');
     BOOST_REQUIRE_EQUAL(sink.front(), '*');
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(write__bytes__into_data__expected)
 // test concatenation (insert position)
 BOOST_AUTO_TEST_CASE(write__bytes__text__expected)
 {
-    std::string sink{ "+/" };
+    std::string sink{"+/"};
     sink.reserve(3);
     write::bytes::push<std::string> writer(sink);
     writer.write_byte('-');
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(write__bits__ostream__expected)
 
 BOOST_AUTO_TEST_CASE(write__bits__copy__expected)
 {
-    data_chunk sink{ 'x' };
+    data_chunk sink{'x'};
     write::bits::copy writer(sink);
     writer.write_byte('*');
     BOOST_REQUIRE_EQUAL(sink.front(), '*');
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(write__bits__into_data__expected)
 // test concatenation (insert position)
 BOOST_AUTO_TEST_CASE(write__bits__text__expected)
 {
-    std::string sink{ "+/" };
+    std::string sink{"+/"};
     sink.reserve(3);
     write::bits::push<std::string> writer(sink);
     writer.write_byte('-');
@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE(flip__bytes__iostream_write__expected)
 
 BOOST_AUTO_TEST_CASE(flip__bytes__copy_write__expected)
 {
-    data_chunk data{ 'x' };
+    data_chunk data{'x'};
     flip::bytes::copy flipper(data);
     flipper.write_byte('*');
     BOOST_REQUIRE_EQUAL(data.front(), '*');
@@ -201,14 +201,14 @@ BOOST_AUTO_TEST_CASE(flip__bytes__copy_write__expected)
 
 BOOST_AUTO_TEST_CASE(flip__bytes__iostream_read__expected)
 {
-    std::stringstream iostream{ "*" };
+    std::stringstream iostream{"*"};
     flip::bytes::iostream flipper(iostream);
     BOOST_REQUIRE_EQUAL(flipper.read_byte(), '*');
 }
 
 BOOST_AUTO_TEST_CASE(flip__bytes__copy_read__expected)
 {
-    data_chunk data{ '*' };
+    data_chunk data{'*'};
     flip::bytes::copy flipper(data);
     BOOST_REQUIRE_EQUAL(flipper.read_byte(), '*');
 }
@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE(flip__bits__iostream_write__expected)
 
 BOOST_AUTO_TEST_CASE(flip__bits__copy_write__expected)
 {
-    data_chunk data{ 'x' };
+    data_chunk data{'x'};
     flip::bits::copy flipper(data);
     flipper.write_byte('*');
     BOOST_REQUIRE_EQUAL(data.front(), '*');
@@ -235,14 +235,14 @@ BOOST_AUTO_TEST_CASE(flip__bits__copy_write__expected)
 
 BOOST_AUTO_TEST_CASE(flip__bits__iostream_read__expected)
 {
-    std::stringstream iostream{ "*" };
+    std::stringstream iostream{"*"};
     flip::bits::iostream flipper(iostream);
     BOOST_REQUIRE_EQUAL(flipper.read_byte(), '*');
 }
 
 BOOST_AUTO_TEST_CASE(flip__bits__copy_read__expected)
 {
-    data_chunk data{ '*' };
+    data_chunk data{'*'};
     flip::bits::copy flipper(data);
     BOOST_REQUIRE_EQUAL(flipper.read_byte(), '*');
 }

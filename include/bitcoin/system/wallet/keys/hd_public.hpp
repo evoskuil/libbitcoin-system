@@ -27,9 +27,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// A constant used in key derivation.
 static constexpr uint32_t hd_first_hardened_key = 1 << 31;
@@ -82,8 +85,8 @@ public:
     bool operator!=(const hd_public& other) const noexcept;
     hd_public& operator=(const hd_public& other) noexcept;
     friend std::istream& operator>>(std::istream& in, hd_public& to);
-    friend std::ostream& operator<<(std::ostream& out,
-        const hd_public& of) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& out, const hd_public& of) noexcept;
 
     /// Cast operators.
     operator bool() const noexcept;
@@ -103,8 +106,9 @@ public:
 
 protected:
     /// Factories.
-    static hd_public from_secret(const ec_secret& secret,
-        const hd_chain_code& chain_code, const hd_lineage& lineage) noexcept;
+    static hd_public from_secret(
+        const ec_secret& secret, const hd_chain_code& chain_code,
+        const hd_lineage& lineage) noexcept;
 
     /// Helpers.
     uint32_t fingerprint() const noexcept;
@@ -119,13 +123,14 @@ protected:
 private:
     static hd_public from_key(const hd_key& public_key) noexcept;
     static hd_public from_string(const std::string& encoded) noexcept;
-    static hd_public from_key(const hd_key& public_key,
-        uint32_t prefix) noexcept;
-    static hd_public from_string(const std::string& encoded,
-        uint32_t prefix) noexcept;
+    static hd_public from_key(
+        const hd_key& public_key, uint32_t prefix) noexcept;
+    static hd_public from_string(
+        const std::string& encoded, uint32_t prefix) noexcept;
 
-    hd_public(const ec_compressed& point,
-        const hd_chain_code& chain_code, const hd_lineage& lineage) noexcept;
+    hd_public(
+        const ec_compressed& point, const hd_chain_code& chain_code,
+        const hd_lineage& lineage) noexcept;
 };
 
 } // namespace wallet

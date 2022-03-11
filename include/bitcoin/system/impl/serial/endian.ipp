@@ -33,8 +33,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // These conversions are efficient, performing no buffer copies or reversals.
 // array/uintx_t sizes are inferred by type, and vector/uintx by value.
@@ -100,7 +102,7 @@ static Integer from_big(size_t size, const data_slice& data) noexcept
     for (size_t byte = 0; byte < bytes; ++byte)
     {
         value <<= byte_bits;
-        value |= Integer{ data[byte] };
+        value |= Integer{data[byte]};
     }
 
     return value;
@@ -123,7 +125,7 @@ static Integer from_little(size_t size, const data_slice& data) noexcept
     for (auto byte = bytes; byte > 0; --byte)
     {
         value <<= byte_bits;
-        value |= Integer{ data[sub1(byte)] };
+        value |= Integer{data[sub1(byte)]};
     }
 
     return value;
@@ -140,7 +142,7 @@ static Data to_big(Data&& bytes, Integer value) noexcept
     // 0x0102 >> 8 => 0x0001
     // 0x0001 >> 8 => 0x0000
 
-    for (auto& byte: boost::adaptors::reverse(bytes))
+    for (auto& byte : boost::adaptors::reverse(bytes))
     {
         byte = static_cast<uint8_t>(value);
         value >>= byte_bits;
@@ -160,7 +162,7 @@ static Data to_little(Data&& bytes, Integer value) noexcept
     // 0x0102 >> 8 => 0x0001
     // 0x0001 >> 8 => 0x0000
 
-    for (auto& byte: bytes)
+    for (auto& byte : bytes)
     {
         byte = static_cast<uint8_t>(value);
         value >>= byte_bits;
@@ -314,15 +316,17 @@ Integer from_little_endian(std::istream& stream) noexcept
 template <typename Integer, if_integral_integer<Integer>>
 void to_big_endian(std::ostream& stream, Integer value) noexcept
 {
-    stream.write(reinterpret_cast<const char*>(
-        to_big_endian(value).data()), sizeof(Integer));
+    stream.write(
+        reinterpret_cast<const char*>(to_big_endian(value).data()),
+        sizeof(Integer));
 }
 
 template <typename Integer, if_integral_integer<Integer>>
 void to_little_endian(std::ostream& stream, Integer value) noexcept
 {
-    stream.write(reinterpret_cast<const char*>(
-        to_little_endian(value).data()), sizeof(Integer));
+    stream.write(
+        reinterpret_cast<const char*>(to_little_endian(value).data()),
+        sizeof(Integer));
 }
 
 // iterator => integral
@@ -332,72 +336,81 @@ void to_little_endian(std::ostream& stream, Integer value) noexcept
 template <typename Integer, typename Iterator, if_integral_integer<Integer>>
 Integer from_big_endian_unchecked(const Iterator& data) noexcept
 {
-    return from_big_endian<Integer>({ data, std::next(data, sizeof(Integer)) });
+    return from_big_endian<Integer>({data, std::next(data, sizeof(Integer))});
 }
 
 template <typename Integer, typename Iterator, if_integral_integer<Integer>>
 Integer from_little_endian_unchecked(const Iterator& data) noexcept
 {
-    return from_little_endian<Integer>({ data, std::next(data, sizeof(Integer)) });
+    return from_little_endian<Integer>(
+        {data, std::next(data, sizeof(Integer))});
 }
 
 // data[] <=> integral[]
 /// ---------------------------------------------------------------------------
 
 template <size_t Count, typename Integer, if_integral_integer<Integer>>
-void from_big_endian(Integer to[Count],
-    const uint8_t from[Count * sizeof(Integer)]) noexcept
+void from_big_endian(
+    Integer to[Count], const uint8_t from[Count * sizeof(Integer)]) noexcept
 {
     typedef data_array<sizeof(Integer)> data;
     const auto in = reinterpret_cast<const data*>(from);
 
     /// C++17: Parallel policy for std::transform.
-    std::transform(in, std::next(in, Count), to, [](const data& value) noexcept
-    {
-        return from_big_endian<Integer>(value);
-    });
+    std::transform(
+        in, std::next(in, Count), to,
+        [](const data& value) noexcept
+        {
+            return from_big_endian<Integer>(value);
+        });
 }
 
 template <size_t Count, typename Integer, if_integral_integer<Integer>>
-void from_little_endian(Integer to[Count],
-    const uint8_t from[Count * sizeof(Integer)]) noexcept
+void from_little_endian(
+    Integer to[Count], const uint8_t from[Count * sizeof(Integer)]) noexcept
 {
     typedef data_array<sizeof(Integer)> data;
     const auto in = reinterpret_cast<const data*>(from);
 
     /// C++17: Parallel policy for std::transform.
-    std::transform(in, std::next(in, Count), to, [](const data& value) noexcept
-    {
-        return from_little_endian<Integer>(value);
-    });
+    std::transform(
+        in, std::next(in, Count), to,
+        [](const data& value) noexcept
+        {
+            return from_little_endian<Integer>(value);
+        });
 }
 
 template <size_t Count, typename Integer, if_integral_integer<Integer>>
-void to_big_endian(uint8_t to[Count * sizeof(Integer)],
-    const Integer from[Count]) noexcept
+void to_big_endian(
+    uint8_t to[Count * sizeof(Integer)], const Integer from[Count]) noexcept
 {
     typedef data_array<sizeof(Integer)> data;
     const auto out = reinterpret_cast<data*>(to);
 
     /// C++17: Parallel policy for std::transform.
-    std::transform(from, std::next(from, Count), out, [](Integer value) noexcept
-    {
-        return to_big_endian<Integer>(value);
-    });
+    std::transform(
+        from, std::next(from, Count), out,
+        [](Integer value) noexcept
+        {
+            return to_big_endian<Integer>(value);
+        });
 }
 
 template <size_t Count, typename Integer, if_integral_integer<Integer>>
-void to_little_endian(uint8_t to[Count * sizeof(Integer)],
-    const Integer from[Count]) noexcept
+void to_little_endian(
+    uint8_t to[Count * sizeof(Integer)], const Integer from[Count]) noexcept
 {
     typedef data_array<sizeof(Integer)> data;
     const auto out = reinterpret_cast<data*>(to);
 
     /// C++17: Parallel policy for std::transform.
-    std::transform(from, std::next(from, Count), out, [](Integer value) noexcept
-    {
-        return to_little_endian<Integer>(value);
-    });
+    std::transform(
+        from, std::next(from, Count), out,
+        [](Integer value) noexcept
+        {
+            return to_little_endian<Integer>(value);
+        });
 }
 
 } // namespace system

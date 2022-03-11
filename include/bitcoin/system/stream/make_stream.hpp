@@ -22,8 +22,10 @@
 #include <boost/iostreams/stream.hpp>
 #include <bitcoin/system/stream/device.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 template <typename Device>
 using make_stream = ios::stream<Device>;

@@ -36,7 +36,8 @@ BOOST_AUTO_TEST_CASE(safe__safe_add__size_t_minimum_plus_minimum__minimum)
     BOOST_REQUIRE_EQUAL(safe_add(minimum, minimum), minimum);
 }
 
-BOOST_AUTO_TEST_CASE(safe__safe_add__size_t_maximum_plus_maximum__throws_overflow)
+BOOST_AUTO_TEST_CASE(
+    safe__safe_add__size_t_maximum_plus_maximum__throws_overflow)
 {
     BOOST_REQUIRE_THROW(safe_add(maximum, maximum), overflow_exception);
 }
@@ -73,12 +74,14 @@ BOOST_AUTO_TEST_CASE(safe__safe_subtract__size_t_maximum_minus_minimum__maximum)
     BOOST_REQUIRE_EQUAL(safe_subtract(maximum, minimum), maximum);
 }
 
-BOOST_AUTO_TEST_CASE(safe__safe_subtract__size_t_minimum_minus_maximum__throws_underflow)
+BOOST_AUTO_TEST_CASE(
+    safe__safe_subtract__size_t_minimum_minus_maximum__throws_underflow)
 {
     BOOST_REQUIRE_THROW(safe_subtract(minimum, maximum), underflow_exception);
 }
 
-BOOST_AUTO_TEST_CASE(safe__safe_subtract__size_t_half_minus_maximum__throws_underflow)
+BOOST_AUTO_TEST_CASE(
+    safe__safe_subtract__size_t_half_minus_maximum__throws_underflow)
 {
     BOOST_REQUIRE_THROW(safe_subtract(half, maximum), underflow_exception);
 }
@@ -90,7 +93,8 @@ BOOST_AUTO_TEST_CASE(safe__safe_multiply__size_t_minimum_times_minimum__minimum)
     BOOST_REQUIRE_EQUAL(safe_multiply(minimum, minimum), minimum);
 }
 
-BOOST_AUTO_TEST_CASE(safe__safe_multiply__size_t_maximum_times_maximum__throws_overflow)
+BOOST_AUTO_TEST_CASE(
+    safe__safe_multiply__size_t_maximum_times_maximum__throws_overflow)
 {
     BOOST_REQUIRE_THROW(safe_multiply(maximum, maximum), overflow_exception);
 }
@@ -112,9 +116,11 @@ BOOST_AUTO_TEST_CASE(safe__safe_multiply__size_t_half_times_2__maximum_minus_1)
     BOOST_REQUIRE_EQUAL(safe_multiply(half, size_t(2)), sub1(maximum));
 }
 
-BOOST_AUTO_TEST_CASE(safe__safe_multiply__size_t_2_times_half_plus_1__throws_overflow)
+BOOST_AUTO_TEST_CASE(
+    safe__safe_multiply__size_t_2_times_half_plus_1__throws_overflow)
 {
-    BOOST_REQUIRE_THROW(safe_multiply(size_t(2), add1(half)), overflow_exception);
+    BOOST_REQUIRE_THROW(
+        safe_multiply(size_t(2), add1(half)), overflow_exception);
 }
 
 // safe_increment

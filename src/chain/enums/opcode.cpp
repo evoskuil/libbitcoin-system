@@ -25,15 +25,26 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
-#define RETURN_IF_OPCODE(text, code) \
-if (norm == text) { out_code = opcode::code; return true; }
+#define RETURN_IF_OPCODE(text, code)                                           \
+    if (norm == text)                                                          \
+    {                                                                          \
+        out_code = opcode::code;                                               \
+        return true;                                                           \
+    }
 
-#define RETURN_IF_OPCODE_OR_ALIAS(text, alias, code) \
-if (norm == text || norm == alias) { out_code = opcode::code; return true; }
+#define RETURN_IF_OPCODE_OR_ALIAS(text, alias, code)                           \
+    if (norm == text || norm == alias)                                         \
+    {                                                                          \
+        out_code = opcode::code;                                               \
+        return true;                                                           \
+    }
 
 std::string opcode_to_mnemonic(opcode value, uint32_t active_forks) noexcept
 {
@@ -41,364 +52,366 @@ std::string opcode_to_mnemonic(opcode value, uint32_t active_forks) noexcept
 
     switch (value)
     {
-        // Prefer traditional aliases.
-        case opcode::push_size_0:
-            return "zero";
-        case opcode::push_size_1:
-        case opcode::push_size_2:
-        case opcode::push_size_3:
-        case opcode::push_size_4:
-        case opcode::push_size_5:
-        case opcode::push_size_6:
-        case opcode::push_size_7:
-        case opcode::push_size_8:
-        case opcode::push_size_9:
-        case opcode::push_size_10:
-        case opcode::push_size_11:
-        case opcode::push_size_12:
-        case opcode::push_size_13:
-        case opcode::push_size_14:
-        case opcode::push_size_15:
-        case opcode::push_size_16:
-        case opcode::push_size_17:
-        case opcode::push_size_18:
-        case opcode::push_size_19:
-        case opcode::push_size_20:
-        case opcode::push_size_21:
-        case opcode::push_size_22:
-        case opcode::push_size_23:
-        case opcode::push_size_24:
-        case opcode::push_size_25:
-        case opcode::push_size_26:
-        case opcode::push_size_27:
-        case opcode::push_size_28:
-        case opcode::push_size_29:
-        case opcode::push_size_30:
-        case opcode::push_size_31:
-        case opcode::push_size_32:
-        case opcode::push_size_33:
-        case opcode::push_size_34:
-        case opcode::push_size_35:
-        case opcode::push_size_36:
-        case opcode::push_size_37:
-        case opcode::push_size_38:
-        case opcode::push_size_39:
-        case opcode::push_size_40:
-        case opcode::push_size_41:
-        case opcode::push_size_42:
-        case opcode::push_size_43:
-        case opcode::push_size_44:
-        case opcode::push_size_45:
-        case opcode::push_size_46:
-        case opcode::push_size_47:
-        case opcode::push_size_48:
-        case opcode::push_size_49:
-        case opcode::push_size_50:
-        case opcode::push_size_51:
-        case opcode::push_size_52:
-        case opcode::push_size_53:
-        case opcode::push_size_54:
-        case opcode::push_size_55:
-        case opcode::push_size_56:
-        case opcode::push_size_57:
-        case opcode::push_size_58:
-        case opcode::push_size_59:
-        case opcode::push_size_60:
-        case opcode::push_size_61:
-        case opcode::push_size_62:
-        case opcode::push_size_63:
-        case opcode::push_size_64:
-        case opcode::push_size_65:
-        case opcode::push_size_66:
-        case opcode::push_size_67:
-        case opcode::push_size_68:
-        case opcode::push_size_69:
-        case opcode::push_size_70:
-        case opcode::push_size_71:
-        case opcode::push_size_72:
-        case opcode::push_size_73:
-        case opcode::push_size_74:
-        case opcode::push_size_75:
-            return "push_" + std::to_string(static_cast<uint8_t>(value));
-        case opcode::push_one_size:
-            return "pushdata1";
-        case opcode::push_two_size:
-            return "pushdata2";
-        case opcode::push_four_size:
-            return "pushdata4";
-        case opcode::push_negative_1:
-            return "-1";
-        case opcode::reserved_80:
-            return "reserved";
-        case opcode::push_positive_1:
-        case opcode::push_positive_2:
-        case opcode::push_positive_3:
-        case opcode::push_positive_4:
-        case opcode::push_positive_5:
-        case opcode::push_positive_6:
-        case opcode::push_positive_7:
-        case opcode::push_positive_8:
-        case opcode::push_positive_9:
-        case opcode::push_positive_10:
-        case opcode::push_positive_11:
-        case opcode::push_positive_12:
-        case opcode::push_positive_13:
-        case opcode::push_positive_14:
-        case opcode::push_positive_15:
-        case opcode::push_positive_16:
-            return std::to_string(static_cast<uint8_t>(value) - push_zero);
-        case opcode::nop:
-            return "nop";
-        case opcode::op_ver:
-            return "ver";
-        case opcode::if_:
-            return "if";
-        case opcode::notif:
-            return "notif";
-        case opcode::op_verif:
-            return "verif";
-        case opcode::op_vernotif:
-            return "vernotif";
-        case opcode::else_:
-            return "else";
-        case opcode::endif:
-            return "endif";
-        case opcode::verify:
-            return "verify";
-        case opcode::op_return:
-            return "return";
-        case opcode::toaltstack:
-            return "toaltstack";
-        case opcode::fromaltstack:
-            return "fromaltstack";
-        case opcode::drop2:
-            return "2drop";
-        case opcode::dup2:
-            return "2dup";
-        case opcode::dup3:
-            return "3dup";
-        case opcode::over2:
-            return "2over";
-        case opcode::rot2:
-            return "2rot";
-        case opcode::swap2:
-            return "2swap";
-        case opcode::ifdup:
-            return "ifdup";
-        case opcode::depth:
-            return "depth";
-        case opcode::drop:
-            return "drop";
-        case opcode::dup:
-            return "dup";
-        case opcode::nip:
-            return "nip";
-        case opcode::over:
-            return "over";
-        case opcode::pick:
-            return "pick";
-        case opcode::roll:
-            return "roll";
-        case opcode::rot:
-            return "rot";
-        case opcode::swap:
-            return "swap";
-        case opcode::tuck:
-            return "tuck";
-        case opcode::op_cat:
-            return "cat";
-        case opcode::op_substr:
-            return "substr";
-        case opcode::op_left:
-            return "left";
-        case opcode::op_right:
-            return "right";
-        case opcode::size:
-            return "size";
-        case opcode::op_invert:
-            return "invert";
-        case opcode::op_and:
-            return "and";
-        case opcode::op_or:
-            return "or";
-        case opcode::op_xor:
-            return "xor";
-        case opcode::equal:
-            return "equal";
-        case opcode::equalverify:
-            return "equalverify";
-        case opcode::reserved_137:
-            return "reserved_137";
-        case opcode::reserved_138:
-            return "reserved_138";
-        case opcode::add1:
-            return "1add";
-        case opcode::sub1:
-            return "1sub";
-        case opcode::op_mul2:
-            return "2mul";
-        case opcode::op_div2:
-            return "2div";
-        case opcode::negate:
-            return "negate";
-        case opcode::abs:
-            return "abs";
-        case opcode::not_:
-            return "not";
-        case opcode::nonzero:
-            return "nonzero";
-        case opcode::add:
-            return "add";
-        case opcode::sub:
-            return "sub";
-        case opcode::op_mul:
-            return "mul";
-        case opcode::op_div:
-            return "div";
-        case opcode::op_mod:
-            return "mod";
-        case opcode::op_lshift:
-            return "lshift";
-        case opcode::op_rshift:
-            return "rshift";
-        case opcode::booland:
-            return "booland";
-        case opcode::boolor:
-            return "boolor";
-        case opcode::numequal:
-            return "numequal";
-        case opcode::numequalverify:
-            return "numequalverify";
-        case opcode::numnotequal:
-            return "numnotequal";
-        case opcode::lessthan:
-            return "lessthan";
-        case opcode::greaterthan:
-            return "greaterthan";
-        case opcode::lessthanorequal:
-            return "lessthanorequal";
-        case opcode::greaterthanorequal:
-            return "greaterthanorequal";
-        case opcode::min:
-            return "min";
-        case opcode::max:
-            return "max";
-        case opcode::within:
-            return "within";
-        case opcode::ripemd160:
-            return "ripemd160";
-        case opcode::sha1:
-            return "sha1";
-        case opcode::sha256:
-            return "sha256";
-        case opcode::hash160:
-            return "hash160";
-        case opcode::hash256:
-            return "hash256";
-        case opcode::codeseparator:
-            return "codeseparator";
-        case opcode::checksig:
-            return "checksig";
-        case opcode::checksigverify:
-            return "checksigverify";
-        case opcode::checkmultisig:
-            return "checkmultisig";
-        case opcode::checkmultisigverify:
-            return "checkmultisigverify";
-        case opcode::nop1:
-            return "nop1";
-        case opcode::checklocktimeverify:
-            return script::is_enabled(active_forks, forks::bip65_rule) ?
-                "checklocktimeverify" : "nop2";
-        case opcode::checksequenceverify:
-            return script::is_enabled(active_forks, forks::bip112_rule) ?
-                "checksequenceverify" : "nop3";
-        case opcode::nop4:
-            return "nop4";
-        case opcode::nop5:
-            return "nop5";
-        case opcode::nop6:
-            return "nop6";
-        case opcode::nop7:
-            return "nop7";
-        case opcode::nop8:
-            return "nop8";
-        case opcode::nop9:
-            return "nop9";
-        case opcode::nop10:
-            return "nop10";
-        case opcode::reserved_186:
-        case opcode::reserved_187:
-        case opcode::reserved_188:
-        case opcode::reserved_189:
-        case opcode::reserved_190:
-        case opcode::reserved_191:
-        case opcode::reserved_192:
-        case opcode::reserved_193:
-        case opcode::reserved_194:
-        case opcode::reserved_195:
-        case opcode::reserved_196:
-        case opcode::reserved_197:
-        case opcode::reserved_198:
-        case opcode::reserved_199:
-        case opcode::reserved_200:
-        case opcode::reserved_201:
-        case opcode::reserved_202:
-        case opcode::reserved_203:
-        case opcode::reserved_204:
-        case opcode::reserved_205:
-        case opcode::reserved_206:
-        case opcode::reserved_207:
-        case opcode::reserved_208:
-        case opcode::reserved_209:
-        case opcode::reserved_210:
-        case opcode::reserved_211:
-        case opcode::reserved_212:
-        case opcode::reserved_213:
-        case opcode::reserved_214:
-        case opcode::reserved_215:
-        case opcode::reserved_216:
-        case opcode::reserved_217:
-        case opcode::reserved_218:
-        case opcode::reserved_219:
-        case opcode::reserved_220:
-        case opcode::reserved_221:
-        case opcode::reserved_222:
-        case opcode::reserved_223:
-        case opcode::reserved_224:
-        case opcode::reserved_225:
-        case opcode::reserved_226:
-        case opcode::reserved_227:
-        case opcode::reserved_228:
-        case opcode::reserved_229:
-        case opcode::reserved_230:
-        case opcode::reserved_231:
-        case opcode::reserved_232:
-        case opcode::reserved_233:
-        case opcode::reserved_234:
-        case opcode::reserved_235:
-        case opcode::reserved_236:
-        case opcode::reserved_237:
-        case opcode::reserved_238:
-        case opcode::reserved_239:
-        case opcode::reserved_240:
-        case opcode::reserved_241:
-        case opcode::reserved_242:
-        case opcode::reserved_243:
-        case opcode::reserved_244:
-        case opcode::reserved_245:
-        case opcode::reserved_246:
-        case opcode::reserved_247:
-        case opcode::reserved_248:
-        case opcode::reserved_249:
-        case opcode::reserved_250:
-        case opcode::reserved_251:
-        case opcode::reserved_252:
-        case opcode::reserved_253:
-        case opcode::reserved_254:
-        case opcode::reserved_255:
-        default:
-            return opcode_to_hexadecimal(value);
+    // Prefer traditional aliases.
+    case opcode::push_size_0:
+        return "zero";
+    case opcode::push_size_1:
+    case opcode::push_size_2:
+    case opcode::push_size_3:
+    case opcode::push_size_4:
+    case opcode::push_size_5:
+    case opcode::push_size_6:
+    case opcode::push_size_7:
+    case opcode::push_size_8:
+    case opcode::push_size_9:
+    case opcode::push_size_10:
+    case opcode::push_size_11:
+    case opcode::push_size_12:
+    case opcode::push_size_13:
+    case opcode::push_size_14:
+    case opcode::push_size_15:
+    case opcode::push_size_16:
+    case opcode::push_size_17:
+    case opcode::push_size_18:
+    case opcode::push_size_19:
+    case opcode::push_size_20:
+    case opcode::push_size_21:
+    case opcode::push_size_22:
+    case opcode::push_size_23:
+    case opcode::push_size_24:
+    case opcode::push_size_25:
+    case opcode::push_size_26:
+    case opcode::push_size_27:
+    case opcode::push_size_28:
+    case opcode::push_size_29:
+    case opcode::push_size_30:
+    case opcode::push_size_31:
+    case opcode::push_size_32:
+    case opcode::push_size_33:
+    case opcode::push_size_34:
+    case opcode::push_size_35:
+    case opcode::push_size_36:
+    case opcode::push_size_37:
+    case opcode::push_size_38:
+    case opcode::push_size_39:
+    case opcode::push_size_40:
+    case opcode::push_size_41:
+    case opcode::push_size_42:
+    case opcode::push_size_43:
+    case opcode::push_size_44:
+    case opcode::push_size_45:
+    case opcode::push_size_46:
+    case opcode::push_size_47:
+    case opcode::push_size_48:
+    case opcode::push_size_49:
+    case opcode::push_size_50:
+    case opcode::push_size_51:
+    case opcode::push_size_52:
+    case opcode::push_size_53:
+    case opcode::push_size_54:
+    case opcode::push_size_55:
+    case opcode::push_size_56:
+    case opcode::push_size_57:
+    case opcode::push_size_58:
+    case opcode::push_size_59:
+    case opcode::push_size_60:
+    case opcode::push_size_61:
+    case opcode::push_size_62:
+    case opcode::push_size_63:
+    case opcode::push_size_64:
+    case opcode::push_size_65:
+    case opcode::push_size_66:
+    case opcode::push_size_67:
+    case opcode::push_size_68:
+    case opcode::push_size_69:
+    case opcode::push_size_70:
+    case opcode::push_size_71:
+    case opcode::push_size_72:
+    case opcode::push_size_73:
+    case opcode::push_size_74:
+    case opcode::push_size_75:
+        return "push_" + std::to_string(static_cast<uint8_t>(value));
+    case opcode::push_one_size:
+        return "pushdata1";
+    case opcode::push_two_size:
+        return "pushdata2";
+    case opcode::push_four_size:
+        return "pushdata4";
+    case opcode::push_negative_1:
+        return "-1";
+    case opcode::reserved_80:
+        return "reserved";
+    case opcode::push_positive_1:
+    case opcode::push_positive_2:
+    case opcode::push_positive_3:
+    case opcode::push_positive_4:
+    case opcode::push_positive_5:
+    case opcode::push_positive_6:
+    case opcode::push_positive_7:
+    case opcode::push_positive_8:
+    case opcode::push_positive_9:
+    case opcode::push_positive_10:
+    case opcode::push_positive_11:
+    case opcode::push_positive_12:
+    case opcode::push_positive_13:
+    case opcode::push_positive_14:
+    case opcode::push_positive_15:
+    case opcode::push_positive_16:
+        return std::to_string(static_cast<uint8_t>(value) - push_zero);
+    case opcode::nop:
+        return "nop";
+    case opcode::op_ver:
+        return "ver";
+    case opcode::if_:
+        return "if";
+    case opcode::notif:
+        return "notif";
+    case opcode::op_verif:
+        return "verif";
+    case opcode::op_vernotif:
+        return "vernotif";
+    case opcode::else_:
+        return "else";
+    case opcode::endif:
+        return "endif";
+    case opcode::verify:
+        return "verify";
+    case opcode::op_return:
+        return "return";
+    case opcode::toaltstack:
+        return "toaltstack";
+    case opcode::fromaltstack:
+        return "fromaltstack";
+    case opcode::drop2:
+        return "2drop";
+    case opcode::dup2:
+        return "2dup";
+    case opcode::dup3:
+        return "3dup";
+    case opcode::over2:
+        return "2over";
+    case opcode::rot2:
+        return "2rot";
+    case opcode::swap2:
+        return "2swap";
+    case opcode::ifdup:
+        return "ifdup";
+    case opcode::depth:
+        return "depth";
+    case opcode::drop:
+        return "drop";
+    case opcode::dup:
+        return "dup";
+    case opcode::nip:
+        return "nip";
+    case opcode::over:
+        return "over";
+    case opcode::pick:
+        return "pick";
+    case opcode::roll:
+        return "roll";
+    case opcode::rot:
+        return "rot";
+    case opcode::swap:
+        return "swap";
+    case opcode::tuck:
+        return "tuck";
+    case opcode::op_cat:
+        return "cat";
+    case opcode::op_substr:
+        return "substr";
+    case opcode::op_left:
+        return "left";
+    case opcode::op_right:
+        return "right";
+    case opcode::size:
+        return "size";
+    case opcode::op_invert:
+        return "invert";
+    case opcode::op_and:
+        return "and";
+    case opcode::op_or:
+        return "or";
+    case opcode::op_xor:
+        return "xor";
+    case opcode::equal:
+        return "equal";
+    case opcode::equalverify:
+        return "equalverify";
+    case opcode::reserved_137:
+        return "reserved_137";
+    case opcode::reserved_138:
+        return "reserved_138";
+    case opcode::add1:
+        return "1add";
+    case opcode::sub1:
+        return "1sub";
+    case opcode::op_mul2:
+        return "2mul";
+    case opcode::op_div2:
+        return "2div";
+    case opcode::negate:
+        return "negate";
+    case opcode::abs:
+        return "abs";
+    case opcode::not_:
+        return "not";
+    case opcode::nonzero:
+        return "nonzero";
+    case opcode::add:
+        return "add";
+    case opcode::sub:
+        return "sub";
+    case opcode::op_mul:
+        return "mul";
+    case opcode::op_div:
+        return "div";
+    case opcode::op_mod:
+        return "mod";
+    case opcode::op_lshift:
+        return "lshift";
+    case opcode::op_rshift:
+        return "rshift";
+    case opcode::booland:
+        return "booland";
+    case opcode::boolor:
+        return "boolor";
+    case opcode::numequal:
+        return "numequal";
+    case opcode::numequalverify:
+        return "numequalverify";
+    case opcode::numnotequal:
+        return "numnotequal";
+    case opcode::lessthan:
+        return "lessthan";
+    case opcode::greaterthan:
+        return "greaterthan";
+    case opcode::lessthanorequal:
+        return "lessthanorequal";
+    case opcode::greaterthanorequal:
+        return "greaterthanorequal";
+    case opcode::min:
+        return "min";
+    case opcode::max:
+        return "max";
+    case opcode::within:
+        return "within";
+    case opcode::ripemd160:
+        return "ripemd160";
+    case opcode::sha1:
+        return "sha1";
+    case opcode::sha256:
+        return "sha256";
+    case opcode::hash160:
+        return "hash160";
+    case opcode::hash256:
+        return "hash256";
+    case opcode::codeseparator:
+        return "codeseparator";
+    case opcode::checksig:
+        return "checksig";
+    case opcode::checksigverify:
+        return "checksigverify";
+    case opcode::checkmultisig:
+        return "checkmultisig";
+    case opcode::checkmultisigverify:
+        return "checkmultisigverify";
+    case opcode::nop1:
+        return "nop1";
+    case opcode::checklocktimeverify:
+        return script::is_enabled(active_forks, forks::bip65_rule)
+                   ? "checklocktimeverify"
+                   : "nop2";
+    case opcode::checksequenceverify:
+        return script::is_enabled(active_forks, forks::bip112_rule)
+                   ? "checksequenceverify"
+                   : "nop3";
+    case opcode::nop4:
+        return "nop4";
+    case opcode::nop5:
+        return "nop5";
+    case opcode::nop6:
+        return "nop6";
+    case opcode::nop7:
+        return "nop7";
+    case opcode::nop8:
+        return "nop8";
+    case opcode::nop9:
+        return "nop9";
+    case opcode::nop10:
+        return "nop10";
+    case opcode::reserved_186:
+    case opcode::reserved_187:
+    case opcode::reserved_188:
+    case opcode::reserved_189:
+    case opcode::reserved_190:
+    case opcode::reserved_191:
+    case opcode::reserved_192:
+    case opcode::reserved_193:
+    case opcode::reserved_194:
+    case opcode::reserved_195:
+    case opcode::reserved_196:
+    case opcode::reserved_197:
+    case opcode::reserved_198:
+    case opcode::reserved_199:
+    case opcode::reserved_200:
+    case opcode::reserved_201:
+    case opcode::reserved_202:
+    case opcode::reserved_203:
+    case opcode::reserved_204:
+    case opcode::reserved_205:
+    case opcode::reserved_206:
+    case opcode::reserved_207:
+    case opcode::reserved_208:
+    case opcode::reserved_209:
+    case opcode::reserved_210:
+    case opcode::reserved_211:
+    case opcode::reserved_212:
+    case opcode::reserved_213:
+    case opcode::reserved_214:
+    case opcode::reserved_215:
+    case opcode::reserved_216:
+    case opcode::reserved_217:
+    case opcode::reserved_218:
+    case opcode::reserved_219:
+    case opcode::reserved_220:
+    case opcode::reserved_221:
+    case opcode::reserved_222:
+    case opcode::reserved_223:
+    case opcode::reserved_224:
+    case opcode::reserved_225:
+    case opcode::reserved_226:
+    case opcode::reserved_227:
+    case opcode::reserved_228:
+    case opcode::reserved_229:
+    case opcode::reserved_230:
+    case opcode::reserved_231:
+    case opcode::reserved_232:
+    case opcode::reserved_233:
+    case opcode::reserved_234:
+    case opcode::reserved_235:
+    case opcode::reserved_236:
+    case opcode::reserved_237:
+    case opcode::reserved_238:
+    case opcode::reserved_239:
+    case opcode::reserved_240:
+    case opcode::reserved_241:
+    case opcode::reserved_242:
+    case opcode::reserved_243:
+    case opcode::reserved_244:
+    case opcode::reserved_245:
+    case opcode::reserved_246:
+    case opcode::reserved_247:
+    case opcode::reserved_248:
+    case opcode::reserved_249:
+    case opcode::reserved_250:
+    case opcode::reserved_251:
+    case opcode::reserved_252:
+    case opcode::reserved_253:
+    case opcode::reserved_254:
+    case opcode::reserved_255:
+    default:
+        return opcode_to_hexadecimal(value);
     }
 }
 
@@ -588,8 +601,10 @@ bool opcode_from_mnemonic(opcode& out_code, const std::string& value) noexcept
     RETURN_IF_OPCODE("checkmultisig", checkmultisig);
     RETURN_IF_OPCODE("checkmultisigverify", checkmultisigverify);
     RETURN_IF_OPCODE("nop1", nop1);
-    RETURN_IF_OPCODE_OR_ALIAS("checklocktimeverify", "nop2", checklocktimeverify);
-    RETURN_IF_OPCODE_OR_ALIAS("checksequenceverify", "nop3", checksequenceverify);
+    RETURN_IF_OPCODE_OR_ALIAS(
+        "checklocktimeverify", "nop2", checklocktimeverify);
+    RETURN_IF_OPCODE_OR_ALIAS(
+        "checksequenceverify", "nop3", checksequenceverify);
     RETURN_IF_OPCODE("nop4", nop4);
     RETURN_IF_OPCODE("nop5", nop5);
     RETURN_IF_OPCODE("nop6", nop6);
@@ -674,11 +689,11 @@ bool opcode_from_mnemonic(opcode& out_code, const std::string& value) noexcept
 
 std::string opcode_to_hexadecimal(opcode code) noexcept
 {
-    return "0x" + encode_base16({ static_cast<uint8_t>(code) });
+    return "0x" + encode_base16({static_cast<uint8_t>(code)});
 }
 
-bool opcode_from_hexadecimal(opcode& out_code,
-    const std::string& value) noexcept
+bool opcode_from_hexadecimal(
+    opcode& out_code, const std::string& value) noexcept
 {
     static const std::string ox = "0x";
     static const auto prefix = ox.size();
@@ -688,7 +703,7 @@ bool opcode_from_hexadecimal(opcode& out_code,
         return false;
 
     data_chunk out;
-    if (!decode_base16(out, { std::next(value.begin(), prefix), value.end() }))
+    if (!decode_base16(out, {std::next(value.begin(), prefix), value.end()}))
         return false;
 
     out_code = static_cast<opcode>(out.front());

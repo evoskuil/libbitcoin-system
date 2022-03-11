@@ -22,8 +22,10 @@
 #include <secp256k1.h>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Base class for secp256k1 singleton context management.
 class BC_API secp256k1_initializer
@@ -39,8 +41,7 @@ protected:
 };
 
 /// A signing context singleton initializer.
-class BC_API secp256k1_signing
-  : public secp256k1_initializer
+class BC_API secp256k1_signing : public secp256k1_initializer
 {
 public:
     static secp256k1_context* context() noexcept;
@@ -50,8 +51,7 @@ protected:
 };
 
 /// A verification context singleton initializer.
-class BC_API secp256k1_verification
-  : public secp256k1_initializer
+class BC_API secp256k1_verification : public secp256k1_initializer
 {
 public:
     static secp256k1_context* context() noexcept;

@@ -19,9 +19,12 @@
 #ifndef LIBBITCOIN_SYSTEM_CHAIN_SELECTION_HPP
 #define LIBBITCOIN_SYSTEM_CHAIN_SELECTION_HPP
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 enum class selection
 {
@@ -31,7 +34,7 @@ enum class selection
     regtest
 };
 
-} // namespace config
+} // namespace chain
 } // namespace system
 } // namespace libbitcoin
 

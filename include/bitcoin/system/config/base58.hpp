@@ -24,9 +24,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for base58 encoded text.
 class BC_API base58
@@ -40,8 +43,8 @@ public:
     operator const data_chunk&() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, base58& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const base58& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const base58& argument) noexcept;
 
 private:
     data_chunk value_;

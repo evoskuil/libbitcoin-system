@@ -24,8 +24,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Convert a data chunk to a black on white tiff file.
 class BC_API tiff
@@ -41,8 +43,8 @@ public:
 
     /// False if width parameter is inconsistent with data size.
     /// Each row is padded to a whole byte, all rows are the same length.
-    static bool to_image(std::ostream& out, const data_chunk& data,
-        uint16_t width) noexcept;
+    static bool to_image(
+        std::ostream& out, const data_chunk& data, uint16_t width) noexcept;
 };
 
 } // namespace system

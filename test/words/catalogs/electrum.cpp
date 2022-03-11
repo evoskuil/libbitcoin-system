@@ -49,7 +49,8 @@ BOOST_AUTO_TEST_CASE(catalogs_electrum__count__all__expected)
 {
     // Any new dictionary must be added below to guarantee lack of normalization.
     // Failure to do so may lead to invalid seed generation, which is very bad.
-    BOOST_REQUIRE_MESSAGE(electrum::catalogs::count() == dictionary_count, "new dictionary");
+    BOOST_REQUIRE_MESSAGE(
+        electrum::catalogs::count() == dictionary_count, "new dictionary");
 }
 
 // subset

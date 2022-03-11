@@ -25,33 +25,35 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
-   
+namespace libbitcoin
+{
+namespace system
+{
+
 // constructors
 // ----------------------------------------------------------------------------
 
 template <data_slab::size_type Size, typename Byte, if_byte<Byte>>
 data_slab::data_slab(std::array<Byte, Size>& data) noexcept
-  : data_slab(from_size(data.begin(), Size))
+    : data_slab(from_size(data.begin(), Size))
 {
 }
 
 template <typename Byte, if_byte<Byte>>
 data_slab::data_slab(std::vector<Byte>& data) noexcept
-  : data_slab(from_size(data.begin(), data.size()))
+    : data_slab(from_size(data.begin(), data.size()))
 {
 }
 
 template <typename Iterator>
 data_slab::data_slab(const Iterator& begin, const Iterator& end) noexcept
-  : data_slab(from_iterators(begin, end))
+    : data_slab(from_iterators(begin, end))
 {
 }
 
 template <typename Byte, if_byte<Byte>>
 data_slab::data_slab(const Byte* begin, const Byte* end) noexcept
-  : data_slab(from_iterators(begin, end))
+    : data_slab(from_iterators(begin, end))
 {
 }
 
@@ -60,8 +62,8 @@ data_slab::data_slab(const Byte* begin, const Byte* end) noexcept
 
 // static
 template <typename Iterator>
-data_slab data_slab::from_iterators(const Iterator& begin,
-    const Iterator& end) noexcept
+data_slab data_slab::from_iterators(
+    const Iterator& begin, const Iterator& end) noexcept
 {
     // An end iterator can be anything, so convert to size.
     const auto size = std::distance(begin, end);
@@ -84,15 +86,15 @@ data_slab data_slab::from_size(const Pointer begin, size_type size) noexcept
 
     // Pointer may be a char or uin8_t pointer or iterator type.
     const auto start = reinterpret_cast<pointer>(&begin[0]);
-    return { start, std::next(start, size), size };
+    return {start, std::next(start, size), size};
 }
 
 // properties
 // ----------------------------------------------------------------------------
 
 template <data_slab::size_type Size>
-std::array<typename data_slab::value_type, Size>
-data_slab::to_array() const noexcept
+std::array<typename data_slab::value_type, Size> data_slab::to_array()
+    const noexcept
 {
     std::array<data_slab::value_type, Size> out;
 
@@ -107,8 +109,8 @@ data_slab::to_array() const noexcept
 // ----------------------------------------------------------------------------
 
 template <data_slab::size_type Size>
-data_slab::operator
-std::array<typename data_slab::value_type, Size>() const noexcept
+data_slab::operator std::array<typename data_slab::value_type, Size>()
+    const noexcept
 {
     return to_array<Size>();
 }

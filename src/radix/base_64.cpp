@@ -33,8 +33,10 @@
 // This implementation derived from public domain:
 // en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 const static char pad = '=';
 
@@ -65,24 +67,24 @@ std::string encode_base64(const data_slice& unencoded) noexcept
 
     switch (size % 3)
     {
-        case 1:
-            // Convert to big endian.
-            value = (*cursor++) << 16;
+    case 1:
+        // Convert to big endian.
+        value = (*cursor++) << 16;
 
-            encoded.append(1, table[(value & 0x00fc0000) >> 18]);
-            encoded.append(1, table[(value & 0x0003f000) >> 12]);
-            encoded.append(2, pad);
-            break;
-        case 2:
-            // Convert to big endian.
-            value = (*cursor++) << 16;
-            value += (*cursor++) << 8;
+        encoded.append(1, table[(value & 0x00fc0000) >> 18]);
+        encoded.append(1, table[(value & 0x0003f000) >> 12]);
+        encoded.append(2, pad);
+        break;
+    case 2:
+        // Convert to big endian.
+        value = (*cursor++) << 16;
+        value += (*cursor++) << 8;
 
-            encoded.append(1, table[(value & 0x00fc0000) >> 18]);
-            encoded.append(1, table[(value & 0x0003f000) >> 12]);
-            encoded.append(1, table[(value & 0x00000fc0) >> 6]);
-            encoded.append(1, pad);
-            break;
+        encoded.append(1, table[(value & 0x00fc0000) >> 18]);
+        encoded.append(1, table[(value & 0x0003f000) >> 12]);
+        encoded.append(1, table[(value & 0x00000fc0) >> 6]);
+        encoded.append(1, pad);
+        break;
     }
 
     return encoded;
@@ -129,17 +131,17 @@ bool decode_base64(data_chunk& out, const std::string& in) noexcept
                 // Handle 1 or 2 pad characters.
                 switch (in.end() - cursor)
                 {
-                    case 1:
-                        decoded.push_back((value >> 16) & mask);
-                        decoded.push_back((value >> 8) & mask);
-                        out = decoded;
-                        return true;
-                    case 2:
-                        decoded.push_back((value >> 10) & mask);
-                        out = decoded;
-                        return true;
-                    default:
-                        return false;
+                case 1:
+                    decoded.push_back((value >> 16) & mask);
+                    decoded.push_back((value >> 8) & mask);
+                    out = decoded;
+                    return true;
+                case 2:
+                    decoded.push_back((value >> 10) & mask);
+                    out = decoded;
+                    return true;
+                default:
+                    return false;
                 }
             }
             else
@@ -159,4 +161,3 @@ bool decode_base64(data_chunk& out, const std::string& in) noexcept
 
 } // namespace system
 } // namespace libbitcoin
-

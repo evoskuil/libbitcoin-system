@@ -29,9 +29,11 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/error/error.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 /// A byte reader interface.
 class bytereader
 {
@@ -51,7 +53,7 @@ public:
 
     /// Cast read_variable to size_t, facilitates read_bytes(read_size()).
     /// Returns zero and invalidates stream if would exceed read limit.
-    virtual size_t read_size(size_t limit=max_size_t) noexcept = 0;
+    virtual size_t read_size(size_t limit = max_size_t) noexcept = 0;
 
     /// Convert read_4_bytes_little_endian to an error code.
     virtual code read_error_code() noexcept = 0;
@@ -78,7 +80,7 @@ public:
 
     /// Read Bitcoin length-prefixed string.
     /// Returns empty and invalidates stream if would exceed read limit.
-    virtual std::string read_string(size_t limit=max_size_t) noexcept = 0;
+    virtual std::string read_string(size_t limit = max_size_t) noexcept = 0;
 
     /// Read string, truncated at size or first null.
     /// This is only used for reading Bitcoin heading command text.
@@ -102,7 +104,7 @@ public:
     virtual void set_position(size_t absolute) noexcept = 0;
 
     /// Limit stream upper bound to current position plus size (default resets).
-    virtual void set_limit(size_t size=max_size_t) noexcept = 0;
+    virtual void set_limit(size_t size = max_size_t) noexcept = 0;
 
     /// Invalidate the stream.
     virtual void invalidate() noexcept = 0;

@@ -27,8 +27,10 @@
 #include <bitcoin/system/math/power.hpp>
 #include <bitcoin/system/math/sign.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // width (see constants.hpp for width<>()).
 
@@ -124,41 +126,39 @@ constexpr bool get_left(Value value, size_t offset) noexcept
 // set
 
 template <typename Value, if_integer<Value>>
-constexpr Value set_left(const Value& target, size_t offset,
-    bool state) noexcept
+constexpr Value set_left(
+    const Value& target, size_t offset, bool state) noexcept
 {
     // C++14: local variables allowed in constexpr.
-    return state ? target | bit_left<Value>(offset) :
-        target & ones_complement(bit_left<Value>(offset));
+    return state ? target | bit_left<Value>(offset)
+                 : target & ones_complement(bit_left<Value>(offset));
 }
 
 // constexpr reference assignment not allowed.
 template <typename Value, if_integer<Value>>
-inline void set_left_into(Value& target, size_t offset,
-    bool state) noexcept
+inline void set_left_into(Value& target, size_t offset, bool state) noexcept
 {
     // C++14: local variables allowed in constexpr.
-    state ? target |= bit_left<Value>(offset) :
-        target &= ones_complement(bit_left<Value>(offset));
+    state ? target |= bit_left<Value>(offset)
+          : target &= ones_complement(bit_left<Value>(offset));
 }
 
 template <typename Value, if_integer<Value>>
-constexpr Value set_right(const Value& target, size_t offset,
-    bool state) noexcept
+constexpr Value set_right(
+    const Value& target, size_t offset, bool state) noexcept
 {
     // C++14: local variables allowed in constexpr.
-    return state ? target | bit_right<Value>(offset) :
-        target & ones_complement(bit_right<Value>(offset));
+    return state ? target | bit_right<Value>(offset)
+                 : target & ones_complement(bit_right<Value>(offset));
 }
 
 // constexpr reference assignment not allowed.
 template <typename Value, if_integer<Value>>
-inline void set_right_into(Value& target, size_t offset,
-    bool state) noexcept
+inline void set_right_into(Value& target, size_t offset, bool state) noexcept
 {
     // C++14: local variables allowed in constexpr.
-    state ? target |= bit_right<Value>(offset) :
-        target &= ones_complement(bit_right<Value>(offset));
+    state ? target |= bit_right<Value>(offset)
+          : target &= ones_complement(bit_right<Value>(offset));
 }
 
 // All below support only unsigned Value because:
@@ -185,7 +185,6 @@ inline void mask_left_into(Value& value, size_t bits) noexcept
 {
     value &= mask_left<Value>(bits);
 }
-
 
 template <typename Value, if_unsigned_integer<Value>>
 constexpr Value mask_right(size_t bits) noexcept
@@ -262,8 +261,8 @@ constexpr Value rotate_left(const Value& value, size_t shift) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    return (value << (shift % width<Value>())) |
-        (value >> (width<Value>() - (shift % width<Value>())));
+    return (value << (shift % width<Value>()))
+           | (value >> (width<Value>() - (shift % width<Value>())));
 }
 
 // constexpr reference assignment not allowed.
@@ -272,8 +271,8 @@ inline void rotate_left_into(Value& value, size_t shift) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    (value = (value << (shift % width<Value>())) |
-        (value >> (width<Value>() - (shift % width<Value>()))));
+    (value = (value << (shift % width<Value>()))
+             | (value >> (width<Value>() - (shift % width<Value>()))));
 }
 
 template <typename Value, if_unsigned_integer<Value>>
@@ -281,8 +280,8 @@ constexpr Value rotate_right(const Value& value, size_t shift) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    return (value << (width<Value>() - (shift % width<Value>()))) |
-        (value >> (shift % width<Value>()));
+    return (value << (width<Value>() - (shift % width<Value>())))
+           | (value >> (shift % width<Value>()));
 }
 
 // constexpr reference assignment not allowed.
@@ -291,8 +290,9 @@ inline void rotate_right_into(Value& value, size_t shift) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    (value = (value << (width<Value>() - (shift % width<Value>())) |
-        (value >> (shift % width<Value>()))));
+    (value =
+         (value << (width<Value>() - (shift % width<Value>()))
+          | (value >> (shift % width<Value>()))));
 }
 
 // shift
@@ -306,45 +306,45 @@ inline void rotate_right_into(Value& value, size_t shift) noexcept
 // These are both default behaviors of different compilers.
 
 template <typename Value, if_unsigned_integer<Value>>
-constexpr Value shift_left(const Value& value, size_t shift,
-    bool overflow) noexcept
+constexpr Value shift_left(
+    const Value& value, size_t shift, bool overflow) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    return (overflow && shift >= width<Value>()) ? 0 :
-        value << (shift % width<Value>());
+    return (overflow && shift >= width<Value>())
+               ? 0
+               : value << (shift % width<Value>());
 }
 
 // constexpr reference assignment not allowed.
 template <typename Value, if_unsigned_integer<Value>>
-inline void shift_left_into(Value& value, size_t shift,
-    bool overflow) noexcept
+inline void shift_left_into(Value& value, size_t shift, bool overflow) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    overflow && shift >= width<Value>() ? value = 0 :
-        value <<= (shift % width<Value>());
+    overflow&& shift >= width<Value>() ? value = 0
+                                       : value <<= (shift % width<Value>());
 }
 
 template <typename Value, if_unsigned_integer<Value>>
-constexpr Value shift_right(const Value& value, size_t shift,
-    bool overflow) noexcept
+constexpr Value shift_right(
+    const Value& value, size_t shift, bool overflow) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    return (overflow && shift >= width<Value>()) ? 0 :
-        value >> (shift % width<Value>());
+    return (overflow && shift >= width<Value>())
+               ? 0
+               : value >> (shift % width<Value>());
 }
 
 // constexpr reference assignment not allowed.
 template <typename Value, if_unsigned_integer<Value>>
-inline void shift_right_into(Value& value, size_t shift,
-    bool overflow) noexcept
+inline void shift_right_into(Value& value, size_t shift, bool overflow) noexcept
 {
     // C++14: local variables allowed in constexpr.
     ////constexpr auto bits = width<Value>();
-    overflow && shift >= width<Value>() ? value = 0 :
-        value >>= (shift % width<Value>());
+    overflow&& shift >= width<Value>() ? value = 0
+                                       : value >>= (shift % width<Value>());
 }
 
 } // namespace system

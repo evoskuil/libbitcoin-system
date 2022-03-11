@@ -24,9 +24,11 @@
 #include <bitcoin/system/crypto/crypto.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 /// ec_scalar is initialized to zero.
 /// Failed operations return zero.
 /// The bool operator reflects the zero state (validity).
@@ -80,4 +82,3 @@ ec_scalar operator*(const ec_scalar& left, const ec_scalar& right) noexcept;
 } // namespace libbitcoin
 
 #endif
-

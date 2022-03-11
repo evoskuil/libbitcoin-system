@@ -27,8 +27,10 @@
 #include <vector>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Trim and convert text to the Value type.
 /// Value may be any non-specialized deserializable type (implements >>).
@@ -55,8 +57,8 @@ inline bool deserialize(data_chunk& out, const std::string& text) noexcept;
 
 /// Specialize arrays to add space delimiter.
 template <typename Value, size_t Size>
-bool deserialize(std::array<Value, Size>& out,
-	const std::string& text) noexcept;
+bool deserialize(
+    std::array<Value, Size>& out, const std::string& text) noexcept;
 
 /// Specialize arrays to add space delimiter.
 template <typename Value>

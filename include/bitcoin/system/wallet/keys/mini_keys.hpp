@@ -23,13 +23,16 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/crypto/crypto.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// Convert Cascasius minikey to secret parameter.
-BC_API bool minikey_to_secret(ec_secret& out_secret,
-	const std::string& key) noexcept;
+BC_API bool minikey_to_secret(
+    ec_secret& out_secret, const std::string& key) noexcept;
 
 } // namespace wallet
 } // namespace system

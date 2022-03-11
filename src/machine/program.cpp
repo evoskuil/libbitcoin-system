@@ -33,9 +33,12 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace machine {
+namespace libbitcoin
+{
+namespace system
+{
+namespace machine
+{
 
 using namespace system::chain;
 
@@ -44,16 +47,12 @@ static const transaction default_transaction{};
 // Constructors.
 // ----------------------------------------------------------------------------
 
-program::program(const script::ptr& script, const chain::transaction& tx,
-    uint32_t index, uint32_t forks) noexcept
-  : script_(script),
-    transaction_(tx),
-    input_index_(index),
-    forks_(forks),
-    value_(max_uint64),
-    version_(script_version::unversioned),
-    negative_count_(0),
-    operation_count_(0)
+program::program(
+    const script::ptr& script, const chain::transaction& tx, uint32_t index,
+    uint32_t forks) noexcept
+    : script_(script), transaction_(tx), input_index_(index), forks_(forks),
+      value_(max_uint64), version_(script_version::unversioned),
+      negative_count_(0), operation_count_(0)
 {
     // This is guarded by is_invalid, and in the interpreter.
     BC_ASSERT(index < transaction_.inputs()->size());
@@ -61,45 +60,30 @@ program::program(const script::ptr& script, const chain::transaction& tx,
 
 // Reuse copied program stack .
 program::program(const script::ptr& script, const program& other) noexcept
-  : script_(script),
-    transaction_(other.transaction_),
-    input_index_(other.input_index_),
-    forks_(other.forks_),
-    value_(other.value_),
-    version_(other.version_),
-    negative_count_(0),
-    operation_count_(0),
-    primary_(other.primary_)
+    : script_(script), transaction_(other.transaction_),
+      input_index_(other.input_index_), forks_(other.forks_),
+      value_(other.value_), version_(other.version_), negative_count_(0),
+      operation_count_(0), primary_(other.primary_)
 {
 }
 
 // Reuse moved program stack.
 program::program(const script::ptr& script, program&& other) noexcept
-  : script_(script),
-    transaction_(other.transaction_),
-    input_index_(other.input_index_),
-    forks_(other.forks_),
-    value_(other.value_),
-    version_(other.version_),
-    negative_count_(0),
-    operation_count_(0),
-    primary_(std::move(other.primary_))
+    : script_(script), transaction_(other.transaction_),
+      input_index_(other.input_index_), forks_(other.forks_),
+      value_(other.value_), version_(other.version_), negative_count_(0),
+      operation_count_(0), primary_(std::move(other.primary_))
 {
 }
 
 // Condition, alternate, jump and operation_count are not copied.
-program::program(const script::ptr& script, const chain::transaction& tx,
-    uint32_t index, uint32_t forks, chunk_ptrs&& stack, uint64_t value,
+program::program(
+    const script::ptr& script, const chain::transaction& tx, uint32_t index,
+    uint32_t forks, chunk_ptrs&& stack, uint64_t value,
     script_version version) noexcept
-  : script_(script),
-    transaction_(tx),
-    input_index_(index),
-    forks_(forks),
-    value_(value),
-    version_(version),
-    negative_count_(0),
-    operation_count_(0),
-    primary_(std::move(stack))
+    : script_(script), transaction_(tx), input_index_(index), forks_(forks),
+      value_(value), version_(version), negative_count_(0), operation_count_(0),
+      primary_(std::move(stack))
 {
     // This is guarded by is_invalid, and in the interpreter.
     BC_ASSERT(index < tx.inputs()->size());
@@ -115,10 +99,9 @@ bool program::is_invalid() const noexcept
     ////const auto nops_rule = is_enabled(forks::nops_rule);
 
     // TODO: nops rule must be enabled.
-    return
-        (/*nops_rule && */script_->is_oversized()) ||
-        (input_index_ > transaction_.inputs()->size()) ||
-        (bip141 && !chain::witness::is_push_size(primary_));
+    return (/*nops_rule && */ script_->is_oversized())
+           || (input_index_ > transaction_.inputs()->size())
+           || (bip141 && !chain::witness::is_push_size(primary_));
 }
 
 bool program::is_enabled(chain::forks rule) const noexcept
@@ -204,7 +187,7 @@ bool program::increment_op_count(int32_t public_keys) noexcept
 // push
 void program::push(bool value) noexcept
 {
-    push_move(value ? data_chunk{ numbers::positive_1 } : data_chunk{});
+    push_move(value ? data_chunk{numbers::positive_1} : data_chunk{});
 }
 
 // Be explicit about the intent to move or copy, to get compiler help.
@@ -338,8 +321,8 @@ void program::erase(const stack_iterator& position) noexcept
 }
 
 // pop1/pop2/.../pop[i]/pop[first]/.../pop[last]/push[i]/.../push2/push1
-void program::erase(const stack_iterator& first,
-    const stack_iterator& last) noexcept
+void program::erase(
+    const stack_iterator& first, const stack_iterator& last) noexcept
 {
     primary_.erase(first, last);
 }
@@ -367,13 +350,13 @@ bool program::stack_to_bool(bool clean) const noexcept
         return value != numbers::positive_0;
     };
 
-    auto non_zero = [](uint8_t value)  noexcept
+    auto non_zero = [](uint8_t value) noexcept
     {
         return (value & ~numbers::negative_sign) != numbers::positive_0;
     };
 
-    return non_zero(top->back()) ||
-        std::any_of(top->begin(), std::prev(top->end()), not_zero);
+    return non_zero(top->back())
+           || std::any_of(top->begin(), std::prev(top->end()), not_zero);
 }
 
 size_t program::size() const noexcept
@@ -554,12 +537,13 @@ script::ptr program::subscript(const chunk_ptrs& endorsements) const noexcept
         return script_;
 
     // Create new script from stripped copy of subscript operations.
-    return to_shared(new script{ difference(script_->offset, stop, strip) });
+    return to_shared(new script{difference(script_->offset, stop, strip)});
 }
 
 // TODO: use sighash and key to generate signature in sign mode.
-bool program::prepare(ec_signature& signature, const data_chunk&,
-    hash_digest& hash, const chunk_ptr& endorsement) const noexcept
+bool program::prepare(
+    ec_signature& signature, const data_chunk&, hash_digest& hash,
+    const chunk_ptr& endorsement) const noexcept
 {
     uint8_t flags;
     data_slice distinguished;
@@ -569,7 +553,7 @@ bool program::prepare(ec_signature& signature, const data_chunk&,
         return false;
 
     // Obtain the signature hash from subscript and sighash flags.
-    hash = signature_hash(*subscript({ endorsement }), flags);
+    hash = signature_hash(*subscript({endorsement}), flags);
 
     // Parse DER signature into an EC signature (bip66 sets strict).
     const auto bip66 = is_enabled(forks::bip66_rule);
@@ -577,8 +561,9 @@ bool program::prepare(ec_signature& signature, const data_chunk&,
 }
 
 // TODO: use sighash and key to generate signature in sign mode.
-bool program::prepare(ec_signature& signature, const data_chunk&,
-    hash_cache& cache, uint8_t& flags, const data_chunk& endorsement,
+bool program::prepare(
+    ec_signature& signature, const data_chunk&, hash_cache& cache,
+    uint8_t& flags, const data_chunk& endorsement,
     const script& sub) const noexcept
 {
     data_slice distinguished;
@@ -609,28 +594,28 @@ chain::operations program::create_strip_ops(
     operations strip;
     strip.reserve(add1(endorsements.size()));
 
-    for (const auto& push: endorsements)
+    for (const auto& push : endorsements)
         strip.emplace_back(push, non_mininal);
 
     strip.emplace_back(opcode::codeseparator);
     return strip;
 }
 
-hash_digest program::signature_hash(const script& sub,
-    uint8_t flags) const noexcept
+hash_digest program::signature_hash(
+    const script& sub, uint8_t flags) const noexcept
 {
     // The bip141 fork establishes witness version, hashing is a distinct fork.
     const auto bip143 = is_enabled(forks::bip143_rule);
 
     // bip143: the method of signature hashing is changed for v0 scripts.
-    return transaction_.signature_hash(input_index_, sub, value_, flags,
-        version_, bip143);
+    return transaction_.signature_hash(
+        input_index_, sub, value_, flags, version_, bip143);
 }
 
 // Caches signature hashes in a map against sighash flags.
 // Prevents recomputation in the common case where flags are the same.
-void program::signature_hash(hash_cache& cache, const script& sub,
-    uint8_t flags) const noexcept
+void program::signature_hash(
+    hash_cache& cache, const script& sub, uint8_t flags) const noexcept
 {
     if (cache.find(flags) == cache.end())
         cache.emplace(flags, signature_hash(sub, flags));

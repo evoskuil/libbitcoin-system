@@ -29,9 +29,9 @@
 #include <utility>
 #include <vector>
 #ifdef _MSC_VER
-    #include <fcntl.h>
-    #include <io.h>
-    #include <windows.h>
+#include <fcntl.h>
+#include <io.h>
+#include <windows.h>
 #endif
 #include <boost/filesystem.hpp>
 #include <boost/locale.hpp>
@@ -44,8 +44,10 @@
 #include <bitcoin/system/unicode/utf8_everywhere/unicode_istream.hpp>
 #include <bitcoin/system/unicode/utf8_everywhere/unicode_ostream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Stream utilities.
 // ----------------------------------------------------------------------------
@@ -162,7 +164,7 @@ size_t utf8_remainder_size(const char text[], size_t size)
         return 0;
 
     for (size_t length = 1; length <= std::min(utf8_max_character_size, size);
-        ++length)
+         ++length)
     {
         const auto byte = text[size - length];
 
@@ -180,14 +182,14 @@ size_t utf8_remainder_size(const char text[], size_t size)
 
 // Convert utf16 wchar_t buffer to utf8 char buffer.
 // This is used in wmain for conversion of wide args and environ on Win32.
-size_t to_utf8(char out_to[], size_t to_bytes, const wchar_t from[],
-    size_t from_chars)
+size_t to_utf8(
+    char out_to[], size_t to_bytes, const wchar_t from[], size_t from_chars)
 {
-    if (from == nullptr || out_to == nullptr || is_zero(from_chars) ||
-        to_bytes < (from_chars * utf8_max_character_size))
+    if (from == nullptr || out_to == nullptr || is_zero(from_chars)
+        || to_bytes < (from_chars * utf8_max_character_size))
         return 0;
 
-    const std::wstring wide{ from, &from[from_chars] };
+    const std::wstring wide{from, &from[from_chars]};
     const auto narrow = to_utf8(wide);
     const auto bytes = narrow.size();
 
@@ -199,18 +201,19 @@ size_t to_utf8(char out_to[], size_t to_bytes, const wchar_t from[],
 
 // Convert utf8 char buffer to utf16 wchar_t buffer, with truncation handling.
 // Truncation results from having split the input buffer arbitrarily (stream).
-size_t to_utf16(size_t& remainder, wchar_t out_to[], size_t to_chars,
-    const char from[], size_t from_bytes)
+size_t to_utf16(
+    size_t& remainder, wchar_t out_to[], size_t to_chars, const char from[],
+    size_t from_bytes)
 {
     remainder = 0;
-    if (from == nullptr || out_to == nullptr || is_zero(from_bytes) ||
-        to_chars < from_bytes)
+    if (from == nullptr || out_to == nullptr || is_zero(from_bytes)
+        || to_chars < from_bytes)
         return 0;
 
     // Calculate a character break offset of 0..3 bytes.
     remainder = utf8_remainder_size(from, from_bytes);
 
-    const std::string narrow{ from, &from[from_bytes - remainder] };
+    const std::string narrow{from, &from[from_bytes - remainder]};
     const auto wide = to_utf16(narrow);
     const auto chars = wide.size();
 
@@ -320,12 +323,13 @@ char** allocate_environment(int argc, wchar_t* argv[])
 char** allocate_environment(wchar_t* environment[])
 {
     int count;
-    for (count = 0; environment[count] != nullptr; count++);
+    for (count = 0; environment[count] != nullptr; count++)
+        ;
     return allocate_environment(count, environment);
 }
 
-int call_utf8_main(int argc, wchar_t* argv[],
-    int(*main)(int argc, char* argv[]))
+int call_utf8_main(
+    int argc, wchar_t* argv[], int (*main)(int argc, char* argv[]))
 {
     // C++17: use std::filesystem.
     // When working with boost and utf8 narrow characters on Win32 the thread
@@ -369,9 +373,9 @@ std::wstring to_fully_qualified_path(const boost::filesystem::path& path)
     const auto replace_all = [](std::string text, char from, char to) noexcept
     {
         for (auto position = text.find(from); position != std::string::npos;
-            position = text.find(from, position + sizeof(char)))
+             position = text.find(from, position + sizeof(char)))
         {
-            text.replace(position, sizeof(char), { to });
+            text.replace(position, sizeof(char), {to});
         }
 
         return text;
@@ -398,7 +402,7 @@ std::wstring to_fully_qualified_path(const boost::filesystem::path& path)
 
     // The returned size does not include the null terminator, and cannot
     // exceed the original, but does become smaller, so resize accordingly.
-    return { directory.begin(), std::next(directory.begin(), size) };
+    return {directory.begin(), std::next(directory.begin(), size)};
 }
 
 #endif // _MSC_VER
@@ -409,7 +413,7 @@ std::wstring to_fully_qualified_path(const boost::filesystem::path& path)
 // and to UTF8 with _MSC_VER undefined. This includes some boost APIs - such as
 // filesystem::remove, remove_all, and create_directories, as well as some
 // Win32 API extensions to std libs - such as std::ofstream and std::ifstream.
-// Otherwise use in any Win32 (W) APIs with _MSC_VER defined, such as we do in 
+// Otherwise use in any Win32 (W) APIs with _MSC_VER defined, such as we do in
 // interprocess_lock::open_file -> CreateFileW, since the boost wrapper only
 // calls CreateFileA. The length extension prefix requires Win32 (W) APIs.
 std::wstring to_extended_path(const boost::filesystem::path& path)

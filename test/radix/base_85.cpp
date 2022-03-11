@@ -21,17 +21,17 @@
 BOOST_AUTO_TEST_SUITE(base_85_tests)
 
 #define BASE85_ENCODED "HelloWorld"
-#define BASE85_DECODED \
-{ \
-    0x86, 0x4F, 0xD2, 0x6F, 0xB5, 0x59, 0xF7, 0x5B \
-}
+#define BASE85_DECODED                                                         \
+    {                                                                          \
+        0x86, 0x4F, 0xD2, 0x6F, 0xB5, 0x59, 0xF7, 0x5B                         \
+    }
 
 #define BASE85_ENCODED_INVALID_CHAR "Test\n"
 #define BASE85_ENCODED_INVALID_LENGTH "Hello World"
-#define BASE85_DECODED_INVALID \
-{ \
-    0x86, 0x4F, 0xD2, 0x6F, 0xB5, 0x59, 0xF7, 0x5B, 0x42 \
-}
+#define BASE85_DECODED_INVALID                                                 \
+    {                                                                          \
+        0x86, 0x4F, 0xD2, 0x6F, 0xB5, 0x59, 0xF7, 0x5B, 0x42                   \
+    }
 
 BOOST_AUTO_TEST_CASE(encode_base85_empty_test)
 {
@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(decode_base85_outside_alphabet_test)
 {
     data_chunk result;
     BOOST_REQUIRE(decode_base85(result, ";;;;;"));
-    BOOST_REQUIRE(result == data_chunk({ 0, 0, 0, 0 }));
+    BOOST_REQUIRE(result == data_chunk({0, 0, 0, 0}));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

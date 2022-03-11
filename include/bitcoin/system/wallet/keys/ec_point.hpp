@@ -24,8 +24,10 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/wallet/keys/ec_scalar.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// ec_point is initialized to an invalid state.
 /// Failed operations return an invalid state.
@@ -82,4 +84,3 @@ ec_point operator*(const ec_scalar& left, const ec_point& right) noexcept;
 } // namespace libbitcoin
 
 #endif
-

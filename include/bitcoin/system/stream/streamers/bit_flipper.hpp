@@ -27,8 +27,10 @@
 #include <bitcoin/system/stream/streamers/bit_writer.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/bitflipper.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Suppress multiple inheritance warnings.
 // The only multiple inheritance conflict is destructors and bool/!.
@@ -46,14 +48,13 @@ namespace system {
 /// with the bit flipper. If at all, perform byte operations first, then bit
 /// then flush, at which point the bit position is again on a byte boudary.
 template <typename IOStream = std::iostream>
-class bit_flipper
-  : public bit_reader<IOStream>,
-    public bit_writer<IOStream>,
-    public virtual bitflipper
+class bit_flipper : public bit_reader<IOStream>,
+                    public bit_writer<IOStream>,
+                    public virtual bitflipper
 {
 public:
     bit_flipper(IOStream& stream) noexcept
-      : bit_reader<IOStream>(stream), bit_writer<IOStream>(stream)
+        : bit_reader<IOStream>(stream), bit_writer<IOStream>(stream)
     {
         // Base constructions only capture references.
         // There are two references to the iostream:

@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(ifstream__construct__valid_path__round_trip)
     BOOST_REQUIRE(out.good());
     BOOST_REQUIRE(!out.bad());
 
-    const std::string expected{ "libbitcoin" };
+    const std::string expected{"libbitcoin"};
     out << expected;
     BOOST_REQUIRE(out.good());
 

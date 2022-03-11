@@ -33,9 +33,12 @@
 #include <bitcoin/system/wallet/mnemonics/electrum_v1.hpp>
 #include <bitcoin/system/words/words.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // local constants
 // ----------------------------------------------------------------------------
@@ -54,42 +57,38 @@ static const auto version_two_factor_authentication_witness = "102";
 static const auto version_none = "none";
 
 // 2^11 = 2048 implies 11 bits exactly indexes every possible dictionary word.
-static const auto index_bits = static_cast<uint8_t>(floored_log2(
-    electrum::dictionary::size()));
+static const auto index_bits =
+    static_cast<uint8_t>(floored_log2(electrum::dictionary::size()));
 
 // private static
 // ----------------------------------------------------------------------------
 
-const electrum::dictionaries electrum::dictionaries_
-{
-    {
-        electrum::dictionary{ language::en, words::electrum::en },
-        electrum::dictionary{ language::es, words::electrum::es },
-        electrum::dictionary{ language::it, words::electrum::it },
-        electrum::dictionary{ language::fr, words::electrum::fr },
-        electrum::dictionary{ language::cs, words::electrum::cs },
-        electrum::dictionary{ language::pt, words::electrum::pt },
-        electrum::dictionary{ language::ja, words::electrum::ja },
-        electrum::dictionary{ language::ko, words::electrum::ko },
-        electrum::dictionary{ language::zh_Hans, words::electrum::zh_Hans },
-        electrum::dictionary{ language::zh_Hant, words::electrum::zh_Hant }
-    }
-};
+const electrum::dictionaries electrum::dictionaries_{
+    {electrum::dictionary{language::en, words::electrum::en},
+     electrum::dictionary{language::es, words::electrum::es},
+     electrum::dictionary{language::it, words::electrum::it},
+     electrum::dictionary{language::fr, words::electrum::fr},
+     electrum::dictionary{language::cs, words::electrum::cs},
+     electrum::dictionary{language::pt, words::electrum::pt},
+     electrum::dictionary{language::ja, words::electrum::ja},
+     electrum::dictionary{language::ko, words::electrum::ko},
+     electrum::dictionary{language::zh_Hans, words::electrum::zh_Hans},
+     electrum::dictionary{language::zh_Hant, words::electrum::zh_Hant}}};
 
 // protected static (coders)
 // ----------------------------------------------------------------------------
 
 // Electrum entropy is an entirely private (internal) format.
-string_list electrum::encoder(const data_chunk& entropy,
-    language identifier) noexcept
+string_list electrum::encoder(
+    const data_chunk& entropy, language identifier) noexcept
 {
     // Bytes are the base2048 encoding, so this is byte decoding.
     return decode_base2048_list(entropy, identifier);
 }
 
 // Electrum entropy is an entirely private (internal) format.
-data_chunk electrum::decoder(const string_list& words,
-    language identifier) noexcept
+data_chunk electrum::decoder(
+    const string_list& words, language identifier) noexcept
 {
     // Words are the base2048 decoding, so this is word encoding.
     data_chunk out;
@@ -106,8 +105,9 @@ data_chunk electrum::decoder(const string_list& words,
 // The Electrum prng minimum value technique sacrifices 11 bits of entropy by
 // discarding any prng value that is below 2^(strength-11).
 // github.com/spesmilo/electrum/blob/master/electrum/mnemonic.py#L190-L205
-electrum::grinding electrum::grinder(const data_chunk& entropy,
-    seed_prefix prefix, language identifier, size_t limit) noexcept
+electrum::grinding electrum::grinder(
+    const data_chunk& entropy, seed_prefix prefix, language identifier,
+    size_t limit) noexcept
 {
     string_list words;
     data_chunk hash(entropy);
@@ -135,15 +135,14 @@ electrum::grinding electrum::grinder(const data_chunk& entropy,
         // Avoid collisions with Electrum v1 (en) and BIP39 mnemonics.
         // Run validator first because conflict checks can be costly.
         if (validator(words, prefix) && !is_conflict(words))
-            return { hash, words, start - limit };
+            return {hash, words, start - limit};
 
         // This replaces Electrum's prng with determinism.
         hash = to_chunk(sha512_hash(hash));
         hash.resize(entropy_size);
-    }
-    while (!is_zero(limit--));
+    } while (!is_zero(limit--));
 
-    return { {}, {}, start };
+    return {{}, {}, start};
 }
 
 // This cannot match electrum_v1 or mnemonic.
@@ -161,8 +160,8 @@ bool electrum::validator(const string_list& words, seed_prefix prefix) noexcept
 // Electrum uses the same normalization function for words and passphrases.
 // Passpharse entropy loss from lowering (and normalizing) should be considered.
 // github.com/spesmilo/electrum/blob/master/electrum/mnemonic.py#L77
-long_hash electrum::seeder(const string_list& words,
-    const std::string& passphrase) noexcept
+long_hash electrum::seeder(
+    const string_list& words, const std::string& passphrase) noexcept
 {
     constexpr size_t hmac_iterations = 2048;
     constexpr auto passphrase_prefix = "electrum";
@@ -172,7 +171,7 @@ long_hash electrum::seeder(const string_list& words,
 
     LCOV_EXCL_START("Always succeeds unless WITH_ICU undefined.")
 
-    // TODO: replace the ICU lib dependency with Python's unicodedata. 
+    // TODO: replace the ICU lib dependency with Python's unicodedata.
     // Conforms to the Unicode Standard for nfkd and case lowering (ICU lib).
     // ------------------------------------------------------------------------
     // seed = unicodedata.normalize('NFKD', seed)
@@ -290,20 +289,17 @@ bool electrum::is_ambiguous(size_t count, seed_prefix prefix) noexcept
     if (prefix != seed_prefix::two_factor_authentication)
         return false;
 
-    return
-        count != word_count(strength_minimum) &&
-        count < minimum_two_factor_authentication_words;
+    return count != word_count(strength_minimum)
+           && count < minimum_two_factor_authentication_words;
 }
 
-bool electrum::is_ambiguous(const string_list& words, language requested,
-    language derived) noexcept
+bool electrum::is_ambiguous(
+    const string_list& words, language requested, language derived) noexcept
 {
     // HACK: There are 100 same words in en/fr, all with distinct indexes.
     // If matches en and unspecified then check fr, since en is searched first.
-    return
-        derived == language::en &&
-        requested == language::none &&
-        contained_by(words, language::fr) == language::fr;
+    return derived == language::en && requested == language::none
+           && contained_by(words, language::fr) == language::fr;
 }
 
 bool electrum::is_conflict(const string_list& words) noexcept
@@ -326,8 +322,8 @@ electrum::seed_prefix electrum::to_conflict(const string_list& words) noexcept
     return seed_prefix::none;
 }
 
-bool electrum::normalized_is_prefix(const string_list& words,
-    seed_prefix prefix) noexcept
+bool electrum::normalized_is_prefix(
+    const string_list& words, seed_prefix prefix) noexcept
 {
     if (prefix == seed_prefix::old)
         return electrum_v1(words, language::en);
@@ -361,7 +357,8 @@ electrum::seed_prefix electrum::normalized_to_prefix(
         return seed_prefix::witness;
     if (normalized_is_prefix(words, seed_prefix::two_factor_authentication))
         return seed_prefix::two_factor_authentication;
-    if (normalized_is_prefix(words, seed_prefix::two_factor_authentication_witness))
+    if (normalized_is_prefix(
+            words, seed_prefix::two_factor_authentication_witness))
         return seed_prefix::two_factor_authentication_witness;
 
     return seed_prefix::none;
@@ -370,8 +367,8 @@ electrum::seed_prefix electrum::normalized_to_prefix(
 // public static
 // ----------------------------------------------------------------------------
 
-language electrum::contained_by(const string_list& words,
-    language identifier) noexcept
+language electrum::contained_by(
+    const string_list& words, language identifier) noexcept
 {
     return dictionaries_.contains(words, identifier);
 }
@@ -393,14 +390,14 @@ bool electrum::is_valid_entropy_size(size_t size) noexcept
     // A 128 bit seed is the BIP39 minium, but this 11 Electrum words.
     // So our limits are 132 to 506 bits (12 to 46) words.
 
-    return size >= entropy_size(strength_minimum) &&
-        size <= entropy_size(strength_maximum);
+    return size >= entropy_size(strength_minimum)
+           && size <= entropy_size(strength_maximum);
 }
 
 bool electrum::is_valid_word_count(size_t count) noexcept
 {
-    return count >= word_count(strength_minimum) &&
-        count <= word_count(strength_maximum);
+    return count >= word_count(strength_minimum)
+           && count <= word_count(strength_maximum);
 }
 
 bool electrum::is_seedable(seed_prefix prefix) noexcept
@@ -408,13 +405,13 @@ bool electrum::is_seedable(seed_prefix prefix) noexcept
     // Only seed from native entropy.
     switch (prefix)
     {
-        case seed_prefix::standard:
-        case seed_prefix::witness:
-        case seed_prefix::two_factor_authentication:
-        case seed_prefix::two_factor_authentication_witness:
-            return true;
-        default:
-            return false;
+    case seed_prefix::standard:
+    case seed_prefix::witness:
+    case seed_prefix::two_factor_authentication:
+    case seed_prefix::two_factor_authentication_witness:
+        return true;
+    default:
+        return false;
     }
 }
 
@@ -430,8 +427,8 @@ bool electrum::is_prefix(const string_list& words, seed_prefix prefix) noexcept
     return normalized_is_prefix(tokens, prefix);
 }
 
-bool electrum::is_prefix(const std::string& sentence,
-    seed_prefix prefix) noexcept
+bool electrum::is_prefix(
+    const std::string& sentence, seed_prefix prefix) noexcept
 {
     return is_prefix(split(sentence, language::none), prefix);
 }
@@ -457,29 +454,28 @@ std::string electrum::to_version(seed_prefix prefix) noexcept
 {
     switch (prefix)
     {
-        case seed_prefix::old:
-            return version_old;
-        case seed_prefix::bip39:
-            return version_bip39;
-        case seed_prefix::standard:
-            return version_standard;
-        case seed_prefix::witness:
-            return version_witness;
-        case seed_prefix::two_factor_authentication:
-            return version_two_factor_authentication;
-        case seed_prefix::two_factor_authentication_witness:
-            return version_two_factor_authentication_witness;
-        case seed_prefix::none:
-        default:
-            return version_none;
+    case seed_prefix::old:
+        return version_old;
+    case seed_prefix::bip39:
+        return version_bip39;
+    case seed_prefix::standard:
+        return version_standard;
+    case seed_prefix::witness:
+        return version_witness;
+    case seed_prefix::two_factor_authentication:
+        return version_two_factor_authentication;
+    case seed_prefix::two_factor_authentication_witness:
+        return version_two_factor_authentication_witness;
+    case seed_prefix::none:
+    default:
+        return version_none;
     }
 }
 
 // construction
 // ----------------------------------------------------------------------------
 
-electrum::electrum() noexcept
-  : electrum_v1(), prefix_(seed_prefix::none)
+electrum::electrum() noexcept : electrum_v1(), prefix_(seed_prefix::none)
 {
 }
 
@@ -489,30 +485,32 @@ electrum::electrum() noexcept
 ////}
 
 electrum::electrum(const electrum_v1& old) noexcept
-  : electrum_v1(old), prefix_(*this ? seed_prefix::old : seed_prefix::none)
+    : electrum_v1(old), prefix_(*this ? seed_prefix::old : seed_prefix::none)
 {
 }
 
 electrum::electrum(const std::string& sentence, language identifier) noexcept
-  : electrum(split(sentence, identifier), identifier)
+    : electrum(split(sentence, identifier), identifier)
 {
 }
 
 electrum::electrum(const string_list& words, language identifier) noexcept
-  : electrum(from_words(words, identifier))
+    : electrum(from_words(words, identifier))
 {
 }
 
-electrum::electrum(const data_chunk& entropy, seed_prefix prefix,
-    language identifier, size_t grind_limit) noexcept
-  : electrum(from_entropy(entropy, prefix, identifier, grind_limit))
+electrum::electrum(
+    const data_chunk& entropy, seed_prefix prefix, language identifier,
+    size_t grind_limit) noexcept
+    : electrum(from_entropy(entropy, prefix, identifier, grind_limit))
 {
 }
 
 // protected
-electrum::electrum(const data_chunk& entropy, const string_list& words,
-    language identifier, seed_prefix prefix) noexcept
-  : electrum_v1(entropy, words, identifier), prefix_(prefix)
+electrum::electrum(
+    const data_chunk& entropy, const string_list& words, language identifier,
+    seed_prefix prefix) noexcept
+    : electrum_v1(entropy, words, identifier), prefix_(prefix)
 {
 }
 
@@ -520,8 +518,9 @@ electrum::electrum(const data_chunk& entropy, const string_list& words,
 // ----------------------------------------------------------------------------
 
 // To test existing entropy a caller should set grind_limit to zero (default).
-electrum electrum::from_entropy(const data_chunk& entropy, seed_prefix prefix,
-    language identifier, size_t grind_limit) noexcept
+electrum electrum::from_entropy(
+    const data_chunk& entropy, seed_prefix prefix, language identifier,
+    size_t grind_limit) noexcept
 {
     // If allowed this would fail after grinding to limit.
     if (prefix == seed_prefix::none)
@@ -533,7 +532,7 @@ electrum electrum::from_entropy(const data_chunk& entropy, seed_prefix prefix,
 
     // Generates entropy from electrum_v1 entropy sizes.
     if (prefix == seed_prefix::old)
-        return { entropy };
+        return {entropy};
 
     if (!is_valid_entropy_size(entropy.size()))
         return {};
@@ -553,17 +552,17 @@ electrum electrum::from_entropy(const data_chunk& entropy, seed_prefix prefix,
         return {};
 
     // Save derived words and ground entropy, original is discarded.
-    return { grinding.entropy, grinding.words, identifier, prefix };
+    return {grinding.entropy, grinding.words, identifier, prefix};
 }
 
-electrum electrum::from_words(const string_list& words,
-    language identifier) noexcept
+electrum electrum::from_words(
+    const string_list& words, language identifier) noexcept
 {
     if (!is_valid_word_count(words.size()))
         return {};
 
     // Prioritizes electrum_v1 (en) as electrum cannot generate the conflict.
-    electrum_v1 old{ words, identifier };
+    electrum_v1 old{words, identifier};
     if (old)
         return old;
 
@@ -587,7 +586,7 @@ electrum electrum::from_words(const string_list& words,
     const auto prefix = normalized_to_prefix(tokens);
 
     // Save derived entropy and dictionary words, originals are discarded.
-    return { decoder(tokens, lexicon), tokens, lexicon, prefix };
+    return {decoder(tokens, lexicon), tokens, lexicon, prefix};
 }
 
 // public
@@ -609,8 +608,8 @@ long_hash electrum::to_seed(const std::string& passphrase) const noexcept
     return seeder(words(), passphrase);
 }
 
-hd_private electrum::to_key(const std::string& passphrase,
-    const context& context) const noexcept
+hd_private electrum::to_key(
+    const std::string& passphrase, const context& context) const noexcept
 {
     if (!(*this))
         return {};
@@ -622,17 +621,17 @@ hd_private electrum::to_key(const std::string& passphrase,
     const auto halves = system::split(to_seed(passphrase));
 
     // The key will be invalid if the secret (part.first) does not ec verify.
-    return { halves.first, halves.second, context.hd_prefixes() };
+    return {halves.first, halves.second, context.hd_prefixes()};
 }
 
 // static public (conversions)
 // ----------------------------------------------------------------------------
 
-hd_private electrum::to_key(const long_hash& seed,
-    const context& context) noexcept
+hd_private electrum::to_key(
+    const long_hash& seed, const context& context) noexcept
 {
     const auto halves = system::split(seed);
-    return { halves.first, halves.second, context.hd_prefixes() };
+    return {halves.first, halves.second, context.hd_prefixes()};
 }
 
 long_hash electrum::to_seed(const hd_private& key) noexcept

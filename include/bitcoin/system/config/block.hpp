@@ -24,9 +24,12 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper to convert between serialized and deserialized block.
 class BC_API block
@@ -46,8 +49,8 @@ public:
     std::string to_string() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, block& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const block& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const block& argument) noexcept;
 
 private:
     chain::block value_;

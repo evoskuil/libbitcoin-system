@@ -31,16 +31,18 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // constructors
 // ----------------------------------------------------------------------------
 
 template <typename IStream>
 bit_reader<IStream>::bit_reader(IStream& source) noexcept
-  : byte_reader<IStream>(source), byte_(byte_reader<IStream>::pad()),
-    offset_(byte_bits)
+    : byte_reader<IStream>(source), byte_(byte_reader<IStream>::pad()),
+      offset_(byte_bits)
 {
 }
 
@@ -147,7 +149,7 @@ void bit_reader<IStream>::do_rewind_bytes(size_t size) noexcept
         rewind_bits(byte_bits);
 }
 
- // This is the only use of the offset apart from peek and read.
+// This is the only use of the offset apart from peek and read.
 template <typename IStream>
 bool bit_reader<IStream>::get_exhausted() const noexcept
 {

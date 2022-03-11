@@ -22,10 +22,14 @@
 #include <bitcoin/system/words/dictionary.hpp>
 #include <bitcoin/system/words/dictionaries.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
-namespace electrum_v1 {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
+namespace electrum_v1
+{
 
 typedef words::dictionary<1626> catalog;
 

@@ -166,13 +166,15 @@ BOOST_AUTO_TEST_CASE(output__to_data__writer__expected)
 
 // committed_hash
 
-BOOST_AUTO_TEST_CASE(output__signature_operations__bip141_inactive__script_sigops)
+BOOST_AUTO_TEST_CASE(
+    output__signature_operations__bip141_inactive__script_sigops)
 {
     const script script(base16_chunk("02acad"), true);
     BOOST_REQUIRE(script.is_valid());
 
-    const output instance{ 42, script };
-    BOOST_REQUIRE_EQUAL(instance.script().sigops(false), instance.signature_operations(false));
+    const output instance{42, script};
+    BOOST_REQUIRE_EQUAL(
+        instance.script().sigops(false), instance.signature_operations(false));
 }
 
 // is_dust
@@ -182,27 +184,16 @@ BOOST_AUTO_TEST_CASE(output__signature_operations__bip141_inactive__script_sigop
 
 BOOST_AUTO_TEST_CASE(output__json__conversions__expected)
 {
-    const std::string text
-    {
-        "{"
-            "\"value\":24,"
-            "\"script\":\"pick roll return\""
-        "}"
-    };
+    const std::string text{"{"
+                           "\"value\":24,"
+                           "\"script\":\"pick roll return\""
+                           "}"};
 
-    const chain::output instance
-    {
-        24,
-        chain::script
-        {
-            chain::operations
-            {
-                { opcode::pick },
-                { opcode::roll },
-                { opcode::op_return }
-            }
-        }
-    };
+    const chain::output instance{
+        24, chain::script{chain::operations{
+                {opcode::pick},
+                {opcode::roll},
+                {opcode::op_return}}}};
 
     const auto value = json::value_from(instance);
 

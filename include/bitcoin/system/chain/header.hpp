@@ -32,12 +32,15 @@
 #include <bitcoin/system/error/error.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 class settings;
 
-namespace chain {
+namespace chain
+{
 
 class BC_API header
 {
@@ -53,10 +56,12 @@ public:
     header(header&& other) noexcept;
     header(const header& other) noexcept;
 
-    header(uint32_t version, hash_digest&& previous_block_hash,
+    header(
+        uint32_t version, hash_digest&& previous_block_hash,
         hash_digest&& merkle_root, uint32_t timestamp, uint32_t bits,
         uint32_t nonce) noexcept;
-    header(uint32_t version, const hash_digest& previous_block_hash,
+    header(
+        uint32_t version, const hash_digest& previous_block_hash,
         const hash_digest& merkle_root, uint32_t timestamp, uint32_t bits,
         uint32_t nonce) noexcept;
 
@@ -82,7 +87,6 @@ public:
     void to_data(std::ostream& stream) const noexcept;
     void to_data(writer& sink) const noexcept;
 
-
     // Properties.
     // ------------------------------------------------------------------------
     /// Native properties.
@@ -102,24 +106,27 @@ public:
     // Validation.
     // ------------------------------------------------------------------------
 
-    code check(uint32_t timestamp_limit_seconds, uint32_t proof_of_work_limit,
-        bool scrypt=false) const noexcept;
+    code check(
+        uint32_t timestamp_limit_seconds, uint32_t proof_of_work_limit,
+        bool scrypt = false) const noexcept;
 
     code accept(const chain_state& state) const noexcept;
 
 protected:
-    header(uint32_t version, hash_digest&& previous_block_hash,
+    header(
+        uint32_t version, hash_digest&& previous_block_hash,
         hash_digest&& merkle_root, uint32_t timestamp, uint32_t bits,
         uint32_t nonce, bool valid) noexcept;
-    header(uint32_t version, const hash_digest& previous_block_hash,
+    header(
+        uint32_t version, const hash_digest& previous_block_hash,
         const hash_digest& merkle_root, uint32_t timestamp, uint32_t bits,
         uint32_t nonce, bool valid) noexcept;
 
     // Check (context free).
     // ------------------------------------------------------------------------
 
-    bool is_invalid_proof_of_work(uint32_t proof_of_work_limit,
-        bool scrypt=false) const noexcept;
+    bool is_invalid_proof_of_work(
+        uint32_t proof_of_work_limit, bool scrypt = false) const noexcept;
     bool is_invalid_timestamp(uint32_t timestamp_limit_seconds) const noexcept;
 
     // Accept (relative to chain_state).
@@ -158,7 +165,7 @@ DECLARE_JSON_VALUE_CONVERTORS(header::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::header>
 {
     size_t operator()(const bc::system::chain::header& value) const noexcept

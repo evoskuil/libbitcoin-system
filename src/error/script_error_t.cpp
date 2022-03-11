@@ -21,27 +21,28 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/error/macros.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace error {
-
-DEFINE_ERROR_T_MESSAGE_MAP(script_error)
+namespace libbitcoin
 {
-    { script_success, "script success" },
-    { inputs_overflow, "index exceeds inputs" },
-    { invalid_script, "invalid script" },
-    { invalid_script_size, "invalid script size" },
-    { invalid_push_data_size, "invalid push data size" },
-    { invalid_operation_count, "invalid operation count" },
-    { invalid_stack_size, "invalid stack size" },
-    { invalid_stack_scope, "invalid stack scope" },
-    { invalid_script_embed, "invalid script embed" },
-    { unversioned_script, "unversioned script" },
-    { unexpected_witness, "unexpected witness" },
-    { invalid_witness, "invalid witness" },
-    { dirty_witness, "dirty witness" },
-    { stack_false, "stack false" }
-};
+namespace system
+{
+namespace error
+{
+
+DEFINE_ERROR_T_MESSAGE_MAP(script_error){
+    {script_success, "script success"},
+    {inputs_overflow, "index exceeds inputs"},
+    {invalid_script, "invalid script"},
+    {invalid_script_size, "invalid script size"},
+    {invalid_push_data_size, "invalid push data size"},
+    {invalid_operation_count, "invalid operation count"},
+    {invalid_stack_size, "invalid stack size"},
+    {invalid_stack_scope, "invalid stack scope"},
+    {invalid_script_embed, "invalid script embed"},
+    {unversioned_script, "unversioned script"},
+    {unexpected_witness, "unexpected witness"},
+    {invalid_witness, "invalid witness"},
+    {dirty_witness, "dirty witness"},
+    {stack_false, "stack false"}};
 
 DEFINE_ERROR_T_CATEGORY(script_error, "script", "script code")
 

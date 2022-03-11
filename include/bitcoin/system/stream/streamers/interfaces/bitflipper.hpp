@@ -23,14 +23,15 @@
 #include <bitcoin/system/stream/streamers/interfaces/bitwriter.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/byteflipper.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// A bit reader/writer interface.
-class bitflipper
-  : public virtual bitreader,
-    public virtual bitwriter,
-    public virtual byteflipper
+class bitflipper : public virtual bitreader,
+                   public virtual bitwriter,
+                   public virtual byteflipper
 {
 };
 

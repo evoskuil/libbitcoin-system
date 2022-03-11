@@ -21,9 +21,12 @@
 
 #include <cstdint>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 enum numbers : uint8_t
 {

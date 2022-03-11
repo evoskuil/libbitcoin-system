@@ -23,33 +23,25 @@ BOOST_AUTO_TEST_SUITE(block_tests)
 namespace json = boost::json;
 using namespace system::chain;
 
-static const auto hash1 = base16_hash("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-static const auto hash2 = base16_hash("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
-static const auto hash3 = base16_hash("bf7c3f5a69a78edd81f3eff7e93a37fb2d7da394d48db4d85e7e5353b9b8e270");
+static const auto hash1 = base16_hash(
+    "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+static const auto hash2 = base16_hash(
+    "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
+static const auto hash3 = base16_hash(
+    "bf7c3f5a69a78edd81f3eff7e93a37fb2d7da394d48db4d85e7e5353b9b8e270");
 
-static const header expected_header
-{
-    10,
-    hash1,
-    hash2,
-    531234,
-    6523454,
-    68644
-};
+static const header expected_header{10, hash1, hash2, 531234, 6523454, 68644};
 
-static const transactions expected_transactions
-{
-    { 1, inputs{ {} }, { {} }, 48 },
-    { 2, inputs{ {} }, { {} }, 32 },
-    { 4, inputs{ {} }, { {} }, 16 }
-};
+static const transactions expected_transactions{
+    {1, inputs{{}}, {{}}, 48},
+    {2, inputs{{}}, {{}}, 32},
+    {4, inputs{{}}, {{}}, 16}};
 
-static const block expected_block{ expected_header, expected_transactions };
+static const block expected_block{expected_header, expected_transactions};
 static const auto block_data = expected_block.to_data(true);
 
 // Access protected validation methods.
-class accessor
-  : public block
+class accessor : public block
 {
 public:
     // Use base class constructors.
@@ -110,11 +102,12 @@ public:
         return block::is_invalid_witness_commitment();
     }
 
-    bool is_overspent(size_t height, uint64_t subsidy_interval,
+    bool is_overspent(
+        size_t height, uint64_t subsidy_interval,
         uint64_t initial_block_subsidy_satoshi, bool bip42) const
     {
-        return block::is_overspent(height, subsidy_interval,
-            initial_block_subsidy_satoshi, bip42);
+        return block::is_overspent(
+            height, subsidy_interval, initial_block_subsidy_satoshi, bip42);
     }
 
     size_t is_signature_operations_limited(bool bip16, bool bip141) const
@@ -164,7 +157,6 @@ BOOST_AUTO_TEST_CASE(block__constructor__move_parameters__expected)
     const block instance(std::move(header), std::move(transactions));
     BOOST_REQUIRE(instance.is_valid());
     BOOST_REQUIRE(instance == expected_block);
-
 }
 
 BOOST_AUTO_TEST_CASE(block__constructor__copy_parameters__expected)
@@ -323,11 +315,7 @@ BOOST_AUTO_TEST_CASE(block__is_empty__default__true)
 
 BOOST_AUTO_TEST_CASE(block__is_empty__single_transaction__false)
 {
-    const accessor instance
-    {
-        header{},
-        { {} }
-    };
+    const accessor instance{header{}, {{}}};
 
     BOOST_REQUIRE(!instance.is_empty());
 }
@@ -342,62 +330,35 @@ BOOST_AUTO_TEST_CASE(block__is_forward_reference__empty__false)
     BOOST_REQUIRE(!instance.is_forward_reference());
 }
 
-BOOST_AUTO_TEST_CASE(block__is_forward_reference__multiple_empty_transactions__false)
+BOOST_AUTO_TEST_CASE(
+    block__is_forward_reference__multiple_empty_transactions__false)
 {
-    const accessor instance
-    {
-        {},
-        {
-            { 0, inputs{}, {}, 0 },
-            { 0, inputs{}, {}, 0 }
-        }
-    };
+    const accessor instance{{}, {{0, inputs{}, {}, 0}, {0, inputs{}, {}, 0}}};
 
     BOOST_REQUIRE(!instance.is_forward_reference());
 }
 
 BOOST_AUTO_TEST_CASE(block__is_forward_reference__duplicate_transactions__false)
 {
-    const accessor instance
-    {
-        {},
-        {
-            { 0, inputs{}, {}, 0 },
-            { 0, inputs{}, {}, 0 }
-        }
-    };
+    const accessor instance{{}, {{0, inputs{}, {}, 0}, {0, inputs{}, {}, 0}}};
 
     BOOST_REQUIRE(!instance.is_forward_reference());
 }
 
 BOOST_AUTO_TEST_CASE(block__is_forward_reference__backward_reference__false)
 {
-    const transaction to{ 0, inputs{}, {}, 0 };
-    const transaction from{ 0, { { { to.hash(false), 0 }, {}, 0 } }, {}, 0 };
-    const accessor instance
-    {
-        {},
-        {
-            to,
-            from
-        }
-    };
+    const transaction to{0, inputs{}, {}, 0};
+    const transaction from{0, {{{to.hash(false), 0}, {}, 0}}, {}, 0};
+    const accessor instance{{}, {to, from}};
 
     BOOST_REQUIRE(!instance.is_forward_reference());
 }
 
 BOOST_AUTO_TEST_CASE(block__is_forward_reference__forward_reference__true)
 {
-    const transaction to{ 0, inputs{}, {}, 0 };
-    const transaction from{ 0, { { { to.hash(false), 0 }, {}, 0 } }, {}, 0 };
-    const accessor instance
-    {
-        {},
-        {
-            from,
-            to
-        }
-    };
+    const transaction to{0, inputs{}, {}, 0};
+    const transaction from{0, {{{to.hash(false), 0}, {}, 0}}, {}, 0};
+    const accessor instance{{}, {from, to}};
 
     BOOST_REQUIRE(instance.is_forward_reference());
 }
@@ -410,35 +371,27 @@ BOOST_AUTO_TEST_CASE(block__is_internal_double_spend__empty__false)
 
 BOOST_AUTO_TEST_CASE(block__is_internal_double_spend__distinct_points__false)
 {
-    const accessor instance
-    {
+    const accessor instance{
         {},
-        {
-            {},
-            { 0, { { { hash1, 42 }, {}, 0 } }, {}, 0 },
-            { 0, { { { hash1, 27 }, {}, 0 } }, {}, 0 },
-            { 0, { { { hash2, 42 }, {}, 0 } }, {}, 0 }
-        }
-    };
+        {{},
+         {0, {{{hash1, 42}, {}, 0}}, {}, 0},
+         {0, {{{hash1, 27}, {}, 0}}, {}, 0},
+         {0, {{{hash2, 42}, {}, 0}}, {}, 0}}};
 
     BOOST_REQUIRE(!instance.is_internal_double_spend());
 }
 
 BOOST_AUTO_TEST_CASE(block__is_internal_double_spend__nondistinct_points__true)
 {
-    const accessor instance
-    {
+    const accessor instance{
         {},
-        {
-            {},
-            { 0, { { { hash1, 42 }, {}, 0 } }, {}, 0 },
-            { 0, { { { hash2, 27 }, {}, 0 } }, {}, 0 },
-            { 0, { { { hash3, 36 }, {}, 0 } }, {}, 0 },
-            { 0, { { { hash1, 42 }, {}, 0 } }, {}, 0 },
-            { 0, { { { hash2, 27 }, {}, 0 } }, {}, 0 },
-            { 0, { { { hash3, 36 }, {}, 0 } }, {}, 0 }
-        }
-    };
+        {{},
+         {0, {{{hash1, 42}, {}, 0}}, {}, 0},
+         {0, {{{hash2, 27}, {}, 0}}, {}, 0},
+         {0, {{{hash3, 36}, {}, 0}}, {}, 0},
+         {0, {{{hash1, 42}, {}, 0}}, {}, 0},
+         {0, {{{hash2, 27}, {}, 0}}, {}, 0},
+         {0, {{{hash3, 36}, {}, 0}}, {}, 0}}};
 
     BOOST_REQUIRE(instance.is_internal_double_spend());
 }
@@ -449,13 +402,10 @@ BOOST_AUTO_TEST_CASE(block__is_invalid_merkle_root__default__false)
     BOOST_REQUIRE(!instance.is_invalid_merkle_root());
 }
 
-BOOST_AUTO_TEST_CASE(block__is_invalid_merkle_root__default_header_non_empty__true)
+BOOST_AUTO_TEST_CASE(
+    block__is_invalid_merkle_root__default_header_non_empty__true)
 {
-    const accessor instance
-    {
-        header{},
-        { {} }
-    };
+    const accessor instance{header{}, {{}}};
 
     BOOST_REQUIRE(instance.is_invalid_merkle_root());
 }
@@ -560,107 +510,81 @@ BOOST_AUTO_TEST_CASE(block__is_invalid_merkle_root__block100k__false)
 
 BOOST_AUTO_TEST_CASE(block__json__conversions__expected)
 {
-    const std::string text
-    {
+    const std::string text{
         "{"
-            "\"header\":"
-            "{"
-                "\"version\":42,"
-                "\"previous\":\"0000000000000000000000000000000000000000000000000000000000000000\","
-                "\"merkle_root\":\"0000000000000000000000000000000000000000000000000000000000000001\","
-                "\"timestamp\":43,"
-                "\"bits\":44,"
-                "\"nonce\":45"
-            "},"
-            "\"transactions\":"
-            "["
-                "{"
-                    "\"version\":42,"
-                    "\"inputs\":"
-                    "["
-                        "{"
-                            "\"point\":"
-                            "{"
-                                "\"hash\":\"0000000000000000000000000000000000000000000000000000000000000000\","
-                                "\"index\":24"
-                            "},"
-                            "\"script\":\"return pick\","
-                            "\"witness\":\"[242424]\","
-                            "\"sequence\":42"
-                        "},"
-                        "{"
-                            "\"point\":"
-                            "{"
-                                "\"hash\":\"0000000000000000000000000000000000000000000000000000000000000001\","
-                                "\"index\":42"
-                            "},"
-                            "\"script\":\"return roll\","
-                            "\"witness\":\"[424242]\","
-                            "\"sequence\":24"
-                        "}"
-                    "],"
-                    "\"outputs\":"
-                    "["
-                        "{"
-                            "\"value\":24,"
-                            "\"script\":\"pick\""
-                        "},"
-                        "{"
-                            "\"value\":42,"
-                            "\"script\":\"roll\""
-                        "}"
-                    "],"
-                    "\"locktime\":24"
-                "}"
-            "]"
+        "\"header\":"
+        "{"
+        "\"version\":42,"
+        "\"previous\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000000\","
+        "\"merkle_root\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000001\","
+        "\"timestamp\":43,"
+        "\"bits\":44,"
+        "\"nonce\":45"
+        "},"
+        "\"transactions\":"
+        "["
+        "{"
+        "\"version\":42,"
+        "\"inputs\":"
+        "["
+        "{"
+        "\"point\":"
+        "{"
+        "\"hash\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000000\","
+        "\"index\":24"
+        "},"
+        "\"script\":\"return pick\","
+        "\"witness\":\"[242424]\","
+        "\"sequence\":42"
+        "},"
+        "{"
+        "\"point\":"
+        "{"
+        "\"hash\":"
+        "\"0000000000000000000000000000000000000000000000000000000000000001\","
+        "\"index\":42"
+        "},"
+        "\"script\":\"return roll\","
+        "\"witness\":\"[424242]\","
+        "\"sequence\":24"
         "}"
-    };
+        "],"
+        "\"outputs\":"
+        "["
+        "{"
+        "\"value\":24,"
+        "\"script\":\"pick\""
+        "},"
+        "{"
+        "\"value\":42,"
+        "\"script\":\"roll\""
+        "}"
+        "],"
+        "\"locktime\":24"
+        "}"
+        "]"
+        "}"};
 
-    const chain::block instance
-    {
-        chain::header
-        {
-            42, null_hash, one_hash, 43, 44, 45
-        },
-        chain::transactions
-        {
-            chain::transaction
-            {
-                42,
-                chain::inputs
-                {
-                    chain::input
-                    {
-                        chain::point{ null_hash, 24 },
-                        chain::script{ { { opcode::op_return }, { opcode::pick } } },
-                        chain::witness{ "[242424]" },
-                        42
-                    },
-                    chain::input
-                    {
-                        chain::point{ one_hash, 42 },
-                        chain::script{ { { opcode::op_return }, { opcode::roll } } },
-                        chain::witness{ "[424242]" },
-                        24
-                    }
-                },
-                chain::outputs
-                {
-                    chain::output
-                    {
-                        24,
-                        chain::script{ { { opcode::pick } } }
-                    },
-                    chain::output
-                    {
-                        42,
-                        chain::script{ { { opcode::roll } } }
-                    }
-                },
-                24
-            }
-        }
-    };
+    const chain::block instance{
+        chain::header{42, null_hash, one_hash, 43, 44, 45},
+        chain::transactions{chain::transaction{
+            42,
+            chain::inputs{
+                chain::input{
+                    chain::point{null_hash, 24},
+                    chain::script{{{opcode::op_return}, {opcode::pick}}},
+                    chain::witness{"[242424]"}, 42},
+                chain::input{
+                    chain::point{one_hash, 42},
+                    chain::script{{{opcode::op_return}, {opcode::roll}}},
+                    chain::witness{"[424242]"}, 24}},
+            chain::outputs{
+                chain::output{24, chain::script{{{opcode::pick}}}},
+                chain::output{42, chain::script{{{opcode::roll}}}}},
+            24}}};
 
     const auto value = json::value_from(instance);
 

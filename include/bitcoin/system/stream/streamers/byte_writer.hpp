@@ -30,13 +30,14 @@
 #include <bitcoin/system/error/error.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/bytewriter.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 /// A byte writer that accepts an ostream.
 template <typename OStream = std::ostream>
-class byte_writer
-  : public virtual bytewriter
+class byte_writer : public virtual bytewriter
 {
 public:
     /// Constructors.
@@ -82,8 +83,8 @@ public:
 
     /// This is only used for writing Bitcoin command command text.
     /// Write string to specified length, padded with nulls as required.
-    void write_string_buffer(const std::string& value, size_t size) noexcept
-        override;
+    void write_string_buffer(
+        const std::string& value, size_t size) noexcept override;
 
     /// Flush the buffer.
     void flush() noexcept override;
@@ -98,7 +99,10 @@ public:
     bool operator!() const noexcept override;
 
 protected:
-    static constexpr uint8_t pad() { return 0x00; };
+    static constexpr uint8_t pad()
+    {
+        return 0x00;
+    };
 
     // The maximum addressable stream position.
     // Should be defined on OStream::pos_type, however that is implementation

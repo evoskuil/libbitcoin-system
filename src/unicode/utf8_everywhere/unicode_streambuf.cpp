@@ -27,16 +27,18 @@
 #include <bitcoin/system/unicode/conversion.hpp>
 #include <bitcoin/system/unicode/utf8_everywhere/environment.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 unicode_streambuf::unicode_streambuf(std::wstreambuf* wide_buffer, size_t size)
-  : wide_size_(size), narrow_size_(wide_size_ * utf8_max_character_size),
-    narrow_(new char[narrow_size_]), wide_(new wchar_t[narrow_size_]),
-    wide_buffer_(wide_buffer)
+    : wide_size_(size), narrow_size_(wide_size_ * utf8_max_character_size),
+      narrow_(new char[narrow_size_]), wide_(new wchar_t[narrow_size_]),
+      wide_buffer_(wide_buffer)
 {
-    if (is_zero(wide_size_) || wide_buffer == nullptr ||
-        wide_size_ > (bc::max_size_t / utf8_max_character_size))
+    if (is_zero(wide_size_) || wide_buffer == nullptr
+        || wide_size_ > (bc::max_size_t / utf8_max_character_size))
         throw runtime_exception("unicode_streambuf parameters");
 
     // Input buffer is not yet populated, reflect zero length buffer here.
@@ -70,8 +72,8 @@ std::streambuf::int_type unicode_streambuf::underflow()
         return traits_type::eof();
 
     // Convert utf16 to utf8, returning bytes written.
-    const auto bytes = to_utf8(narrow_, narrow_size_, wide_,
-        static_cast<size_t>(read));
+    const auto bytes =
+        to_utf8(narrow_, narrow_size_, wide_, static_cast<size_t>(read));
 
     // Handle conversion failure.
     if (is_zero(bytes))
@@ -118,8 +120,8 @@ std::streambuf::int_type unicode_streambuf::overflow(
     if (!is_zero(write))
     {
         // Convert utf8 to utf16, returning chars written and bytes unread.
-        const auto chars = to_utf16(unwritten, wide_, narrow_size_, narrow_,
-            write);
+        const auto chars =
+            to_utf16(unwritten, wide_, narrow_size_, narrow_, write);
 
         // Write to the wide output buffer.
         const auto written = wide_buffer_->sputn(wide_, chars);

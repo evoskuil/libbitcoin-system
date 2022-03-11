@@ -29,9 +29,12 @@
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 #include <bitcoin/system/wallet/keys/ec_scalar.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 class payment_address;
 
@@ -43,8 +46,7 @@ static constexpr size_t wif_compressed_size = wif_uncompressed_size + 1u;
 typedef data_array<wif_compressed_size> wif_compressed;
 
 /// Use to pass an ec secret with compression and version information.
-class BC_API ec_private
-  : public ec_scalar
+class BC_API ec_private : public ec_scalar
 {
 public:
     static const uint8_t compressed_sentinel;
@@ -80,21 +82,21 @@ public:
     /// Constructors.
     ec_private() noexcept;
     ec_private(const ec_private& other) noexcept;
-    ec_private(const ec_scalar& scalar,
-        uint8_t address = mainnet_p2kh) noexcept;
-    ec_private(const data_chunk& entropy,
-        uint8_t address=mainnet_p2kh) noexcept;
-    ec_private(const std::string& wif,
-        uint8_t address=mainnet_p2kh) noexcept;
-    ec_private(const wif_compressed& wif,
-        uint8_t address=mainnet_p2kh) noexcept;
-    ec_private(const wif_uncompressed& wif,
-        uint8_t address=mainnet_p2kh) noexcept;
+    ec_private(
+        const ec_scalar& scalar, uint8_t address = mainnet_p2kh) noexcept;
+    ec_private(
+        const data_chunk& entropy, uint8_t address = mainnet_p2kh) noexcept;
+    ec_private(const std::string& wif, uint8_t address = mainnet_p2kh) noexcept;
+    ec_private(
+        const wif_compressed& wif, uint8_t address = mainnet_p2kh) noexcept;
+    ec_private(
+        const wif_uncompressed& wif, uint8_t address = mainnet_p2kh) noexcept;
 
     /// The version is 16 bits. The most significant byte is the WIF prefix and
     /// the least significant byte is the address perfix. 0x8000 by default.
-    ec_private(const ec_secret& secret, uint16_t versions=mainnet,
-        bool compress=true) noexcept;
+    ec_private(
+        const ec_secret& secret, uint16_t versions = mainnet,
+        bool compress = true) noexcept;
 
     /// Operators.
     ec_private& operator=(ec_private other) noexcept;
@@ -102,8 +104,8 @@ public:
     bool operator==(const ec_private& other) const noexcept;
     bool operator!=(const ec_private& other) const noexcept;
     friend std::istream& operator>>(std::istream& in, ec_private& to);
-    friend std::ostream& operator<<(std::ostream& out,
-        const ec_private& of) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& out, const ec_private& of) noexcept;
 
     // Swap implementation required to properly handle base class.
     friend void swap(ec_private& left, ec_private& right) noexcept;
@@ -126,14 +128,14 @@ private:
     static bool is_wif(const data_slice& decoded) noexcept;
 
     /// Factories.
-    static ec_private from_string(const std::string& wif,
-        uint8_t address) noexcept;
-    static ec_private from_entropy(const data_chunk& entropy,
-        uint8_t address) noexcept;
-    static ec_private from_compressed(const wif_compressed& wif,
-        uint8_t address) noexcept;
-    static ec_private from_uncompressed(const wif_uncompressed& wif,
-        uint8_t address) noexcept;
+    static ec_private from_string(
+        const std::string& wif, uint8_t address) noexcept;
+    static ec_private from_entropy(
+        const data_chunk& entropy, uint8_t address) noexcept;
+    static ec_private from_compressed(
+        const wif_compressed& wif, uint8_t address) noexcept;
+    static ec_private from_uncompressed(
+        const wif_uncompressed& wif, uint8_t address) noexcept;
 
     /// Members.
     /// These should be const, apart from the need to implement assignment.

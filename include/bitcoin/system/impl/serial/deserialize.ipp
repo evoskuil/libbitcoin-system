@@ -32,10 +32,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
- // Cannot use a data_slice override as it is not deserializable.
+// Cannot use a data_slice override as it is not deserializable.
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 template <typename Value>
 bool deserialize(Value& out, std::istream& input) noexcept

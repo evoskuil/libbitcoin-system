@@ -30,16 +30,18 @@
 #include <bitcoin/system/wallet/keys/hd_private.hpp>
 #include <bitcoin/system/words/words.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// A wallet mnemonic, as defined by BIP39.
 /// Generates menemonic from entropy.
 /// Converts valid menemonic to entropy.
 /// Derives master keys from menemonic or entropy, and optional passphrase.
-class BC_API mnemonic
-  : public words::languages
+class BC_API mnemonic : public words::languages
 {
 public:
     typedef words::mnemonic::catalog dictionary;
@@ -58,8 +60,9 @@ public:
     /// The dictionary, limited by identifier, that contains all words.
     /// If 'none' is specified all dictionaries are searched.
     /// If 'none' is specified and contained by both en and fr, returns en.
-    static language contained_by(const string_list& words,
-        language identifier=language::none) noexcept;
+    static language contained_by(
+        const string_list& words,
+        language identifier = language::none) noexcept;
 
     /// Valid dictionaries (en, es, it, fr, cs, pt, ja, ko, zh_Hans, zh_Hant).
     static bool is_valid_dictionary(language identifier) noexcept;
@@ -76,17 +79,19 @@ public:
     /// wiki.trezor.io/recovery_seed
     /// Construct from the "recovery seed" (mnemonic phrase or entropy).
     /// Validity and should be checked after construction.
-    mnemonic(const std::string& sentence,
-        language identifier=language::none) noexcept;
-    mnemonic(const string_list& words,
-        language identifier=language::none) noexcept;
-    mnemonic(const data_chunk& entropy,
-        language identifier=language::en) noexcept;
+    mnemonic(
+        const std::string& sentence,
+        language identifier = language::none) noexcept;
+    mnemonic(
+        const string_list& words,
+        language identifier = language::none) noexcept;
+    mnemonic(
+        const data_chunk& entropy, language identifier = language::en) noexcept;
 
     /// wiki.trezor.io/recovery_seed
     /// Derive the "master binary seed" from the "recovery seed" and passphrase.
     /// Returns null result with non-ascii passphrase and WITH_ICU undefind.
-    long_hash to_seed(const std::string& passphrase="") const noexcept;
+    long_hash to_seed(const std::string& passphrase = "") const noexcept;
 
     /// wiki.trezor.io/account_private_key
     /// Derive the "account private key" from the "master binary seed".
@@ -94,12 +99,14 @@ public:
     /// hd_private.to_public() is the "master public key".
     /// The "master binary seed" cannot be obtained from the key.
     /// Returns invalid result with non-ascii passphrase and WITH_ICU undefind.
-    hd_private to_key(const std::string& passphrase="",
-        const context& context=btc_mainnet_p2kh) const noexcept;
+    hd_private to_key(
+        const std::string& passphrase = "",
+        const context& context = btc_mainnet_p2kh) const noexcept;
 
 protected:
     // Constructors.
-    mnemonic(const data_chunk& entropy, const string_list& words,
+    mnemonic(
+        const data_chunk& entropy, const string_list& words,
         language identifier) noexcept;
 
     /// Derive the checksum byte from entropy, stored in high order bits.
@@ -123,20 +130,21 @@ protected:
     /// Map entropy size to word count (12, 15, 18, 21, or 24 words).
     static size_t word_count(const data_slice& entropy) noexcept;
 
-    static bool is_ambiguous(const string_list& words, language requested,
+    static bool is_ambiguous(
+        const string_list& words, language requested,
         language derived) noexcept;
 
-    static string_list encoder(const data_chunk& entropy,
-        language identifier) noexcept;
-    static data_chunk decoder(const string_list& words,
-        language identifier) noexcept;
-    static long_hash seeder(const string_list& words,
-        const std::string& passphrase) noexcept;
+    static string_list encoder(
+        const data_chunk& entropy, language identifier) noexcept;
+    static data_chunk decoder(
+        const string_list& words, language identifier) noexcept;
+    static long_hash seeder(
+        const string_list& words, const std::string& passphrase) noexcept;
 
-    static mnemonic from_words(const string_list& words,
-        language identifier) noexcept;
-    static mnemonic from_entropy(const data_chunk& entropy,
-        language identifier) noexcept;
+    static mnemonic from_words(
+        const string_list& words, language identifier) noexcept;
+    static mnemonic from_entropy(
+        const data_chunk& entropy, language identifier) noexcept;
 
 private:
     // All Electrum v1 dictionaries, from <dictionaries/mnemonic.cpp>.

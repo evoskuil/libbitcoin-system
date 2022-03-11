@@ -28,9 +28,12 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // This is a consensus critical value that must be set on reset.
 const uint64_t output::not_found = sighash_null_value;
@@ -41,64 +44,60 @@ const uint64_t output::not_found = sighash_null_value;
 // Invalid default used in signature hashing (validity ignored).
 // Invalidity is also used to determine that a prevout is not found.
 output::output() noexcept
-  : output(output::not_found, to_shared<chain::script>(), false)
+    : output(output::not_found, to_shared<chain::script>(), false)
 {
 }
 
-output::output(output&& other) noexcept
-  : output(other)
+output::output(output&& other) noexcept : output(other)
 {
 }
 
 output::output(const output& other) noexcept
-  : output(other.value_, other.script_, other.valid_)
+    : output(other.value_, other.script_, other.valid_)
 {
 }
 
 output::output(uint64_t value, chain::script&& script) noexcept
-  : output(value, to_shared(std::move(script)), true)
+    : output(value, to_shared(std::move(script)), true)
 {
 }
 
 output::output(uint64_t value, const chain::script& script) noexcept
-  : output(value, to_shared(script), true)
+    : output(value, to_shared(script), true)
 {
 }
 
 output::output(uint64_t value, const chain::script::ptr& script) noexcept
-  : output(value, script ? script : to_shared<chain::script>(), true)
+    : output(value, script ? script : to_shared<chain::script>(), true)
 {
 }
 
-output::output(const data_slice& data) noexcept
-  : output(stream::in::copy(data))
+output::output(const data_slice& data) noexcept : output(stream::in::copy(data))
 {
 }
 
 output::output(std::istream&& stream) noexcept
-  : output(read::bytes::istream(stream))
+    : output(read::bytes::istream(stream))
 {
 }
 
 output::output(std::istream& stream) noexcept
-  : output(read::bytes::istream(stream))
+    : output(read::bytes::istream(stream))
 {
 }
 
-output::output(reader&& source) noexcept
-  : output(from_data(source))
+output::output(reader&& source) noexcept : output(from_data(source))
 {
 }
 
-output::output(reader& source) noexcept
-  : output(from_data(source))
+output::output(reader& source) noexcept : output(from_data(source))
 {
 }
 
 // protected
-output::output(uint64_t value, const chain::script::ptr& script,
-    bool valid) noexcept
-  : value_(value), script_(script), valid_(valid)
+output::output(
+    uint64_t value, const chain::script::ptr& script, bool valid) noexcept
+    : value_(value), script_(script), valid_(valid)
 {
 }
 
@@ -121,8 +120,7 @@ output& output::operator=(const output& other) noexcept
 
 bool output::operator==(const output& other) const noexcept
 {
-    return (value_ == other.value_)
-        && (*script_ == *other.script_);
+    return (value_ == other.value_) && (*script_ == *other.script_);
 }
 
 bool output::operator!=(const output& other) const noexcept
@@ -136,12 +134,9 @@ bool output::operator!=(const output& other) const noexcept
 // static/private
 output output::from_data(reader& source) noexcept
 {
-    return
-    {
+    return {
         source.read_8_bytes_little_endian(),
-        to_shared(new chain::script{ source, true }),
-        source
-    };
+        to_shared(new chain::script{source, true}), source};
 }
 
 // Serialization.
@@ -212,8 +207,10 @@ bool output::committed_hash(hash_digest& out) const noexcept
 }
 
 // Product overflows guarded by script size limit.
-static_assert(max_script_size < max_size_t / multisig_default_sigops / 
-    heavy_sigops_factor, "output sigop overflow guard");
+static_assert(
+    max_script_size
+        < max_size_t / multisig_default_sigops / heavy_sigops_factor,
+    "output sigop overflow guard");
 
 size_t output::signature_operations(bool bip141) const noexcept
 {
@@ -238,33 +235,30 @@ bool output::is_dust(uint64_t minimum_value) const noexcept
 
 namespace json = boost::json;
 
-output tag_invoke(json::value_to_tag<output>,
-    const json::value& value) noexcept
+output tag_invoke(json::value_to_tag<output>, const json::value& value) noexcept
 {
-    return
-    {
+    return {
         value.at("value").to_number<uint64_t>(),
-        json::value_to<chain::script>(value.at("script"))
-    };
+        json::value_to<chain::script>(value.at("script"))};
 }
 
-void tag_invoke(json::value_from_tag, json::value& value,
-    const output& output) noexcept
+void tag_invoke(
+    json::value_from_tag, json::value& value, const output& output) noexcept
 {
-    value =
-    {
-        { "value", output.value() },
-        { "script", output.script() },
+    value = {
+        {"value", output.value()},
+        {"script", output.script()},
     };
 }
 
-output::ptr tag_invoke(json::value_to_tag<output::ptr>,
-    const json::value& value) noexcept
+output::ptr tag_invoke(
+    json::value_to_tag<output::ptr>, const json::value& value) noexcept
 {
     return to_shared(tag_invoke(json::value_to_tag<output>{}, value));
 }
 
-void tag_invoke(json::value_from_tag tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag tag, json::value& value,
     const output::ptr& output) noexcept
 {
     tag_invoke(tag, value, *output);

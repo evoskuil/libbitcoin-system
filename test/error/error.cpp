@@ -78,7 +78,8 @@ BOOST_AUTO_TEST_CASE(error_t__code__assign__expected)
 {
     auto ec = code(error::not_found);
     BOOST_REQUIRE(ec);
-    ec.assign(static_cast<int>(error::not_found), error::error_category::singleton);
+    ec.assign(
+        static_cast<int>(error::not_found), error::error_category::singleton);
     BOOST_REQUIRE(ec);
     BOOST_REQUIRE_EQUAL(ec.message(), not_found_message);
     BOOST_REQUIRE_EQUAL(ec.value(), static_cast<int>(error::not_found));
@@ -100,21 +101,27 @@ BOOST_AUTO_TEST_CASE(error_t__code__category__expected)
 {
     BOOST_REQUIRE(code().category() == code().category());
     BOOST_REQUIRE(code().category() != code(error::success).category());
-    BOOST_REQUIRE(code(error::success).category() == code(error::success).category());
-    BOOST_REQUIRE(code(error::success).category() == code(error::not_found).category());
+    BOOST_REQUIRE(
+        code(error::success).category() == code(error::success).category());
+    BOOST_REQUIRE(
+        code(error::success).category() == code(error::not_found).category());
 }
 
 BOOST_AUTO_TEST_CASE(error_t__code__category_name__expected)
 {
     BOOST_REQUIRE_EQUAL(code().category().name(), system_category_name);
-    BOOST_REQUIRE_EQUAL(code(error::success).category().name(), bitcoin_category_name);
+    BOOST_REQUIRE_EQUAL(
+        code(error::success).category().name(), bitcoin_category_name);
 }
 
-BOOST_AUTO_TEST_CASE(error_t__code__default_error_condition_category_name__expected)
+BOOST_AUTO_TEST_CASE(
+    error_t__code__default_error_condition_category_name__expected)
 {
     // This varies by platform ("generic" on macOS/clang, "system" elsewhere).
     ////BOOST_REQUIRE_EQUAL(code().default_error_condition().category().name(), system_category_name);
-    BOOST_REQUIRE_EQUAL(code(error::not_found).default_error_condition().category().name(), bitcoin_category_name);
+    BOOST_REQUIRE_EQUAL(
+        code(error::not_found).default_error_condition().category().name(),
+        bitcoin_category_name);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

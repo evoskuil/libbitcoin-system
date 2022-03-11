@@ -26,19 +26,18 @@
 #include "parse_encrypted_key.hpp"
 #include "parse_encrypted_prefix.hpp"
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 const data_array<parse_encrypted_private::magic_size>
-parse_encrypted_private::magic_
-{
-    { 0x01 }
-};
+    parse_encrypted_private::magic_{{0x01}};
 
-data_array<parse_encrypted_private::prefix_size>
-parse_encrypted_private::prefix_factory(uint8_t address,
-    bool multiplied) noexcept
+data_array<parse_encrypted_private::prefix_size> parse_encrypted_private::
+    prefix_factory(uint8_t address, bool multiplied) noexcept
 {
     const auto base = multiplied ? multiplied_context_ : default_context_;
     const auto context = base + address;
@@ -48,12 +47,9 @@ parse_encrypted_private::prefix_factory(uint8_t address,
 parse_encrypted_private::parse_encrypted_private(
     const encrypted_private& key) noexcept
     : parse_encrypted_key<prefix_size>(
-        slice<0, 2>(key),
-        slice<2, 3>(key),
-        slice<3, 7>(key),
+        slice<0, 2>(key), slice<2, 3>(key), slice<3, 7>(key),
         slice<7, 15>(key)),
-    data1_(slice<15, 23>(key)),
-    data2_(slice<23, 39>(key))
+      data1_(slice<15, 23>(key)), data2_(slice<23, 39>(key))
 {
     valid(verify_magic() && verify_checksum(key));
 }

@@ -23,9 +23,12 @@
 #include <bitcoin/system/data/uintx.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // Bitcoin compact for represents a value in base 256 notation as follows:
 // value = (-1^sign) * mantissa * 256^(exponent-3)
@@ -57,10 +60,10 @@ inline uint8_t log_256(uint32_t mantissa) noexcept
 {
     BC_ASSERT_MSG(mantissa <= 0x00ffffff, "mantissa log256 is 4");
 
-    return
-        (mantissa > 0x0000ffff ? 3 :
-        (mantissa > 0x000000ff ? 2 :
-        (mantissa > 0x00000000 ? 1 : 0)));
+    return (
+        mantissa > 0x0000ffff
+            ? 3
+            : (mantissa > 0x000000ff ? 2 : (mantissa > 0x00000000 ? 1 : 0)));
 }
 
 inline bool is_overflow(uint8_t exponent, uint32_t mantissa) noexcept
@@ -101,7 +104,7 @@ compact::compact(uint32_t compact) noexcept
 }
 
 compact::compact(const uint256_t& value) noexcept
-  : big_(value), overflowed_(false)
+    : big_(value), overflowed_(false)
 {
     normal_ = from_big(big_);
 }
@@ -164,9 +167,9 @@ uint32_t compact::from_big(const uint256_t& big) noexcept
     auto exponent = static_cast<uint8_t>(logical_size(big));
 
     // Shift the big number significant digits into the mantissa.
-    const auto mantissa64 = exponent <= 3 ?
-        static_cast<uint64_t>(big) << shift_low(exponent) :
-        static_cast<uint64_t>(big >> shift_high(exponent));
+    const auto mantissa64 =
+        exponent <= 3 ? static_cast<uint64_t>(big) << shift_low(exponent)
+                      : static_cast<uint64_t>(big >> shift_high(exponent));
 
     auto mantissa = static_cast<uint32_t>(mantissa64);
 

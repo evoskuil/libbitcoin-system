@@ -26,26 +26,25 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/serial/deserialize.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 using namespace boost::program_options;
 
 // input is a private encoding in bx.
-static bool decode_input(chain::input& input,
-    const std::string& tuple) noexcept
+static bool decode_input(chain::input& input, const std::string& tuple) noexcept
 {
     const auto tokens = split(tuple, point::delimiter);
     if (tokens.size() != 2)
         return false;
 
-    input = chain::input
-    {
-        point{ tokens[0] + ":" + tokens[1] },
-        input.script(),
-        chain::max_input_sequence
-    };
+    input = chain::input{
+        point{tokens[0] + ":" + tokens[1]}, input.script(),
+        chain::max_input_sequence};
 
     return true;
 }
@@ -54,29 +53,25 @@ static bool decode_input(chain::input& input,
 static std::string encode_input(const chain::input& input) noexcept
 {
     std::stringstream result;
-    result << point(input.point()) << point::delimiter
-        << input.sequence();
+    result << point(input.point()) << point::delimiter << input.sequence();
 
     return result.str();
 }
 
-input::input() noexcept
-  : value_()
+input::input() noexcept : value_()
 {
 }
 
-input::input(const input& other) noexcept
-  : input(other.value_)
+input::input(const input& other) noexcept : input(other.value_)
 {
 }
 
-input::input(const chain::input& value) noexcept
-  : value_(value)
+input::input(const chain::input& value) noexcept : value_(value)
 {
 }
 
 input::input(const chain::point& value) noexcept
-  : value_({value, {}, chain::max_input_sequence})
+    : value_({value, {}, chain::max_input_sequence})
 {
 }
 

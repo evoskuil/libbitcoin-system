@@ -82,11 +82,11 @@ BOOST_AUTO_TEST_CASE(istream__bool__empty__true)
 
 BOOST_AUTO_TEST_CASE(istream__bool__not_empty__true)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     BOOST_REQUIRE(istream);
     BOOST_REQUIRE_EQUAL(istream.rdstate(), 0);
@@ -94,11 +94,11 @@ BOOST_AUTO_TEST_CASE(istream__bool__not_empty__true)
 
 BOOST_AUTO_TEST_CASE(istream__rdstate__non_empty__valid)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     BOOST_REQUIRE(istream);
     BOOST_REQUIRE_EQUAL(istream.rdstate(), 0);
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(istream__rdstate__non_empty__valid)
 
 BOOST_AUTO_TEST_CASE(istream__clear__all_flags_set__cleared)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     isstream.setstate(std::istream::eofbit);
     isstream.setstate(std::istream::failbit);
     isstream.setstate(std::istream::badbit);
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(istream__clear__all_flags_set__cleared)
     isstream.clear();
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     istream.setstate(std::istream::eofbit);
     istream.setstate(std::istream::failbit);
@@ -126,14 +126,14 @@ BOOST_AUTO_TEST_CASE(istream__clear__all_flags_set__cleared)
 
 BOOST_AUTO_TEST_CASE(istream__setstate__failbit__failbit)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     isstream.setstate(std::istringstream::failbit);
     BOOST_REQUIRE(!isstream);
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::eofbit));
     BOOST_REQUIRE(is_set(isstream.rdstate(), std::istringstream::failbit));
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::badbit));
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     istream.setstate(std::istream::failbit);
     BOOST_REQUIRE(!istream);
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(istream__get__failbit_empty__failbit)
 
 BOOST_AUTO_TEST_CASE(istream__get__failbit_non_empty__failbit)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     isstream.setstate(std::istringstream::failbit);
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::eofbit));
     BOOST_REQUIRE(is_set(isstream.rdstate(), std::istringstream::failbit));
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(istream__get__failbit_non_empty__failbit)
     BOOST_REQUIRE(is_set(isstream.rdstate(), std::istringstream::failbit));
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::badbit));
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     istream.setstate(std::istream::failbit);
     BOOST_REQUIRE(!is_set(istream.rdstate(), std::istream::eofbit));
@@ -190,13 +190,13 @@ BOOST_AUTO_TEST_CASE(istream__get__failbit_non_empty__failbit)
 
 BOOST_AUTO_TEST_CASE(istream__get__to_end__expected_valid)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.get(), '*');
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     BOOST_REQUIRE_EQUAL(istream.get(), '*');
     BOOST_REQUIRE(istream);
@@ -234,7 +234,7 @@ BOOST_AUTO_TEST_CASE(istream__get__empty__inconsistent)
 
 BOOST_AUTO_TEST_CASE(istream__get__past_end__eofbit_and_failbit)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     BOOST_REQUIRE_EQUAL(isstream.get(), '*');
     BOOST_REQUIRE_EQUAL(isstream.get(), -1);
     BOOST_REQUIRE(!isstream);
@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE(istream__get__past_end__eofbit_and_failbit)
     BOOST_REQUIRE(is_set(isstream.rdstate(), std::istringstream::failbit));
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::badbit));
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     BOOST_REQUIRE_EQUAL(istream.get(), '*');
     BOOST_REQUIRE_EQUAL(istream.get(), -1);
@@ -303,7 +303,7 @@ BOOST_AUTO_TEST_CASE(istream__peek__failbit__failbit)
 
 BOOST_AUTO_TEST_CASE(istream__peek__past_end__eofbit)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     BOOST_REQUIRE_EQUAL(isstream.get(), '*');
     BOOST_REQUIRE_EQUAL(isstream.peek(), -1);
     BOOST_REQUIRE(isstream);
@@ -311,7 +311,7 @@ BOOST_AUTO_TEST_CASE(istream__peek__past_end__eofbit)
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::failbit));
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::badbit));
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     BOOST_REQUIRE_EQUAL(istream.get(), '*');
     BOOST_REQUIRE_EQUAL(istream.peek(), -1);
@@ -323,7 +323,7 @@ BOOST_AUTO_TEST_CASE(istream__peek__past_end__eofbit)
 
 BOOST_AUTO_TEST_CASE(istream__get__peek__expected)
 {
-    std::istringstream isstream{ "+/-" };
+    std::istringstream isstream{"+/-"};
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.peek(), '+');
     BOOST_REQUIRE(isstream);
@@ -339,7 +339,7 @@ BOOST_AUTO_TEST_CASE(istream__get__peek__expected)
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "+/-" };
+    const std::string source{"+/-"};
     stream::in::copy istream(source);
     BOOST_REQUIRE(istream);
     BOOST_REQUIRE_EQUAL(istream.peek(), '+');
@@ -401,10 +401,10 @@ BOOST_AUTO_TEST_CASE(istream__read__empty_one__inconsistent)
 
 BOOST_AUTO_TEST_CASE(istream__read__to_end__expected_valid)
 {
-    const std::string source{ "+/-" };
+    const std::string source{"+/-"};
 
     std::vector<char> ssink(source.size(), 0x00);
-    std::istringstream isstream{ source };
+    std::istringstream isstream{source};
     BOOST_REQUIRE(isstream);
     isstream.read(ssink.data(), ssink.size());
     BOOST_REQUIRE(isstream);
@@ -422,10 +422,10 @@ BOOST_AUTO_TEST_CASE(istream__read__to_end__expected_valid)
 
 BOOST_AUTO_TEST_CASE(istream__read__past_end__eofbit_failbit)
 {
-    const std::string source{ "+/-" };
+    const std::string source{"+/-"};
 
     std::vector<char> ssink(add1(source.size()), 0x00);
-    std::istringstream isstream{ source };
+    std::istringstream isstream{source};
     BOOST_REQUIRE(isstream);
     isstream.read(ssink.data(), ssink.size());
     BOOST_REQUIRE(!isstream);
@@ -447,11 +447,11 @@ BOOST_AUTO_TEST_CASE(istream__read__past_end__eofbit_failbit)
 
 BOOST_AUTO_TEST_CASE(istream__read__failbit__failbit)
 {
-    const std::string source{ "+/-" };
+    const std::string source{"+/-"};
 
     std::vector<char> ssink(source.size(), 0x00);
     const auto sexpected = ssink;
-    std::istringstream isstream{ source };
+    std::istringstream isstream{source};
     isstream.setstate(std::istringstream::failbit);
     BOOST_REQUIRE(!isstream);
     isstream.read(ssink.data(), ssink.size());
@@ -496,13 +496,13 @@ BOOST_AUTO_TEST_CASE(istream__seekg__empty_zero__inconsistent)
 
 BOOST_AUTO_TEST_CASE(istream__seekg__non_empty_zero__valid)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     BOOST_REQUIRE(isstream);
     isstream.seekg(0, std::istringstream::cur);
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     BOOST_REQUIRE(istream);
     istream.seekg(0, std::istream::cur);
@@ -512,12 +512,12 @@ BOOST_AUTO_TEST_CASE(istream__seekg__non_empty_zero__valid)
 
 BOOST_AUTO_TEST_CASE(istream__seekg__to_end__valid)
 {
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     isstream.seekg(1, std::istringstream::cur);
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
     istream.seekg(1, std::istream::cur);
     BOOST_REQUIRE(istream);
@@ -526,13 +526,13 @@ BOOST_AUTO_TEST_CASE(istream__seekg__to_end__valid)
 
 BOOST_AUTO_TEST_CASE(istream__seekg__get__expected)
 {
-    std::istringstream isstream{ "+/-" };
+    std::istringstream isstream{"+/-"};
     isstream.seekg(2, std::istringstream::cur);
     BOOST_REQUIRE_EQUAL(isstream.get(), '-');
     BOOST_REQUIRE(isstream);
     BOOST_REQUIRE_EQUAL(isstream.rdstate(), 0);
 
-    const std::string source{ "+/-" };
+    const std::string source{"+/-"};
     stream::in::copy istream(source);
     istream.seekg(2, std::istream::cur);
     BOOST_REQUIRE_EQUAL(istream.get(), '-');
@@ -579,7 +579,7 @@ BOOST_AUTO_TEST_CASE(istream__seekg__empty_negative_one__failbit)
 BOOST_AUTO_TEST_CASE(istream__seekg__past_begin__inconsistent)
 {
     // failbit.
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     isstream.seekg(-2, std::istringstream::cur);
     BOOST_REQUIRE(!isstream);
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::eofbit));
@@ -588,10 +588,11 @@ BOOST_AUTO_TEST_CASE(istream__seekg__past_begin__inconsistent)
 
     // std::istream::failure
     // Throws on msvc(prior to 2022).
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
 #if defined(_MSC_VER) && (_MSC_VER < 1931)
-    BOOST_REQUIRE_THROW(istream.seekg(-2, std::istream::cur), std::istream::failure);
+    BOOST_REQUIRE_THROW(
+        istream.seekg(-2, std::istream::cur), std::istream::failure);
     BOOST_REQUIRE(istream);
     BOOST_REQUIRE_EQUAL(istream.rdstate(), 0);
 #else
@@ -603,7 +604,7 @@ BOOST_AUTO_TEST_CASE(istream__seekg__past_begin__inconsistent)
 BOOST_AUTO_TEST_CASE(istream__seekg__past_end__inconsistent)
 {
     // failbit
-    std::istringstream isstream{ "*" };
+    std::istringstream isstream{"*"};
     BOOST_REQUIRE(isstream);
     isstream.seekg(2, std::istringstream::cur);
     BOOST_REQUIRE(!is_set(isstream.rdstate(), std::istringstream::eofbit));
@@ -612,10 +613,11 @@ BOOST_AUTO_TEST_CASE(istream__seekg__past_end__inconsistent)
 
     // std::istream::failure
     // Throws on msvc prior to 2022.
-    const std::string source{ "*" };
+    const std::string source{"*"};
     stream::in::copy istream(source);
 #if defined(_MSC_VER) && (_MSC_VER < 1931)
-    BOOST_REQUIRE_THROW(istream.seekg(2, std::istream::cur), std::istream::failure);
+    BOOST_REQUIRE_THROW(
+        istream.seekg(2, std::istream::cur), std::istream::failure);
     BOOST_REQUIRE(istream);
     BOOST_REQUIRE_EQUAL(istream.rdstate(), 0);
 #else
@@ -651,7 +653,7 @@ BOOST_AUTO_TEST_CASE(ostream__bool__empty__true)
 
 BOOST_AUTO_TEST_CASE(ostream__bool__not_empty__true)
 {
-    std::ostringstream osstream{ "*" };
+    std::ostringstream osstream{"*"};
     BOOST_REQUIRE(osstream);
     BOOST_REQUIRE_EQUAL(osstream.rdstate(), 0);
 
@@ -668,7 +670,7 @@ BOOST_AUTO_TEST_CASE(ostream__bool__not_empty__true)
 
 BOOST_AUTO_TEST_CASE(ostream__rdstate__non_empty__valid)
 {
-    std::ostringstream osstream{ "*" };
+    std::ostringstream osstream{"*"};
     BOOST_REQUIRE(osstream);
     BOOST_REQUIRE_EQUAL(osstream.rdstate(), 0);
 
@@ -677,7 +679,7 @@ BOOST_AUTO_TEST_CASE(ostream__rdstate__non_empty__valid)
     BOOST_REQUIRE(ostream);
     BOOST_REQUIRE_EQUAL(ostream.rdstate(), 0);
 
-    std::string text{ "*" };
+    std::string text{"*"};
     stream::out::text tstream(text);
     BOOST_REQUIRE(tstream);
     BOOST_REQUIRE_EQUAL(tstream.rdstate(), 0);
@@ -685,7 +687,7 @@ BOOST_AUTO_TEST_CASE(ostream__rdstate__non_empty__valid)
 
 BOOST_AUTO_TEST_CASE(ostream__setstate__failbit__failbit)
 {
-    std::ostringstream osstream{ "*" };
+    std::ostringstream osstream{"*"};
     osstream.setstate(std::ostringstream::failbit);
     BOOST_REQUIRE(!osstream);
     BOOST_REQUIRE(!is_set(osstream.rdstate(), std::ostringstream::eofbit));
@@ -700,7 +702,7 @@ BOOST_AUTO_TEST_CASE(ostream__setstate__failbit__failbit)
     BOOST_REQUIRE(is_set(ostream.rdstate(), std::ostream::failbit));
     BOOST_REQUIRE(!is_set(ostream.rdstate(), std::ostream::badbit));
 
-    std::string text{ "*" };
+    std::string text{"*"};
     stream::out::text tstream(text);
     tstream.setstate(std::ostream::failbit);
     BOOST_REQUIRE(!ostream);
@@ -817,7 +819,7 @@ BOOST_AUTO_TEST_CASE(ostream__write__zero__valid)
 
 BOOST_AUTO_TEST_CASE(ostream__write__non_zero__expected_valid)
 {
-    const std::string source{ "+/-" };
+    const std::string source{"+/-"};
 
     std::ostringstream osstream;
     BOOST_REQUIRE(osstream);
@@ -846,7 +848,7 @@ BOOST_AUTO_TEST_CASE(ostream__write__non_zero__expected_valid)
 
 BOOST_AUTO_TEST_CASE(ostream__write__failbit__failbit_badbit)
 {
-    const std::string source{ "+/-" };
+    const std::string source{"+/-"};
 
     std::ostringstream osstream;
     osstream.setstate(std::ostringstream::failbit);
@@ -904,21 +906,21 @@ BOOST_AUTO_TEST_CASE(ostream__write__failbit__failbit_badbit)
 
 BOOST_AUTO_TEST_CASE(stream__in__string__expected)
 {
-    const std::string source{ "42" };
+    const std::string source{"42"};
     stream::in::copy istream(source);
     BOOST_REQUIRE_EQUAL(read(istream), 42);
 }
 
 BOOST_AUTO_TEST_CASE(stream__in__array__expected)
 {
-    const data_array<2> source{ { '4', '2' } };
+    const data_array<2> source{{'4', '2'}};
     stream::in::copy istream(source);
     BOOST_REQUIRE_EQUAL(read(istream), 42);
 }
 
 BOOST_AUTO_TEST_CASE(stream__in__data__expected)
 {
-    const data_chunk source{ '4', '2' };
+    const data_chunk source{'4', '2'};
     stream::in::copy istream(source);
     BOOST_REQUIRE_EQUAL(read(istream), 42);
 }
@@ -936,7 +938,7 @@ BOOST_AUTO_TEST_CASE(stream__out__copy_string__expected)
 
 BOOST_AUTO_TEST_CASE(stream__out__array__expected)
 {
-    data_array<2> sink{ { 0x00, 0x00 } };
+    data_array<2> sink{{0x00, 0x00}};
     stream::out::copy ostream(sink);
     write(ostream, 42);
     BOOST_REQUIRE_EQUAL(sink, to_array<2>("42"));

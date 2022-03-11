@@ -21,12 +21,10 @@
 BOOST_AUTO_TEST_SUITE(stream_tests)
 
 // Access the protected constructor.
-class device_accessor
-  : public device<data_chunk>
+class device_accessor : public device<data_chunk>
 {
 public:
-    device_accessor()
-      : device(0)
+    device_accessor() : device(0)
     {
         // Only zero size remaining is safe to test.
     }
@@ -77,28 +75,28 @@ BOOST_AUTO_TEST_CASE(device__write__empty__true)
 
 BOOST_AUTO_TEST_CASE(device__write__negative__false)
 {
-    const std::string from{ "a" };
+    const std::string from{"a"};
     device_accessor instance;
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), -1), -1);
 }
 
 BOOST_AUTO_TEST_CASE(device__write__past_end__zero)
 {
-    const std::string from{ "a" };
+    const std::string from{"a"};
     device_accessor instance;
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), 2), 0);
 }
 
 BOOST_AUTO_TEST_CASE(device__write__zero__zero)
 {
-    const std::string from{ "a" };
+    const std::string from{"a"};
     device_accessor instance;
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), 0), 0);
 }
 
 BOOST_AUTO_TEST_CASE(device__write__one__zero)
 {
-    const std::string from{ "a" };
+    const std::string from{"a"};
     device_accessor instance;
     BOOST_REQUIRE_EQUAL(instance.write(from.data(), 1), 0);
 }

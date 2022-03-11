@@ -25,8 +25,10 @@
 #include <bitcoin/system/crypto/hash.hpp>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 template <size_t Size, size_t Checksum>
 data_array<Size> insert_checksum(const data_loaf& slices) noexcept
@@ -47,14 +49,14 @@ void insert_checksum(data_array<Size>& data) noexcept
     const auto payload_end = std::prev(data.end(), Checksum);
 
     // Compute the bitcoin hash.
-    const auto payload = data_chunk{ payload_begin, payload_end };
+    const auto payload = data_chunk{payload_begin, payload_end};
     const auto payload_hash = bitcoin_hash(payload);
 
     // Obtain the hash checksum iterators.
     const auto check_begin = payload_hash.begin();
     const auto check_end = std::next(check_begin, Checksum);
 
-    // Append the checksum from the first hash bytes to after the payload. 
+    // Append the checksum from the first hash bytes to after the payload.
     std::copy(check_begin, check_end, payload_end);
 }
 
@@ -69,7 +71,7 @@ bool verify_checksum(const data_array<Size>& data) noexcept
     const auto payload_end = std::prev(data.end(), Checksum);
 
     // Compute the bitcoin hash.
-    const auto payload = data_chunk{ payload_begin, payload_end };
+    const auto payload = data_chunk{payload_begin, payload_end};
     const auto payload_hash = bitcoin_hash(payload);
 
     // Obtain the hash checksum iterators.

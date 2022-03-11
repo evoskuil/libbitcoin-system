@@ -28,8 +28,10 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Lifetime:
 /// "An rvalue may be used to initialize an rvalue reference, in which case
@@ -47,7 +49,7 @@ namespace system {
 /// are initialized (copied) from addresses derived from these parameters. As a
 /// result, any temporary used to construct the slice will be orphaned when the
 /// lifetime of the temporary ends, despite retention of the slice by reference,
-/// such as by a class member. The lifetime of a temporary used in 
+/// such as by a class member. The lifetime of a temporary used in
 /// materialization of a function parameter is the lifetime of the function,
 /// unless extended by reference.
 
@@ -81,7 +83,7 @@ public:
     /// Literal bytes constructor.
     /// Integral null terminator is not indexed.
     template <size_type Size>
-    data_slice(const char(&text)[Size]) noexcept;
+    data_slice(const char (&text)[Size]) noexcept;
 
     /// Byte array constructor (casts Byte to uint8_t).
     template <size_type Size, typename Byte, if_byte<Byte> = true>
@@ -138,7 +140,7 @@ public:
     bool empty() const noexcept;
 
     /// Operators.
-    template<size_type Size>
+    template <size_type Size>
     operator std::array<value_type, Size>() const noexcept;
     operator std::vector<value_type>() const noexcept;
     value_type operator[](size_type index) const noexcept;
@@ -148,11 +150,11 @@ private:
     data_slice(pointer begin, pointer end, size_type size) noexcept;
 
     template <size_type Size, typename Byte>
-    static data_slice from_literal(const Byte(&text)[Size]) noexcept;
+    static data_slice from_literal(const Byte (&text)[Size]) noexcept;
 
     template <typename Iterator>
-    static data_slice from_iterators(const Iterator& begin,
-        const Iterator& end) noexcept;
+    static data_slice from_iterators(
+        const Iterator& begin, const Iterator& end) noexcept;
 
     template <typename Pointer>
     static data_slice from_size(Pointer begin, size_type size) noexcept;

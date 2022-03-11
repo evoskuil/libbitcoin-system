@@ -33,14 +33,18 @@
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 #include <bitcoin/system/wallet/keys/hd_private.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // Assumptions inherent in the implementation.
-static_assert(ec_secret_size == hd_chain_code_size,
-    "secret_size != chain_code_size");
-static_assert(long_hash_size == ec_secret_size + hd_chain_code_size,
+static_assert(
+    ec_secret_size == hd_chain_code_size, "secret_size != chain_code_size");
+static_assert(
+    long_hash_size == ec_secret_size + hd_chain_code_size,
     "secret_size + chain_code_size != long_hash_size");
 
 const uint32_t hd_public::mainnet = 0x0488b21e;
@@ -50,56 +54,59 @@ const uint32_t hd_public::testnet = 0x043587cf;
 // ----------------------------------------------------------------------------
 
 hd_public::hd_public() noexcept
-  : valid_(false), chain_(null_hash), lineage_({0, 0, 0, 0}),
-    point_(null_ec_compressed)
+    : valid_(false), chain_(null_hash), lineage_({0, 0, 0, 0}),
+      point_(null_ec_compressed)
 {
 }
 
 hd_public::hd_public(const hd_public& other) noexcept
-  : valid_(other.valid_), chain_(other.chain_), lineage_(other.lineage_),
-    point_(other.point_)
+    : valid_(other.valid_), chain_(other.chain_), lineage_(other.lineage_),
+      point_(other.point_)
 {
 }
 
 // This cannot validate the version.
 hd_public::hd_public(const hd_key& public_key) noexcept
-  : hd_public(from_key(public_key))
+    : hd_public(from_key(public_key))
 {
 }
 
 // This cannot validate the version.
 hd_public::hd_public(const std::string& encoded) noexcept
-  : hd_public(from_string(encoded))
+    : hd_public(from_string(encoded))
 {
 }
 
 // This validates the version.
 hd_public::hd_public(const hd_key& public_key, uint32_t prefix) noexcept
-  : hd_public(from_key(public_key, prefix))
+    : hd_public(from_key(public_key, prefix))
 {
 }
 
 // This validates the version.
 hd_public::hd_public(const std::string& encoded, uint32_t prefix) noexcept
-  : hd_public(from_string(encoded, prefix))
+    : hd_public(from_string(encoded, prefix))
 {
 }
 
-hd_public::hd_public(const ec_compressed& point,
-    const hd_chain_code& chain_code, const hd_lineage& lineage) noexcept
-  : valid_(true), point_(point), chain_(chain_code), lineage_(lineage)
+hd_public::hd_public(
+    const ec_compressed& point, const hd_chain_code& chain_code,
+    const hd_lineage& lineage) noexcept
+    : valid_(true), point_(point), chain_(chain_code), lineage_(lineage)
 {
 }
 
 // Factories.
 // ----------------------------------------------------------------------------
 
-hd_public hd_public::from_secret(const ec_secret& secret,
-    const hd_chain_code& chain_code, const hd_lineage& lineage) noexcept
+hd_public hd_public::from_secret(
+    const ec_secret& secret, const hd_chain_code& chain_code,
+    const hd_lineage& lineage) noexcept
 {
     ec_compressed point;
-    return secret_to_public(point, secret) ?
-        hd_public(point, chain_code, lineage) : hd_public{};
+    return secret_to_public(point, secret)
+               ? hd_public(point, chain_code, lineage)
+               : hd_public{};
 }
 
 hd_public hd_public::from_key(const hd_key& key) noexcept
@@ -132,19 +139,13 @@ hd_public hd_public::from_key(const hd_key& key, uint32_t prefix) noexcept
         return {};
 
     // The private prefix will be zero'd here, but there's no way to access it.
-    const hd_lineage lineage
-    {
-        prefix,
-        depth,
-        parent,
-        child
-    };
+    const hd_lineage lineage{prefix, depth, parent, child};
 
     return hd_public(compressed, chain, lineage);
 }
 
-hd_public hd_public::from_string(const std::string& encoded,
-    uint32_t prefix) noexcept
+hd_public hd_public::from_string(
+    const std::string& encoded, uint32_t prefix) noexcept
 {
     hd_key key;
     if (!decode_base58(key, encoded))
@@ -201,14 +202,9 @@ const ec_compressed& hd_public::point() const noexcept
 hd_key hd_public::to_hd_key() const noexcept
 {
     return insert_checksum<hd_key_size>(
-    {
-        to_big_endian(to_prefix(lineage_.prefixes)),
-        to_array(lineage_.depth),
-        to_big_endian(lineage_.parent_fingerprint),
-        to_big_endian(lineage_.child_number),
-        chain_,
-        point_
-    });
+        {to_big_endian(to_prefix(lineage_.prefixes)), to_array(lineage_.depth),
+         to_big_endian(lineage_.parent_fingerprint),
+         to_big_endian(lineage_.child_number), chain_, point_});
 }
 
 hd_public hd_public::derive_public(uint32_t index) const noexcept
@@ -227,13 +223,9 @@ hd_public hd_public::derive_public(uint32_t index) const noexcept
     if (lineage_.depth == max_uint8)
         return {};
 
-    const hd_lineage lineage
-    {
-        lineage_.prefixes,
-        static_cast<uint8_t>(lineage_.depth + 1),
-        fingerprint(),
-        index
-    };
+    const hd_lineage lineage{
+        lineage_.prefixes, static_cast<uint8_t>(lineage_.depth + 1),
+        fingerprint(), index};
 
     return hd_public(child, intermediate.second, lineage);
 }
@@ -265,8 +257,8 @@ bool hd_public::operator<(const hd_public& other) const noexcept
 
 bool hd_public::operator==(const hd_public& other) const noexcept
 {
-    return valid_ == other.valid_ && chain_ == other.chain_ &&
-        lineage_ == other.lineage_ && point_ == other.point_;
+    return valid_ == other.valid_ && chain_ == other.chain_
+           && lineage_ == other.lineage_ && point_ == other.point_;
 }
 
 bool hd_public::operator!=(const hd_public& other) const noexcept
@@ -297,9 +289,9 @@ std::ostream& operator<<(std::ostream& out, const hd_public& of) noexcept
 
 bool hd_lineage::operator==(const hd_lineage& other) const noexcept
 {
-    return prefixes == other.prefixes && depth == other.depth &&
-        parent_fingerprint == other.parent_fingerprint &&
-        child_number == other.child_number;
+    return prefixes == other.prefixes && depth == other.depth
+           && parent_fingerprint == other.parent_fingerprint
+           && child_number == other.child_number;
 }
 
 bool hd_lineage::operator!=(const hd_lineage& other) const noexcept

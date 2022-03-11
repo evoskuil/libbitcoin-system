@@ -28,7 +28,8 @@ BOOST_AUTO_TEST_CASE(pseudo_random__duration__zero_duration__maximum)
     BOOST_REQUIRE(result == maximum);
 }
 
-BOOST_AUTO_TEST_CASE(pseudo_random__duration__subminute_default_percent__expected)
+BOOST_AUTO_TEST_CASE(
+    pseudo_random__duration__subminute_default_percent__expected)
 {
     const int max_seconds = 42;
     const std::chrono::seconds maximum(max_seconds);

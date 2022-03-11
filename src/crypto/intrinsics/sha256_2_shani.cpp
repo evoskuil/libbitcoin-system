@@ -16,48 +16,51 @@
 #include <immintrin.h>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace intrinsics {
-
-alignas(__m128i) const uint8_t flip_mask[16] =
+namespace libbitcoin
 {
+namespace system
+{
+namespace intrinsics
+{
+
+alignas(__m128i) const uint8_t flip_mask[16] = {
     0x03, 0x02, 0x01, 0x00, // 0x00010203ul
     0x07, 0x06, 0x05, 0x04, // 0x04050607ul
     0x0b, 0x0a, 0x09, 0x08, // 0x08090a0bul
     0x0f, 0x0e, 0x0d, 0x0c  // 0x0c0d0e0ful
 };
 
-alignas(__m128i) const uint8_t init0[16] =
-{
+alignas(__m128i) const uint8_t init0[16] = {
     0x8c, 0x68, 0x05, 0x9b, // 0x9b05688cul
     0x7f, 0x52, 0x0e, 0x51, // 0x510e527ful
     0x85, 0xae, 0x67, 0xbb, // 0xbb67ae85ul
     0x67, 0xe6, 0x09, 0x6a  // 0x6a09e667ul
 };
 
-alignas(__m128i) const uint8_t init1[16] =
-{
+alignas(__m128i) const uint8_t init1[16] = {
     0x19, 0xcd, 0xe0, 0x5b, // 0x5be0cd19ul
     0xab, 0xd9, 0x83, 0x1f, // 0x1f83d9abul
     0x3a, 0xf5, 0x4f, 0xa5, // 0xa54ff53aul
     0x72, 0xf3, 0x6e, 0x3c  // 0x3c6ef372ul
 };
 
-void inline QuadRound(__m128i& state0, __m128i& state1, uint64_t k1,
-    uint64_t k0) noexcept
+void inline QuadRound(
+    __m128i& state0, __m128i& state1, uint64_t k1, uint64_t k0) noexcept
 {
     const __m128i msg = _mm_set_epi64x(k1, k0);
     state1 = _mm_sha256rnds2_epu32(state1, state0, msg);
-    state0 = _mm_sha256rnds2_epu32(state0, state1, _mm_shuffle_epi32(msg, 0x0e));
+    state0 =
+        _mm_sha256rnds2_epu32(state0, state1, _mm_shuffle_epi32(msg, 0x0e));
 }
 
-void inline QuadRound(__m128i& state0, __m128i& state1, __m128i m, uint64_t k1,
+void inline QuadRound(
+    __m128i& state0, __m128i& state1, __m128i m, uint64_t k1,
     uint64_t k0) noexcept
 {
     const __m128i msg = _mm_add_epi32(m, _mm_set_epi64x(k1, k0));
     state1 = _mm_sha256rnds2_epu32(state1, state0, msg);
-    state0 = _mm_sha256rnds2_epu32(state0, state1, _mm_shuffle_epi32(msg, 0x0e));
+    state0 =
+        _mm_sha256rnds2_epu32(state0, state1, _mm_shuffle_epi32(msg, 0x0e));
 }
 
 void inline ShiftMessageA(__m128i& m0, __m128i m1) noexcept
@@ -67,7 +70,8 @@ void inline ShiftMessageA(__m128i& m0, __m128i m1) noexcept
 
 void inline ShiftMessageC(__m128i& m0, __m128i m1, __m128i& m2) noexcept
 {
-    m2 = _mm_sha256msg2_epu32(_mm_add_epi32(m2, _mm_alignr_epi8(m1, m0, 4)), m1);
+    m2 =
+        _mm_sha256msg2_epu32(_mm_add_epi32(m2, _mm_alignr_epi8(m1, m0, 4)), m1);
 }
 
 void inline ShiftMessageB(__m128i& m0, __m128i m1, __m128i& m2) noexcept
@@ -94,13 +98,15 @@ void inline Unshuffle(__m128i& s0, __m128i& s1) noexcept
 
 __m128i inline Load(const uint8_t* in) noexcept
 {
-    return _mm_shuffle_epi8(_mm_loadu_si128((const __m128i*)in),
+    return _mm_shuffle_epi8(
+        _mm_loadu_si128((const __m128i*)in),
         _mm_load_si128((const __m128i*)flip_mask));
 }
 
 void inline Save(uint8_t* out, __m128i s) noexcept
 {
-    _mm_storeu_si128((__m128i*)out,
+    _mm_storeu_si128(
+        (__m128i*)out,
         _mm_shuffle_epi8(s, _mm_load_si128((const __m128i*)flip_mask)));
 }
 
@@ -178,7 +184,7 @@ void sha256_x1_shani(uint32_t state[8], const uint8_t block[64]) noexcept
 
 ////void sha256_x2_shani(uint8_t* out, const uint8_t in[2 * 64]) noexcept
 ////{
-////    // TODO: two blocks in two lanes. 
+////    // TODO: two blocks in two lanes.
 ////}
 
 // One block in two lanes, doubled.

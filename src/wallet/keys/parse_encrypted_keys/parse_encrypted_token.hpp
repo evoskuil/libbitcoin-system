@@ -26,13 +26,15 @@
 #include <bitcoin/system/wallet/keys/encrypted_keys.hpp>
 #include "parse_encrypted_key.hpp"
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // Swap not defined.
-class parse_encrypted_token
-  : public parse_encrypted_prefix<8u>
+class parse_encrypted_token : public parse_encrypted_prefix<8u>
 {
 public:
     static data_array<prefix_size> prefix_factory(bool lot_sequence) noexcept;

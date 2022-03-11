@@ -25,36 +25,35 @@
 #include <bitcoin/system/radix/radix.hpp>
 #include <bitcoin/system/unicode/unicode.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // These character classification functions correspond to RFC 3986.
 // They avoid C standard library character classification functions,
 // since those give different answers based on the current locale.
 static bool is_alpha(const char c) noexcept
 {
-    return
-        ('A' <= c && c <= 'Z') ||
-        ('a' <= c && c <= 'z');
+    return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
 }
 
 static bool is_scheme(const char c) noexcept
 {
-    return
-        is_alpha(c) || ('0' <= c && c <= '9') ||
-        '+' == c || '-' == c || '.' == c;
+    return is_alpha(c) || ('0' <= c && c <= '9') || '+' == c || '-' == c
+           || '.' == c;
 }
 
 static bool is_path_character(const char c)
 {
-    return
-        is_alpha(c) || ('0' <= c && c <= '9') ||
-        '-' == c || '.' == c || '_' == c || '~' == c || // unreserved
-        '!' == c || '$' == c || '&' == c || '\'' == c ||
-        '(' == c || ')' == c || '*' == c || '+' == c ||
-        ',' == c || ';' == c || '=' == c || // sub-delims
-        ':' == c || '@' == c;
+    return is_alpha(c) || ('0' <= c && c <= '9') || '-' == c || '.' == c
+           || '_' == c || '~' == c || // unreserved
+           '!' == c || '$' == c || '&' == c || '\'' == c || '(' == c || ')' == c
+           || '*' == c || '+' == c || ',' == c || ';' == c || '=' == c
+           || // sub-delims
+           ':' == c || '@' == c;
 }
 
 static bool is_path(const char c) noexcept
@@ -74,16 +73,16 @@ static bool is_query_character(const char c) noexcept
 
 // Verifies that all RFC 3986 escape sequences in a string are valid, and that
 // all characters belong to the given class.
-static bool validate(const std::string& in,
-    bool (*is_valid)(const char)) noexcept
+static bool validate(
+    const std::string& in, bool (*is_valid)(const char)) noexcept
 {
     for (auto it = in.begin(); it != in.end();)
     {
         if (*it == '%')
         {
             // If not octet.
-            if (!((std::distance(it, in.end()) > 2) &&
-                is_base16(it[1]) && is_base16(it[2])))
+            if (!((std::distance(it, in.end()) > 2) && is_base16(it[1])
+                  && is_base16(it[2])))
             {
                 return false;
             }
@@ -113,10 +112,10 @@ static std::string unescape(const std::string& in) noexcept
     while (it != in.end())
     {
         // If % and is octet.
-        if ((*it == '%') && (std::distance(it, in.end()) > 2) &&
-            is_base16(it[1]) && is_base16(it[2]))
+        if ((*it == '%') && (std::distance(it, in.end()) > 2)
+            && is_base16(it[1]) && is_base16(it[2]))
         {
-            out.push_back(encode_octet({ it[1], it[2], '\0' }));
+            out.push_back(encode_octet({it[1], it[2], '\0'}));
             std::advance(it, 3);
         }
         else
@@ -131,12 +130,12 @@ static std::string unescape(const std::string& in) noexcept
 
 // URI encodes a string (i.e. percent encoding).
 // is_valid a function returning true for acceptable characters.
-static std::string escape(const std::string& in,
-    bool (*is_valid)(char)) noexcept
+static std::string escape(
+    const std::string& in, bool (*is_valid)(char)) noexcept
 {
     std::ostringstream stream;
     stream << std::hex << std::uppercase << std::setfill('0');
-    for (const auto character: in)
+    for (const auto character : in)
     {
         if (is_valid(character))
             stream << character;
@@ -373,7 +372,7 @@ void uri::encode_query(const query_map& map) noexcept
 {
     auto first = true;
     std::ostringstream query;
-    for (const auto& term: map)
+    for (const auto& term : map)
     {
         if (!first)
             query << '&';

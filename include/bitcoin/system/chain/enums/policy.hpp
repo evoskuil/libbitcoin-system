@@ -22,9 +22,12 @@
 #include <cstdint>
 #include <bitcoin/system/math/math.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 enum policy : uint32_t
 {

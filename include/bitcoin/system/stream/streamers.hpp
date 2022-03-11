@@ -44,116 +44,118 @@
 #include <bitcoin/system/stream/streamers/sha256_writer.hpp>
 #include <bitcoin/system/stream/streamers/sha256x2_writer.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 namespace read
 {
-    namespace bytes
-    {
-        /// A byte reader that reads data from a std::istream.
-        using istream = byte_reader<std::istream>;
+namespace bytes
+{
+/// A byte reader that reads data from a std::istream.
+using istream = byte_reader<std::istream>;
 
-        /// A byte reader that copies data from a data_reference.
-        using copy = make_streamer<copy_source<data_reference>, byte_reader>;
-    }
+/// A byte reader that copies data from a data_reference.
+using copy = make_streamer<copy_source<data_reference>, byte_reader>;
+} // namespace bytes
 
-    namespace bits
-    {
-        /// A bit reader that reads data from a std::istream.
-        using istream = bit_reader<std::istream>;
+namespace bits
+{
+/// A bit reader that reads data from a std::istream.
+using istream = bit_reader<std::istream>;
 
-        /// A bit reader that moves data from a data_reference.
-        using copy = make_streamer<copy_source<data_reference>, bit_reader>;
-    }
-}
+/// A bit reader that moves data from a data_reference.
+using copy = make_streamer<copy_source<data_reference>, bit_reader>;
+} // namespace bits
+} // namespace read
 
 namespace write
 {
-    namespace bytes
-    {
-        /// A byte writer that writes data to a std::ostream.
-        using ostream = byte_writer<std::ostream>;
+namespace bytes
+{
+/// A byte writer that writes data to a std::ostream.
+using ostream = byte_writer<std::ostream>;
 
-        /// A byte writer that copies data to a data_slab.
-        using copy = make_streamer<copy_sink<data_slab>, byte_writer>;
+/// A byte writer that copies data to a data_slab.
+using copy = make_streamer<copy_sink<data_slab>, byte_writer>;
 
-        /// A byte writer that inserts data into a container.
-        template <typename Container>
-        using push = make_streamer<push_sink<Container>, byte_writer>;
-        using text = push<std::string>;
-        using data = push<data_chunk>;
-    }
+/// A byte writer that inserts data into a container.
+template <typename Container>
+using push = make_streamer<push_sink<Container>, byte_writer>;
+using text = push<std::string>;
+using data = push<data_chunk>;
+} // namespace bytes
 
-    namespace bits
-    {
-        /// A bit writer that writes data to a std::ostream.
-        using ostream = bit_writer<std::ostream>;
+namespace bits
+{
+/// A bit writer that writes data to a std::ostream.
+using ostream = bit_writer<std::ostream>;
 
-        /// A bit writer that copies data to a data_slab.
-        using copy = make_streamer<copy_sink<data_slab>, bit_writer>;
+/// A bit writer that copies data to a data_slab.
+using copy = make_streamer<copy_sink<data_slab>, bit_writer>;
 
-        /// A bit writer that inserts data into a container.
-        template <typename Container>
-        using push = make_streamer<push_sink<Container>, bit_writer>;
-        using text = push<std::string>;
-        using data = push<data_chunk>;
-    }
-}
+/// A bit writer that inserts data into a container.
+template <typename Container>
+using push = make_streamer<push_sink<Container>, bit_writer>;
+using text = push<std::string>;
+using data = push<data_chunk>;
+} // namespace bits
+} // namespace write
 
 namespace flip
 {
-    namespace bytes
-    {
-        /// A byte reader/writer of a std::iostream.
-        using iostream = byte_flipper<std::iostream>;
+namespace bytes
+{
+/// A byte reader/writer of a std::iostream.
+using iostream = byte_flipper<std::iostream>;
 
-        /// A byte reader/writer of a data_slab (no push and requires own sink).
-        using copy = make_streamer<flip_sink<data_slab>, byte_flipper>;
-    }
+/// A byte reader/writer of a data_slab (no push and requires own sink).
+using copy = make_streamer<flip_sink<data_slab>, byte_flipper>;
+} // namespace bytes
 
-    namespace bits
-    {
-        /// A bit reader/writer of a std::iostream.
-        using iostream = bit_flipper<std::iostream>;
+namespace bits
+{
+/// A bit reader/writer of a std::iostream.
+using iostream = bit_flipper<std::iostream>;
 
-        /// A bit reader/writer of a data_slab (no push and requires own sink).
-        using copy = make_streamer<flip_sink<data_slab>, bit_flipper>;
-    }
-}
+/// A bit reader/writer of a data_slab (no push and requires own sink).
+using copy = make_streamer<flip_sink<data_slab>, bit_flipper>;
+} // namespace bits
+} // namespace flip
 
 namespace hash
 {
-    namespace sha256
-    {
-        /// A hash writer that writes a sha256 hash to a std::ostream.
-        using ostream = sha256_writer<std::ostream>;
+namespace sha256
+{
+/// A hash writer that writes a sha256 hash to a std::ostream.
+using ostream = sha256_writer<std::ostream>;
 
-        /// A hash writer that copies a sha256 hash to a data_slab.
-        using copy = make_streamer<copy_sink<data_slab>, sha256_writer>;
+/// A hash writer that copies a sha256 hash to a data_slab.
+using copy = make_streamer<copy_sink<data_slab>, sha256_writer>;
 
-        /// A hash writer that inserts a sha256 hash into a container.
-        template <typename Container>
-        using push = make_streamer<push_sink<Container>, sha256_writer>;
-        using text = push<std::string>;
-        using data = push<data_chunk>;
-    }
+/// A hash writer that inserts a sha256 hash into a container.
+template <typename Container>
+using push = make_streamer<push_sink<Container>, sha256_writer>;
+using text = push<std::string>;
+using data = push<data_chunk>;
+} // namespace sha256
 
-    namespace sha256x2
-    {
-        /// A hash writer that writes a bitcoin hash to a std::ostream.
-        using ostream = sha256x2_writer<std::ostream>;
+namespace sha256x2
+{
+/// A hash writer that writes a bitcoin hash to a std::ostream.
+using ostream = sha256x2_writer<std::ostream>;
 
-        /// A hash writer that copies a bitcoin hash to a data_slab.
-        using copy = make_streamer<copy_sink<data_slab>, sha256x2_writer>;
+/// A hash writer that copies a bitcoin hash to a data_slab.
+using copy = make_streamer<copy_sink<data_slab>, sha256x2_writer>;
 
-        /// A hash writer that inserts a bitcoin hash into a container.
-        template <typename Container>
-        using push = make_streamer<push_sink<Container>, sha256x2_writer>;
-        using text = push<std::string>;
-        using data = push<data_chunk>;
-    }
-}
+/// A hash writer that inserts a bitcoin hash into a container.
+template <typename Container>
+using push = make_streamer<push_sink<Container>, sha256x2_writer>;
+using text = push<std::string>;
+using data = push<data_chunk>;
+} // namespace sha256x2
+} // namespace hash
 
 /// Interface byte aliases.
 using flipper = byteflipper;

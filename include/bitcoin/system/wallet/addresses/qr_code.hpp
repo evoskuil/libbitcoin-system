@@ -25,9 +25,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 class BC_API qr_code
 {
@@ -50,16 +53,18 @@ public:
 
     /// False if version > maximum_version or size > tiff::max_image_bytes.
     /// Create a TIFF formatter QR code representing the given string value.
-    static bool encode(std::ostream& out, const std::string& value,
-        uint8_t version=0, uint16_t scale=8, uint16_t margin=2,
-        recovery_level level=recovery_level::low,
-        encode_mode mode=encode_mode::eight_bit,
-        bool case_sensitive=true) noexcept;
+    static bool encode(
+        std::ostream& out, const std::string& value, uint8_t version = 0,
+        uint16_t scale = 8, uint16_t margin = 2,
+        recovery_level level = recovery_level::low,
+        encode_mode mode = encode_mode::eight_bit,
+        bool case_sensitive = true) noexcept;
 
 protected:
     /// Convert QR encoded data stream to bit stream with margin and scaling.
-    static data_chunk to_pixels(const data_chunk& coded, uint32_t width_coded,
-        uint16_t scale=8, uint16_t margin=2) noexcept;
+    static data_chunk to_pixels(
+        const data_chunk& coded, uint32_t width_coded, uint16_t scale = 8,
+        uint16_t margin = 2) noexcept;
 };
 
 } // namespace wallet

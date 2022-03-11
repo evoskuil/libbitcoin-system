@@ -23,9 +23,12 @@
 #include <bitcoin/system/chain/enums/forks.hpp>
 #include <bitcoin/system/chain/enums/policy.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 bool context::is_enabled(chain::forks fork) const noexcept
 {

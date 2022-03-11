@@ -30,9 +30,12 @@
 #include <bitcoin/system/error/error.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // Use system clock because we require accurate time of day.
 using wall_clock = std::chrono::system_clock;
@@ -40,101 +43,85 @@ using wall_clock = std::chrono::system_clock;
 // Constructors.
 // ----------------------------------------------------------------------------
 
-header::header() noexcept
-  : header(0, {}, {}, 0, 0, 0, false)
+header::header() noexcept : header(0, {}, {}, 0, 0, 0, false)
 {
 }
 
 header::header(header&& other) noexcept
-: header(
-    other.version_,
-    std::move(other.previous_block_hash_),
-    std::move(other.merkle_root_),
-    other.timestamp_,
-    other.bits_,
-    other.nonce_,
-    other.valid_)
+    : header(
+        other.version_, std::move(other.previous_block_hash_),
+        std::move(other.merkle_root_), other.timestamp_, other.bits_,
+        other.nonce_, other.valid_)
 {
 }
 
 header::header(const header& other) noexcept
-: header(
-    other.version_,
-    other.previous_block_hash_,
-    other.merkle_root_,
-    other.timestamp_,
-    other.bits_,
-    other.nonce_,
-    other.valid_)
+    : header(
+        other.version_, other.previous_block_hash_, other.merkle_root_,
+        other.timestamp_, other.bits_, other.nonce_, other.valid_)
 {
 }
 
-header::header(uint32_t version, hash_digest&& previous_block_hash,
+header::header(
+    uint32_t version, hash_digest&& previous_block_hash,
     hash_digest&& merkle_root, uint32_t timestamp, uint32_t bits,
     uint32_t nonce) noexcept
-  : header(version, std::move(previous_block_hash), std::move(merkle_root),
-      timestamp, bits, nonce, true)
+    : header(
+        version, std::move(previous_block_hash), std::move(merkle_root),
+        timestamp, bits, nonce, true)
 {
 }
 
-header::header(uint32_t version, const hash_digest& previous_block_hash,
+header::header(
+    uint32_t version, const hash_digest& previous_block_hash,
     const hash_digest& merkle_root, uint32_t timestamp, uint32_t bits,
     uint32_t nonce) noexcept
-  : header(version, previous_block_hash, merkle_root, timestamp, bits, nonce,
-      true)
+    : header(
+        version, previous_block_hash, merkle_root, timestamp, bits, nonce, true)
 {
 }
 
-header::header(const data_slice& data) noexcept
-  : header(stream::in::copy(data))
+header::header(const data_slice& data) noexcept : header(stream::in::copy(data))
 {
 }
 
 header::header(std::istream&& stream) noexcept
-  : header(read::bytes::istream(stream))
+    : header(read::bytes::istream(stream))
 {
 }
 
 header::header(std::istream& stream) noexcept
-  : header(read::bytes::istream(stream))
+    : header(read::bytes::istream(stream))
 {
 }
 
-header::header(reader&& source) noexcept
-  : header(from_data(source))
+header::header(reader&& source) noexcept : header(from_data(source))
 {
 }
 
-header::header(reader& source) noexcept
-  : header(from_data(source))
+header::header(reader& source) noexcept : header(from_data(source))
 {
 }
 
 // protected
-header::header(uint32_t version, hash_digest&& previous_block_hash,
+header::header(
+    uint32_t version, hash_digest&& previous_block_hash,
     hash_digest&& merkle_root, uint32_t timestamp, uint32_t bits,
     uint32_t nonce, bool valid) noexcept
-  : version_(version),
-    previous_block_hash_(std::move(previous_block_hash)),
-    merkle_root_(std::move(merkle_root)),
-    timestamp_(timestamp),
-    bits_(bits),
-    nonce_(nonce),
-    valid_(valid)
+    : version_(version), previous_block_hash_(std::move(previous_block_hash)),
+      merkle_root_(std::move(merkle_root)), timestamp_(timestamp), bits_(bits),
+      nonce_(nonce), valid_(valid)
 {
 }
 
 // protected
-header::header(uint32_t version, const hash_digest& previous_block_hash,
+header::header(
+    uint32_t version, const hash_digest& previous_block_hash,
     const hash_digest& merkle_root, uint32_t timestamp, uint32_t bits,
     uint32_t nonce, bool valid) noexcept
-  : version_(version),
-    previous_block_hash_(previous_block_hash),
-    merkle_root_(merkle_root),
-    timestamp_(timestamp),
-    bits_(bits),
-    nonce_(nonce),
-    valid_(valid)
+    : version_(version), previous_block_hash_(previous_block_hash),
+      merkle_root_(merkle_root), timestamp_(timestamp), bits_(bits),
+      nonce_(nonce), valid_(valid)
 {
 }
 
@@ -168,11 +155,10 @@ header& header::operator=(const header& other) noexcept
 bool header::operator==(const header& other) const noexcept
 {
     return (version_ == other.version_)
-        && (previous_block_hash_ == other.previous_block_hash_)
-        && (merkle_root_ == other.merkle_root_)
-        && (timestamp_ == other.timestamp_)
-        && (bits_ == other.bits_)
-        && (nonce_ == other.nonce_);
+           && (previous_block_hash_ == other.previous_block_hash_)
+           && (merkle_root_ == other.merkle_root_)
+           && (timestamp_ == other.timestamp_) && (bits_ == other.bits_)
+           && (nonce_ == other.nonce_);
 }
 
 bool header::operator!=(const header& other) const noexcept
@@ -186,16 +172,14 @@ bool header::operator!=(const header& other) const noexcept
 // static/private
 header header::from_data(reader& source) noexcept
 {
-    return
-    {
+    return {
         source.read_4_bytes_little_endian(),
         source.read_hash(),
         source.read_hash(),
         source.read_4_bytes_little_endian(),
         source.read_4_bytes_little_endian(),
         source.read_4_bytes_little_endian(),
-        source
-    };
+        source};
 }
 
 // Serialization.
@@ -308,22 +292,18 @@ uint256_t header::difficulty() const noexcept
 // static
 size_t header::serialized_size() noexcept
 {
-    return sizeof(version_)
-        + hash_size
-        + hash_size
-        + sizeof(timestamp_)
-        + sizeof(bits_)
-        + sizeof(nonce_);
+    return sizeof(version_) + hash_size + hash_size + sizeof(timestamp_)
+           + sizeof(bits_) + sizeof(nonce_);
 }
 
 // Check.
 // ----------------------------------------------------------------------------
 
-bool header::is_invalid_proof_of_work(uint32_t proof_of_work_limit,
-    bool scrypt) const noexcept
+bool header::is_invalid_proof_of_work(
+    uint32_t proof_of_work_limit, bool scrypt) const noexcept
 {
     const auto bits = compact(bits_);
-    static const uint256_t pow_limit(compact{ proof_of_work_limit });
+    static const uint256_t pow_limit(compact{proof_of_work_limit});
 
     if (bits.is_overflowed())
         return true;
@@ -355,8 +335,9 @@ bool header::is_invalid_timestamp(
 // Validation.
 // ----------------------------------------------------------------------------
 
-code header::check(uint32_t timestamp_limit_seconds,
-    uint32_t proof_of_work_limit, bool scrypt) const noexcept
+code header::check(
+    uint32_t timestamp_limit_seconds, uint32_t proof_of_work_limit,
+    bool scrypt) const noexcept
 {
     if (is_invalid_proof_of_work(proof_of_work_limit, scrypt))
         return error::invalid_proof_of_work;
@@ -389,46 +370,43 @@ code header::accept(const chain_state& state) const noexcept
 
 namespace json = boost::json;
 
-header tag_invoke(json::value_to_tag<header>,
-    const json::value& value) noexcept
+header tag_invoke(json::value_to_tag<header>, const json::value& value) noexcept
 {
     hash_digest previous, merkle_root;
-    if (!decode_hash(previous, value.at("previous").get_string().c_str()) ||
-        !decode_hash(merkle_root, value.at("merkle_root").get_string().c_str()))
+    if (!decode_hash(previous, value.at("previous").get_string().c_str())
+        || !decode_hash(
+            merkle_root, value.at("merkle_root").get_string().c_str()))
         return {};
 
-    return
-    {
+    return {
         value.at("version").to_number<uint32_t>(),
         previous,
         merkle_root,
         value.at("timestamp").to_number<uint32_t>(),
         value.at("bits").to_number<uint32_t>(),
-        value.at("nonce").to_number<uint32_t>()
-    };
+        value.at("nonce").to_number<uint32_t>()};
 }
 
-void tag_invoke(json::value_from_tag, json::value& value,
-    const header& tx) noexcept
+void tag_invoke(
+    json::value_from_tag, json::value& value, const header& tx) noexcept
 {
-    value =
-    {
-        { "version", tx.version() },
-        { "previous", encode_hash(tx.previous_block_hash()) },
-        { "merkle_root", encode_hash(tx.merkle_root()) },
-        { "timestamp", tx.timestamp() },
-        { "bits", tx.bits() },
-        { "nonce", tx.nonce() }
-    };
+    value = {
+        {"version", tx.version()},
+        {"previous", encode_hash(tx.previous_block_hash())},
+        {"merkle_root", encode_hash(tx.merkle_root())},
+        {"timestamp", tx.timestamp()},
+        {"bits", tx.bits()},
+        {"nonce", tx.nonce()}};
 }
 
-header::ptr tag_invoke(json::value_to_tag<header::ptr>,
-    const json::value& value) noexcept
+header::ptr tag_invoke(
+    json::value_to_tag<header::ptr>, const json::value& value) noexcept
 {
     return to_shared(tag_invoke(json::value_to_tag<header>{}, value));
 }
 
-void tag_invoke(json::value_from_tag tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag tag, json::value& value,
     const header::ptr& tx) noexcept
 {
     tag_invoke(tag, value, *tx);

@@ -23,9 +23,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 /// A signed but zero-floored scientific notation in 32 bits.
 class BC_API compact

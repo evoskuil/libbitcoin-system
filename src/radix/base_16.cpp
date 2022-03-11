@@ -33,8 +33,10 @@
 // There is no need for bit streaming or padding, and both sides are
 // authoritative. Therefore base16 is our canonical byte encoding.
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 inline char to_base16_character(char digit) noexcept
 {
@@ -45,14 +47,13 @@ inline char to_base16_character(char digit) noexcept
 // and does not necessarily match the base16 encoding.
 bool is_base16(char character) noexcept
 {
-    return
-        (is_between(character, '0', '9')) ||
-        (is_between(character, 'a', 'f')) ||
-        (is_between(character, 'A', 'F'));
+    return (is_between(character, '0', '9'))
+           || (is_between(character, 'a', 'f'))
+           || (is_between(character, 'A', 'F'));
 }
 
-// Undefined (but safe) behavior if characters are not base16. 
-uint8_t encode_octet(const char(&string)[add1(octet_width)]) noexcept
+// Undefined (but safe) behavior if characters are not base16.
+uint8_t encode_octet(const char (&string)[add1(octet_width)]) noexcept
 {
     return from_base16_characters(string[0], string[1]);
 }
@@ -63,7 +64,7 @@ std::string encode_base16(const data_slice& data) noexcept
     out.resize(data.size() * octet_width);
     auto digit = out.begin();
 
-    for (const auto byte: data)
+    for (const auto byte : data)
     {
         *digit++ = to_base16_character(byte >> to_half(byte_bits));
         *digit++ = to_base16_character(byte & 0x0f);
@@ -78,7 +79,7 @@ std::string encode_hash(const data_slice& hash) noexcept
     out.resize(hash.size() * octet_width);
     auto digit = out.begin();
 
-    for (const auto byte: boost::adaptors::reverse(hash))
+    for (const auto byte : boost::adaptors::reverse(hash))
     {
         *digit++ = to_base16_character(byte >> to_half(byte_bits));
         *digit++ = to_base16_character(byte & 0x0f);

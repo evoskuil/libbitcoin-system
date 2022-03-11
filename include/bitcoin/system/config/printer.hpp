@@ -27,25 +27,39 @@
 #include <bitcoin/system/config/parameter.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Shorthand for property declarations in printer class.
-#define BC_PROPERTY(type, name) \
-    public: virtual const type& name() const { return name##_; } \
-    private: type name##_
+#define BC_PROPERTY(type, name)                                                \
+public:                                                                        \
+    virtual const type& name() const                                           \
+    {                                                                          \
+        return name##_;                                                        \
+    }                                                                          \
+                                                                               \
+private:                                                                       \
+    type name##_
 
 /// Shorthand for reference getter declarations in printer class.
-#define BC_PROPERTY_GET_REF(type, name) \
-    public: virtual type& get_##name() { return name##_; } \
-    private: type name##_
+#define BC_PROPERTY_GET_REF(type, name)                                        \
+public:                                                                        \
+    virtual type& get_##name()                                                 \
+    {                                                                          \
+        return name##_;                                                        \
+    }                                                                          \
+                                                                               \
+private:                                                                       \
+    type name##_
 
 /// Class for managing the serialization of command line options and arguments.
 class BC_API printer
 {
 public:
-
     /// Number of arguments above which the argument is considered unlimited.
     static const int max_arguments;
 
@@ -56,8 +70,9 @@ public:
     /// settings     Populated config file settings metadata.
     /// application  This application (e.g. 'bitcoin_server').
     /// description  This application description (e.g. 'Server').
-    printer(const boost::program_options::options_description& settings,
-        const std::string& application, const std::string& description="");
+    printer(
+        const boost::program_options::options_description& settings,
+        const std::string& application, const std::string& description = "");
 
     /// Construct an instance of the printer class.
     /// options      Populated command line options metadata.
@@ -65,10 +80,11 @@ public:
     /// application  This application (e.g. 'bx').
     /// description  This command description (e.g. 'Convert BTC').
     /// command      This command (e.g. 'btc').
-    printer(const boost::program_options::options_description& options,
+    printer(
+        const boost::program_options::options_description& options,
         const boost::program_options::positional_options_description& arguments,
-        const std::string& application, const std::string& description="",
-        const std::string& command="");
+        const std::string& application, const std::string& description = "",
+        const std::string& command = "");
 
     /// Convert a paragraph of text into a column.
     /// This formats to 80 char width as: [ 23 | ' ' | 55 | '\n' ].
@@ -76,8 +92,8 @@ public:
     /// This always sets at least one line and always collapses whitespace.
     /// paragraph  The paragraph to columnize.
     /// return     The column, as a list of fragments.
-    virtual std::vector<std::string> columnize(const std::string& paragraph,
-        size_t width);
+    virtual std::vector<std::string> columnize(
+        const std::string& paragraph, size_t width);
 
     /// Format the command description.
     virtual std::string format_description();
@@ -123,7 +139,8 @@ public:
 
     /// Virtual property declarations, passed on construct.
     BC_PROPERTY(boost::program_options::options_description, options);
-    BC_PROPERTY(boost::program_options::positional_options_description, arguments);
+    BC_PROPERTY(
+        boost::program_options::positional_options_description, arguments);
     BC_PROPERTY(std::string, application);
     BC_PROPERTY(std::string, description);
     BC_PROPERTY(std::string, command);

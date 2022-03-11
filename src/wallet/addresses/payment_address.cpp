@@ -31,9 +31,12 @@
 #include <bitcoin/system/wallet/keys/ec_private.hpp>
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 const uint8_t payment_address::mainnet_p2kh = 0x00;
 const uint8_t payment_address::mainnet_p2sh = 0x05;
@@ -41,56 +44,55 @@ const uint8_t payment_address::mainnet_p2sh = 0x05;
 const uint8_t payment_address::testnet_p2kh = 0x6f;
 const uint8_t payment_address::testnet_p2sh = 0xc4;
 
-payment_address::payment_address() noexcept
-  : payment_()
+payment_address::payment_address() noexcept : payment_()
 {
 }
 
 payment_address::payment_address(payment_address&& other) noexcept
-  : payment_(std::move(other.payment_))
+    : payment_(std::move(other.payment_))
 {
 }
 
 payment_address::payment_address(const payment_address& other) noexcept
-  : payment_(other.payment_)
+    : payment_(other.payment_)
 {
 }
 
 payment_address::payment_address(payment&& decoded) noexcept
-  : payment_(std::move(decoded))
+    : payment_(std::move(decoded))
 {
 }
 
 payment_address::payment_address(const payment& decoded) noexcept
-  : payment_(decoded)
+    : payment_(decoded)
 {
 }
 
 payment_address::payment_address(const std::string& address) noexcept
-  : payment_address(from_string(address))
+    : payment_address(from_string(address))
 {
 }
 
 payment_address::payment_address(const ec_private& secret) noexcept
-  : payment_address(from_private(secret))
+    : payment_address(from_private(secret))
 {
 }
 
-payment_address::payment_address(const ec_public& point,
-    uint8_t prefix) noexcept
-  : payment_address(from_public(point, prefix))
+payment_address::payment_address(
+    const ec_public& point, uint8_t prefix) noexcept
+    : payment_address(from_public(point, prefix))
 {
 }
 
-payment_address::payment_address(const chain::script& script,
-    uint8_t prefix) noexcept
-  : payment_address(from_script(script, prefix))
+payment_address::payment_address(
+    const chain::script& script, uint8_t prefix) noexcept
+    : payment_address(from_script(script, prefix))
 {
 }
 
-payment_address::payment_address(const short_hash& hash,
-    uint8_t prefix) noexcept
-  : payment_(to_array(prefix), hash)
+payment_address::payment_address(
+    const short_hash& hash, uint8_t prefix) noexcept
+    : payment_(to_array(prefix), hash)
 {
 }
 
@@ -101,8 +103,8 @@ payment_address payment_address::from_string(
     const std::string& address) noexcept
 {
     data_array<payment::value_size> decoded;
-    if (!decode_base58(decoded, address) || 
-        decoded.size() != payment::value_size)
+    if (!decode_base58(decoded, address)
+        || decoded.size() != payment::value_size)
         return {};
 
     payment value(std::move(decoded));
@@ -111,7 +113,7 @@ payment_address payment_address::from_string(
     if (!value)
         return {};
 
-    return { std::move(value) };
+    return {std::move(value)};
 }
 
 payment_address payment_address::from_private(const ec_private& secret) noexcept
@@ -119,11 +121,11 @@ payment_address payment_address::from_private(const ec_private& secret) noexcept
     if (!secret)
         return {};
 
-    return { secret.to_public(), secret.payment_version() };
+    return {secret.to_public(), secret.payment_version()};
 }
 
-payment_address payment_address::from_public(const ec_public& point,
-    uint8_t prefix) noexcept
+payment_address payment_address::from_public(
+    const ec_public& point, uint8_t prefix) noexcept
 {
     if (!point)
         return {};
@@ -132,16 +134,16 @@ payment_address payment_address::from_public(const ec_public& point,
     if (!point.to_data(data))
         return {};
 
-    return { bitcoin_short_hash(data), prefix };
+    return {bitcoin_short_hash(data), prefix};
 }
 
-payment_address payment_address::from_script(const chain::script& script,
-    uint8_t prefix) noexcept
+payment_address payment_address::from_script(
+    const chain::script& script, uint8_t prefix) noexcept
 {
     if (!script.is_valid())
         return {};
 
-    return { bitcoin_short_hash(script.to_data(false)), prefix };
+    return {bitcoin_short_hash(script.to_data(false)), prefix};
 }
 
 // Cast operators.
@@ -177,13 +179,13 @@ chain::script payment_address::output_script() const noexcept
 {
     switch (prefix())
     {
-        case mainnet_p2kh:
-        case testnet_p2kh:
-            return chain::script::to_pay_key_hash_pattern(hash());
+    case mainnet_p2kh:
+    case testnet_p2kh:
+        return chain::script::to_pay_key_hash_pattern(hash());
 
-        case mainnet_p2sh:
-        case testnet_p2sh:
-            return chain::script::to_pay_script_hash_pattern(hash());
+    case mainnet_p2sh:
+    case testnet_p2sh:
+        return chain::script::to_pay_script_hash_pattern(hash());
     }
 
     return {};
@@ -218,14 +220,14 @@ bool payment_address::operator<(const payment_address& other) const noexcept
     return encoded() < other.encoded();
 }
 
-bool operator==(const payment_address& left,
-    const payment_address& right) noexcept
+bool operator==(
+    const payment_address& left, const payment_address& right) noexcept
 {
     return left.to_payment() == right.to_payment();
 }
 
-bool operator!=(const payment_address& left,
-    const payment_address& right) noexcept
+bool operator!=(
+    const payment_address& left, const payment_address& right) noexcept
 {
     return !(left == right);
 }
@@ -252,15 +254,16 @@ std::ostream& operator<<(std::ostream& out, const payment_address& of) noexcept
 // ----------------------------------------------------------------------------
 
 // Context free input extraction is provably ambiguous (see extract_input).
-payment_address::list payment_address::extract(const chain::script& script,
-    uint8_t p2kh_prefix, uint8_t p2sh_prefix) noexcept
+payment_address::list payment_address::extract(
+    const chain::script& script, uint8_t p2kh_prefix,
+    uint8_t p2sh_prefix) noexcept
 {
     const auto input = extract_input(script, p2kh_prefix, p2sh_prefix);
 
     if (!input.empty())
         return input;
 
-    return { extract_output(script, p2kh_prefix, p2sh_prefix) };
+    return {extract_output(script, p2kh_prefix, p2sh_prefix)};
 }
 
 // Context free input extraction is provably ambiguous. See inline comments.
@@ -273,43 +276,39 @@ payment_address::list payment_address::extract_input(
 
     switch (pattern)
     {
-        // Given lack of context (prevout) sign_key_hash is always ambiguous
-        // with sign_script_hash, so return both potentially-correct addresses.
-        // A server can differentiate by extracting from the previous output.
-        case chain::script_pattern::sign_key_hash:
-        {
-            return
-            {
-                { ec_public{ script.ops().front().data() }, p2kh_prefix }
-                ////,{ bitcoin_short_hash(script.back().data()), p2sh_prefix }
-            };
-        }
-        case chain::script_pattern::sign_script_hash:
-        {
-            return
-            {
-                { bitcoin_short_hash(script.ops().back().data()), p2sh_prefix }
-            };
-        }
+    // Given lack of context (prevout) sign_key_hash is always ambiguous
+    // with sign_script_hash, so return both potentially-correct addresses.
+    // A server can differentiate by extracting from the previous output.
+    case chain::script_pattern::sign_key_hash:
+    {
+        return {
+            {ec_public{script.ops().front().data()}, p2kh_prefix}
+            ////,{ bitcoin_short_hash(script.back().data()), p2sh_prefix }
+        };
+    }
+    case chain::script_pattern::sign_script_hash:
+    {
+        return {{bitcoin_short_hash(script.ops().back().data()), p2sh_prefix}};
+    }
 
-        // There is no address in sign_public_key script (signature only)
-        // and the public key cannot be extracted from the signature.
-        // Given lack of context (prevout) sign_public_key is always ambiguous
-        // with sign_script_hash (though actual conflict seems very unlikely).
-        // A server can obtain by extracting from the previous output.
-        case chain::script_pattern::sign_public_key:
+    // There is no address in sign_public_key script (signature only)
+    // and the public key cannot be extracted from the signature.
+    // Given lack of context (prevout) sign_public_key is always ambiguous
+    // with sign_script_hash (though actual conflict seems very unlikely).
+    // A server can obtain by extracting from the previous output.
+    case chain::script_pattern::sign_public_key:
 
-        // There are no addresses in sign_multisig script, signatures only.
-        // Nonstandard (non-zero) first op sign_multisig may conflict with
-        // sign_key_hash and/or sign_script_hash (or will be non_standard).
-        // A server can obtain the public keys extracting from the previous
-        // output, but bare multisig does not associate a payment address.
-        case chain::script_pattern::sign_multisig:
-        case chain::script_pattern::non_standard:
-        default:
-        {
-            return {};
-        }
+    // There are no addresses in sign_multisig script, signatures only.
+    // Nonstandard (non-zero) first op sign_multisig may conflict with
+    // sign_key_hash and/or sign_script_hash (or will be non_standard).
+    // A server can obtain the public keys extracting from the previous
+    // output, but bare multisig does not associate a payment address.
+    case chain::script_pattern::sign_multisig:
+    case chain::script_pattern::non_standard:
+    default:
+    {
+        return {};
+    }
     }
 }
 
@@ -322,32 +321,20 @@ payment_address payment_address::extract_output(
 
     switch (pattern)
     {
-        case chain::script_pattern::pay_key_hash:
-            return
-            {
-                to_array<short_hash_size>(script.ops()[2].data()),
-                p2kh_prefix
-            };
-        case chain::script_pattern::pay_script_hash:
-            return
-            { 
-                to_array<short_hash_size>(script.ops()[1].data()),
-                p2sh_prefix
-            };
-        case chain::script_pattern::pay_public_key:
-            return
-            {
-                // pay_public_key is not p2kh but we conflate for tracking.
-                ec_public{ script.ops().front().data() },
-                p2kh_prefix
-            };
+    case chain::script_pattern::pay_key_hash:
+        return {to_array<short_hash_size>(script.ops()[2].data()), p2kh_prefix};
+    case chain::script_pattern::pay_script_hash:
+        return {to_array<short_hash_size>(script.ops()[1].data()), p2sh_prefix};
+    case chain::script_pattern::pay_public_key:
+        return {// pay_public_key is not p2kh but we conflate for tracking.
+                ec_public{script.ops().front().data()}, p2kh_prefix};
 
-        // Bare multisig and null data do not associate a payment address.
-        case chain::script_pattern::pay_multisig:
-        case chain::script_pattern::pay_null_data:
-        case chain::script_pattern::non_standard:
-        default:
-            return {};
+    // Bare multisig and null data do not associate a payment address.
+    case chain::script_pattern::pay_multisig:
+    case chain::script_pattern::pay_null_data:
+    case chain::script_pattern::non_standard:
+    default:
+        return {};
     }
 }
 

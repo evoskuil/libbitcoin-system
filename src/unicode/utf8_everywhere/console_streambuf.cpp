@@ -25,11 +25,13 @@
 #include <bitcoin/system/exceptions.hpp>
 
 #ifdef _MSC_VER
-    #include <windows.h>
+#include <windows.h>
 #endif
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 #ifdef _MSC_VER
 
@@ -60,8 +62,8 @@ void console_streambuf::initialize(size_t size)
 
 console_streambuf::console_streambuf(
     const std::wstreambuf& stream_buffer, size_t size)
-    : buffer_size_(size), buffer_(new wchar_t[buffer_size_]),
-    std::wstreambuf(stream_buffer)
+    : buffer_size_(size),
+      buffer_(new wchar_t[buffer_size_]), std::wstreambuf(stream_buffer)
 {
 }
 
@@ -70,13 +72,14 @@ console_streambuf::~console_streambuf()
     delete[] buffer_;
 }
 
-std::streamsize console_streambuf::xsgetn(wchar_t* buffer,
-    std::streamsize size)
+std::streamsize console_streambuf::xsgetn(wchar_t* buffer, std::streamsize size)
 {
     DWORD read_bytes;
 
-    if (ReadConsoleW(get_input_handle(), buffer, static_cast<DWORD>(size),
-        &read_bytes, nullptr) == FALSE)
+    if (ReadConsoleW(
+            get_input_handle(), buffer, static_cast<DWORD>(size), &read_bytes,
+            nullptr)
+        == FALSE)
         throw runtime_exception("Failed to read from console.");
 
     return static_cast<std::streamsize>(read_bytes);
@@ -91,8 +94,9 @@ std::wstreambuf::int_type console_streambuf::underflow()
             setg(buffer_, buffer_, &buffer_[length]);
     }
 
-    return (gptr() == nullptr || gptr() >= egptr()) ? traits_type::eof() :
-        traits_type::to_int_type(*gptr());
+    return (gptr() == nullptr || gptr() >= egptr())
+               ? traits_type::eof()
+               : traits_type::to_int_type(*gptr());
 }
 
 #else

@@ -25,45 +25,48 @@
 #include <bitcoin/system/wallet/keys/encrypted_keys.hpp>
 #include "parse_encrypted_prefix.hpp"
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
-template<size_t PrefixSize>
+template <size_t PrefixSize>
 parse_encrypted_key<PrefixSize>::parse_encrypted_key(
     const data_array<PrefixSize>& prefix, const one_byte& flags,
     const ek_salt& salt, const ek_entropy& entropy) noexcept
-  : parse_encrypted_prefix<PrefixSize>(prefix),
-    flags_(flags), salt_(salt), entropy_(entropy)
+    : parse_encrypted_prefix<PrefixSize>(prefix), flags_(flags), salt_(salt),
+      entropy_(entropy)
 {
 }
 
-template<size_t PrefixSize>
+template <size_t PrefixSize>
 bool parse_encrypted_key<PrefixSize>::compressed() const noexcept
 {
     return !is_zero(flags() & ek_flag::ec_compressed_key);
 }
 
-template<size_t PrefixSize>
+template <size_t PrefixSize>
 ek_entropy parse_encrypted_key<PrefixSize>::entropy() const noexcept
 {
     // The owner salt + lot-sequence or owner entropy.
     return entropy_;
 }
 
-template<size_t PrefixSize>
+template <size_t PrefixSize>
 uint8_t parse_encrypted_key<PrefixSize>::flags() const noexcept
 {
     return flags_.front();
 }
 
-template<size_t PrefixSize>
+template <size_t PrefixSize>
 bool parse_encrypted_key<PrefixSize>::lot_sequence() const noexcept
 {
     return !is_zero(flags() & ek_flag::lot_sequence_key);
 }
 
-template<size_t PrefixSize>
+template <size_t PrefixSize>
 data_chunk parse_encrypted_key<PrefixSize>::owner_salt() const noexcept
 {
     // Either 4 or 8 bytes, depending on the lot sequence flags.
@@ -73,7 +76,7 @@ data_chunk parse_encrypted_key<PrefixSize>::owner_salt() const noexcept
         return to_chunk(entropy());
 }
 
-template<size_t PrefixSize>
+template <size_t PrefixSize>
 ek_salt parse_encrypted_key<PrefixSize>::salt() const noexcept
 {
     // The address hash salt.

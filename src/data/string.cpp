@@ -27,16 +27,18 @@
 #include <bitcoin/system/data/data_slice.hpp>
 #include <bitcoin/system/unicode/unicode.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 std::string to_string(const data_slice& bytes) noexcept
 {
     return bytes.to_string();
 }
 
-std::string join(const string_list& tokens,
-    const std::string& delimiter) noexcept
+std::string join(
+    const string_list& tokens, const std::string& delimiter) noexcept
 {
     if (tokens.empty())
         return {};
@@ -52,41 +54,41 @@ std::string join(const string_list& tokens,
     return sentence.str();
 }
 
-void reduce(string_list& tokens, const string_list& trim_tokens,
-    bool compress) noexcept
+void reduce(
+    string_list& tokens, const string_list& trim_tokens, bool compress) noexcept
 {
     static const std::string empty{};
 
     if (tokens.empty())
         return;
 
-    for (auto& token: tokens)
+    for (auto& token : tokens)
         trim(token, trim_tokens);
 
     if (compress)
-        tokens.erase(std::remove(tokens.begin(), tokens.end(), empty),
-            tokens.end());
+        tokens.erase(
+            std::remove(tokens.begin(), tokens.end(), empty), tokens.end());
 
     if (tokens.empty())
         tokens.push_back({});
 }
 
-string_list reduce_copy(const string_list& tokens,
-    const string_list& trim_tokens, bool compress) noexcept
+string_list reduce_copy(
+    const string_list& tokens, const string_list& trim_tokens,
+    bool compress) noexcept
 {
     auto copy = tokens;
     reduce(copy, trim_tokens, compress);
     return copy;
 }
 
-size_t replace(std::string& text, const std::string& from,
-    const std::string& to) noexcept
+size_t replace(
+    std::string& text, const std::string& from, const std::string& to) noexcept
 {
     size_t count = 0;
 
-    for (auto position = text.find(from);
-        position != std::string::npos;
-        position = text.find(from, position + to.length()))
+    for (auto position = text.find(from); position != std::string::npos;
+         position = text.find(from, position + to.length()))
     {
         ++count;
         text.replace(position, from.length(), to);
@@ -95,7 +97,8 @@ size_t replace(std::string& text, const std::string& from,
     return count;
 }
 
-std::string replace_copy(const std::string& text, const std::string& from,
+std::string replace_copy(
+    const std::string& text, const std::string& from,
     const std::string& to) noexcept
 {
     auto copy = text;
@@ -103,16 +106,16 @@ std::string replace_copy(const std::string& text, const std::string& from,
     return copy;
 }
 
-static string_list splitter(const std::string& text, const std::string& delimiter,
+static string_list splitter(
+    const std::string& text, const std::string& delimiter,
     const string_list& trim_tokens, bool compress) noexcept
 {
     size_t start = 0;
     string_list tokens;
 
     // Push all but the last token.
-    for (auto position = text.find(delimiter);
-        position != std::string::npos;
-        position = text.find(delimiter, start))
+    for (auto position = text.find(delimiter); position != std::string::npos;
+         position = text.find(delimiter, start))
     {
         tokens.push_back(text.substr(start, position - start));
         start = position + delimiter.length();
@@ -124,19 +127,20 @@ static string_list splitter(const std::string& text, const std::string& delimite
     return tokens;
 }
 
-string_list split(const std::string& text, const string_list& delimiters,
+string_list split(
+    const std::string& text, const string_list& delimiters,
     const string_list& trim_tokens, bool compress) noexcept
 {
     // Nothing to do.
     if (delimiters.empty() && trim_tokens.empty())
-        return { text };
+        return {text};
 
     // Trim first to preclude outer empty otherwise trimmable outer tokens.
     auto trimmed = trim_copy(text, trim_tokens);
 
     // Nothing more to do.
     if (delimiters.empty())
-        return { trimmed };
+        return {trimmed};
 
     // Replace all other delimiters with the first delimiter.
     for (auto it = std::next(delimiters.begin()); it != delimiters.end(); ++it)
@@ -146,11 +150,12 @@ string_list split(const std::string& text, const string_list& delimiters,
     return splitter(trimmed, delimiters.front(), trim_tokens, compress);
 }
 
-string_list split(const std::string& text, const std::string& delimiter,
-    bool trim, bool compress) noexcept
+string_list split(
+    const std::string& text, const std::string& delimiter, bool trim,
+    bool compress) noexcept
 {
     const auto trim_tokens = trim ? ascii_whitespace : string_list{};
-    return split(text, string_list{ delimiter }, trim_tokens, compress);
+    return split(text, string_list{delimiter}, trim_tokens, compress);
 }
 
 string_list split(const std::string& text, bool compress) noexcept
@@ -192,11 +197,10 @@ bool trim_left(std::string& text, const string_list& trim_tokens) noexcept
     do
     {
         found = false;
-        for (const auto& token: trim_tokens)
+        for (const auto& token : trim_tokens)
             if (trim_left(text, token))
                 found = true;
-    }
-    while (found);
+    } while (found);
     return found;
 }
 
@@ -206,11 +210,10 @@ bool trim_right(std::string& text, const string_list& trim_tokens) noexcept
     do
     {
         found = false;
-        for (const auto& token: trim_tokens)
+        for (const auto& token : trim_tokens)
             if (trim_right(text, token))
                 found = true;
-    }
-    while (found);
+    } while (found);
     return found;
 }
 
@@ -220,24 +223,24 @@ void trim(std::string& text, const string_list& trim_tokens) noexcept
     trim_right(text, trim_tokens);
 }
 
-std::string trim_left_copy(const std::string& text,
-    const string_list& trim_tokens) noexcept
+std::string trim_left_copy(
+    const std::string& text, const string_list& trim_tokens) noexcept
 {
     auto copy = text;
     trim_left(copy, trim_tokens);
     return copy;
 }
 
-std::string trim_right_copy(const std::string& text,
-    const string_list& trim_tokens) noexcept
+std::string trim_right_copy(
+    const std::string& text, const string_list& trim_tokens) noexcept
 {
     auto copy = text;
     trim_right(copy, trim_tokens);
     return copy;
 }
 
-std::string trim_copy(const std::string& text,
-    const string_list& trim_tokens) noexcept
+std::string trim_copy(
+    const std::string& text, const string_list& trim_tokens) noexcept
 {
     auto copy = text;
     trim(copy, trim_tokens);

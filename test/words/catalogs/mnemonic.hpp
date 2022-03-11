@@ -27,45 +27,54 @@
 using namespace bc::system;
 using namespace bc::system::words;
 
-namespace test {
-namespace catalogs_mnemonic {
-
-static ptrdiff_t intersection(const mnemonic::catalog::words& left,
-    const mnemonic::catalog::words& right)
+namespace test
 {
-    return std::count_if(left.word.begin(), left.word.end(),
+namespace catalogs_mnemonic
+{
+
+static ptrdiff_t intersection(
+    const mnemonic::catalog::words& left, const mnemonic::catalog::words& right)
+{
+    return std::count_if(
+        left.word.begin(), left.word.end(),
         [&](const char test_left[])
         {
-            return std::find_if(right.word.begin(), right.word.end(),
-                [&](const char test_right[])
-                {
-                    return (std::strcmp(test_left, test_right) == 0);
-                }) != right.word.end();
+            return std::find_if(
+                       right.word.begin(), right.word.end(),
+                       [&](const char test_right[])
+                       {
+                           return (std::strcmp(test_left, test_right) == 0);
+                       })
+                   != right.word.end();
         });
 }
 
-static bool intersects(const mnemonic::catalog::words& left,
-    const mnemonic::catalog::words& right)
+static bool intersects(
+    const mnemonic::catalog::words& left, const mnemonic::catalog::words& right)
 {
-    return std::any_of(left.word.begin(), left.word.end(),
+    return std::any_of(
+        left.word.begin(), left.word.end(),
         [&](const char test_left[])
         {
-            return std::find_if(right.word.begin(), right.word.end(),
-                [&](const char test_right[])
-                {
-                    return (std::strcmp(test_left, test_right) == 0);
-                }) != right.word.end();
+            return std::find_if(
+                       right.word.begin(), right.word.end(),
+                       [&](const char test_right[])
+                       {
+                           return (std::strcmp(test_left, test_right) == 0);
+                       })
+                   != right.word.end();
         });
 }
 
-static ptrdiff_t deviation(const mnemonic::catalog::words& left,
-    const mnemonic::catalog::words& right)
+static ptrdiff_t deviation(
+    const mnemonic::catalog::words& left, const mnemonic::catalog::words& right)
 {
     ptrdiff_t count = 0;
 
     for (auto outer = left.word.begin(); outer != left.word.end(); ++outer)
     {
-        const auto inner = std::find_if(right.word.begin(), right.word.end(),
+        const auto inner = std::find_if(
+            right.word.begin(), right.word.end(),
             [&](const char test[])
             {
                 return (std::strcmp(test, *outer) == 0);
@@ -84,7 +93,8 @@ static ptrdiff_t deviation(const mnemonic::catalog::words& left,
 
 static bool abnormal(const mnemonic::catalog::words& words)
 {
-    return std::all_of(words.word.begin(), words.word.end(),
+    return std::all_of(
+        words.word.begin(), words.word.end(),
         [&](const char test[])
         {
             std::string copy = test;
@@ -98,7 +108,8 @@ static string_list to_string_list(const mnemonic::catalog::words& words)
 {
     // Convert dictionary to string, otherwise pointers are compared.
     string_list tokens(mnemonic::catalog::size());
-    std::transform(words.word.begin(), words.word.end(), tokens.begin(),
+    std::transform(
+        words.word.begin(), words.word.end(), tokens.begin(),
         [](const char* token)
         {
             return token;
@@ -132,7 +143,7 @@ static hash_digest identity(const mnemonic::catalog::words& words)
     return sha256_hash(join(to_string_list(words)));
 }
 
-} // catalogs_mnemonic
-} // test
+} // namespace catalogs_mnemonic
+} // namespace test
 
 #endif

@@ -34,12 +34,15 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 class settings;
 
-namespace chain {
+namespace chain
+{
 
 class BC_API block
 {
@@ -57,8 +60,8 @@ public:
 
     block(chain::header&& header, transactions&& txs) noexcept;
     block(const chain::header& header, const transactions& txs) noexcept;
-    block(const chain::header::ptr& header,
-        const transactions_ptr& txs) noexcept;
+    block(
+        const chain::header::ptr& header, const transactions_ptr& txs) noexcept;
 
     block(const data_slice& data, bool witness) noexcept;
     block(std::istream&& stream, bool witness) noexcept;
@@ -105,12 +108,14 @@ public:
 
     /// Consensus checks (no DoS guards for block sync without headers first).
     code check() const noexcept;
-    code accept(const context& state, size_t subsidy_interval,
+    code accept(
+        const context& state, size_t subsidy_interval,
         uint64_t initial_subsidy) const noexcept;
     code connect(const context& state) const noexcept;
 
 protected:
-    block(const chain::header::ptr& header, const transactions_ptr& txs,
+    block(
+        const chain::header::ptr& header, const transactions_ptr& txs,
         bool valid) noexcept;
 
     // Check (context free).
@@ -137,10 +142,11 @@ protected:
     bool is_invalid_witness_commitment() const noexcept;
 
     // prevouts required
-    bool is_overspent(size_t height, uint64_t subsidy_interval,
+    bool is_overspent(
+        size_t height, uint64_t subsidy_interval,
         uint64_t initial_block_subsidy_satoshi, bool bip42) const noexcept;
-    bool is_signature_operations_limited(bool bip16,
-        bool bip141) const noexcept;
+    bool is_signature_operations_limited(
+        bool bip16, bool bip141) const noexcept;
 
     // prevout confirmation state required
     bool is_unspent_coinbase_collision(size_t height) const noexcept;
@@ -161,7 +167,8 @@ private:
 
     // contextual
     size_t non_coinbase_inputs() const noexcept;
-    uint64_t reward(size_t height, uint64_t subsidy_interval,
+    uint64_t reward(
+        size_t height, uint64_t subsidy_interval,
         uint64_t initial_block_subsidy_satoshi, bool bip42) const noexcept;
 
     // delegated
@@ -187,7 +194,7 @@ DECLARE_JSON_VALUE_CONVERTORS(block::ptr);
 
 namespace std
 {
-template<>
+template <>
 struct hash<bc::system::chain::block>
 {
     size_t operator()(const bc::system::chain::block& value) const noexcept

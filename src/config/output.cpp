@@ -30,9 +30,12 @@
 #include <bitcoin/system/wallet/wallet.hpp>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 using namespace boost::program_options;
 
@@ -43,13 +46,12 @@ constexpr size_t minimum_seed_bits = 128;
 constexpr size_t minimum_seed_size = minimum_seed_bits / 8u;
 
 output::output() noexcept
-  : is_stealth_(false), amount_(0), version_(0), script_(),
-    pay_to_hash_(null_short_hash)
+    : is_stealth_(false), amount_(0), version_(0), script_(),
+      pay_to_hash_(null_short_hash)
 {
 }
 
-output::output(const std::string& tuple)
-  : output()
+output::output(const std::string& tuple) : output()
 {
     std::stringstream(tuple) >> *this;
 }
@@ -112,18 +114,18 @@ std::istream& operator>>(std::istream& input, output& argument)
             throw istream_exception(tuple);
 
         data_chunk seed;
-        if (!decode_base16(seed, tokens[2]) ||
-            seed.size() < minimum_seed_size)
+        if (!decode_base16(seed, tokens[2]) || seed.size() < minimum_seed_size)
             throw istream_exception(tuple);
 
         ec_secret ephemeral_secret;
-        if (!create_stealth_data(argument.script_, ephemeral_secret,
-            stealth.filter(), seed))
+        if (!create_stealth_data(
+                argument.script_, ephemeral_secret, stealth.filter(), seed))
             throw istream_exception(tuple);
 
         ec_compressed stealth_key;
-        if (!uncover_stealth(stealth_key, stealth.scan_key(), ephemeral_secret,
-            stealth.spend_keys().front()))
+        if (!uncover_stealth(
+                stealth_key, stealth.scan_key(), ephemeral_secret,
+                stealth.spend_keys().front()))
             throw istream_exception(tuple);
 
         argument.is_stealth_ = true;

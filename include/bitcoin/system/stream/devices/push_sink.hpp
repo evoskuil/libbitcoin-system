@@ -25,35 +25,36 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/device.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Sink for ios::stream, appends bytes to Container.
 /// Container may be any insertable object with contiguous byte data.
 /// This is limited to std::string and std::vector of uint8_t.
 /// Push streams are buffered, indirect (inefficient) and require flush.
 template <typename Container, if_byte_insertable<Container> = true>
-class push_sink
-  : public device<Container>
+class push_sink : public device<Container>
 {
 public:
     typedef Container& container;
-    struct category
-      : ios::sink_tag, ios::optimally_buffered_tag
+    struct category : ios::sink_tag, ios::optimally_buffered_tag
     {
     };
 
     push_sink(Container& data) noexcept
-      : device<Container>(limit<typename device<Container>::size_type>(
-          data.max_size() - data.size())),
-        container_(data)
+        : device<Container>(limit<typename device<Container>::size_type>(
+            data.max_size() - data.size())),
+          container_(data)
     {
     }
 
 protected:
     const typename device<Container>::size_type default_buffer_size = 1024;
 
-    void do_write(const typename device<Container>::value_type* from,
+    void do_write(
+        const typename device<Container>::value_type* from,
         typename device<Container>::size_type size) noexcept override
     {
         container_.insert(container_.end(), from, std::next(from, size));

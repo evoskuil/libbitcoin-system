@@ -25,23 +25,27 @@
 #include <bitcoin/system/wallet/addresses/payment_address.hpp>
 #include <bitcoin/system/wallet/keys/stealth.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
-stealth_sender::stealth_sender(const stealth_address& address,
-    const data_chunk& seed, const binary& filter, uint8_t version) noexcept
-  : version_(version)
+stealth_sender::stealth_sender(
+    const stealth_address& address, const data_chunk& seed,
+    const binary& filter, uint8_t version) noexcept
+    : version_(version)
 {
     ec_secret ephemeral_private;
     if (create_ephemeral_key(ephemeral_private, seed))
         initialize(ephemeral_private, address, seed, filter);
 }
 
-stealth_sender::stealth_sender(const ec_secret& ephemeral_private,
-    const stealth_address& address, const data_chunk& seed,
-    const binary& filter, uint8_t version) noexcept
-  : version_(version)
+stealth_sender::stealth_sender(
+    const ec_secret& ephemeral_private, const stealth_address& address,
+    const data_chunk& seed, const binary& filter, uint8_t version) noexcept
+    : version_(version)
 {
     initialize(ephemeral_private, address, seed, filter);
 }
@@ -53,9 +57,9 @@ stealth_sender::operator bool() const noexcept
 
 // private
 // TODO: convert to factory and make script_ and address_ const.
-void stealth_sender::initialize(const ec_secret& ephemeral_private,
-    const stealth_address& address, const data_chunk& seed,
-    const binary& filter) noexcept
+void stealth_sender::initialize(
+    const ec_secret& ephemeral_private, const stealth_address& address,
+    const data_chunk& seed, const binary& filter) noexcept
 {
     ec_compressed ephemeral_public;
     if (!secret_to_public(ephemeral_public, ephemeral_private))
@@ -66,12 +70,13 @@ void stealth_sender::initialize(const ec_secret& ephemeral_private,
         return;
 
     ec_compressed sender_public;
-    if (!uncover_stealth(sender_public, address.scan_key(), ephemeral_private,
-        spend_keys.front()))
+    if (!uncover_stealth(
+            sender_public, address.scan_key(), ephemeral_private,
+            spend_keys.front()))
         return;
 
     if (create_stealth_script(script_, ephemeral_private, filter, seed))
-        address_ = { sender_public, version_ };
+        address_ = {sender_public, version_};
 }
 
 // Will be invalid if construct fails.

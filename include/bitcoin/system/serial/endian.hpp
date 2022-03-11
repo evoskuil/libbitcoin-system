@@ -25,8 +25,10 @@
 #include <bitcoin/system/constraints.hpp>
 #include <bitcoin/system/data/data.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// integer (inferred type) -> data (value-sized) or array (explicit size)
 /// ---------------------------------------------------------------------------
@@ -109,32 +111,32 @@ void to_little_endian(std::ostream& stream, Integer value) noexcept;
 /// ---------------------------------------------------------------------------
 /// Must be guarded by the caller, use when passing end would be redundant.
 
-template <typename Integer, typename Iterator,
-    if_integral_integer<Integer> = true>
+template <
+    typename Integer, typename Iterator, if_integral_integer<Integer> = true>
 Integer from_big_endian_unchecked(const Iterator& data) noexcept;
 
-template <typename Integer, typename Iterator,
-    if_integral_integer<Integer> = true>
+template <
+    typename Integer, typename Iterator, if_integral_integer<Integer> = true>
 Integer from_little_endian_unchecked(const Iterator& data) noexcept;
 
 // data[] -> integral[] (explicit size), integral[] -> data[] (explicit size)
 /// ---------------------------------------------------------------------------
 
 template <size_t Count, typename Integer, if_integral_integer<Integer> = true>
-void from_big_endian(Integer to[Count],
-    const uint8_t from[Count * sizeof(Integer)]) noexcept;
+void from_big_endian(
+    Integer to[Count], const uint8_t from[Count * sizeof(Integer)]) noexcept;
 
 template <size_t Count, typename Integer, if_integral_integer<Integer> = true>
-void from_little_endian(Integer to[Count],
-    const uint8_t from[Count * sizeof(Integer)]) noexcept;
+void from_little_endian(
+    Integer to[Count], const uint8_t from[Count * sizeof(Integer)]) noexcept;
 
 template <size_t Count, typename Integer, if_integral_integer<Integer> = true>
-void to_big_endian(uint8_t to[Count * sizeof(Integer)],
-    const Integer from[Count]) noexcept;
+void to_big_endian(
+    uint8_t to[Count * sizeof(Integer)], const Integer from[Count]) noexcept;
 
 template <size_t Count, typename Integer, if_integral_integer<Integer> = true>
-void to_little_endian(uint8_t to[Count * sizeof(Integer)],
-    const Integer from[Count]) noexcept;
+void to_little_endian(
+    uint8_t to[Count * sizeof(Integer)], const Integer from[Count]) noexcept;
 
 } // namespace system
 } // namespace libbitcoin

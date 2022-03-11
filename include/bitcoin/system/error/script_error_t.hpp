@@ -25,12 +25,15 @@
 #include <bitcoin/system/error/macros.hpp>
 #include <bitcoin/system/error/transaction_error_t.hpp>
 
- // Transaction sequences are limited to 0xff for single byte store encoding.
- // With the uint8_t domain specified the compiler enforces this guard.
+// Transaction sequences are limited to 0xff for single byte store encoding.
+// With the uint8_t domain specified the compiler enforces this guard.
 
-namespace libbitcoin {
-namespace system {
-namespace error {
+namespace libbitcoin
+{
+namespace system
+{
+namespace error
+{
 
 enum script_error_t : uint8_t
 {

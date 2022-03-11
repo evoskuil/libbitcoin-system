@@ -23,9 +23,12 @@
 #include <cstdint>
 #include <bitcoin/system/constants.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // Consensus sentinels.
 // ----------------------------------------------------------------------------

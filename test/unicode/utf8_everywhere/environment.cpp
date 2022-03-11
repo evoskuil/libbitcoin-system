@@ -46,14 +46,16 @@ BOOST_AUTO_TEST_CASE(utf8_environment__utf8_remainder_size__ascii_bytes__zero)
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("abcdef", 6), 0u);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__utf8_remainder_size__whole_characters__zero)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__utf8_remainder_size__whole_characters__zero)
 {
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xDF\xbf", 2), 0u);
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xEF\xbf\xbf", 3), 0u);
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xF7\xbf\xbf\xbf", 4), 0u);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__utf8_remainder_size__truncated_trailing_bytes__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__utf8_remainder_size__truncated_trailing_bytes__expected)
 {
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xDF", 1), 1u);
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xEF", 1), 1u);
@@ -63,7 +65,8 @@ BOOST_AUTO_TEST_CASE(utf8_environment__utf8_remainder_size__truncated_trailing_b
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xF7\xbf\xbf", 3), 3u);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__utf8_remainder_size__invalid_leading_bytes__zero)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__utf8_remainder_size__invalid_leading_bytes__zero)
 {
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xbf", 1), 0u);
     BOOST_REQUIRE_EQUAL(utf8_remainder_size("\xbf\xbf", 2), 0u);
@@ -110,7 +113,8 @@ BOOST_AUTO_TEST_CASE(utf8_environment__to_utf8_array__ascii__test)
     const std::wstring utf16(L"ascii");
     const std::string expected_utf8("ascii");
 
-    const auto size = to_utf8(utf8, sizeof(utf8), utf16.c_str(), (int)utf16.size());
+    const auto size =
+        to_utf8(utf8, sizeof(utf8), utf16.c_str(), (int)utf16.size());
     BOOST_REQUIRE_EQUAL(utf8, expected_utf8);
     BOOST_REQUIRE_EQUAL(size, expected_utf8.size());
 }
@@ -125,7 +129,8 @@ BOOST_AUTO_TEST_CASE(utf8_environment__to_utf8_array__non_ascii__test)
     const std::string expected_utf8("テスト");
     const auto utf16 = to_utf16(expected_utf8);
 
-    const auto size = to_utf8(utf8, sizeof(utf8), utf16.c_str(), (int)utf16.size());
+    const auto size =
+        to_utf8(utf8, sizeof(utf8), utf16.c_str(), (int)utf16.size());
 
     BOOST_REQUIRE_EQUAL(utf8, expected_utf8);
     BOOST_REQUIRE_EQUAL(size, expected_utf8.size());
@@ -183,7 +188,8 @@ BOOST_AUTO_TEST_CASE(utf8_environment__to_utf16_array__ascii__expected)
     const std::string utf8("ascii");
 
     size_t truncated;
-    const auto size = to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
+    const auto size =
+        to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
 
     BOOST_REQUIRE_EQUAL(utf16, expected_utf16.c_str());
     BOOST_REQUIRE_EQUAL(size, expected_utf16.size());
@@ -202,14 +208,16 @@ BOOST_AUTO_TEST_CASE(utf8_environment__to_utf16_array__non_ascii__expected)
     const auto expected_utf16 = to_utf16(utf8);
 
     size_t truncated;
-    const auto size = to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
+    const auto size =
+        to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
 
     BOOST_REQUIRE_EQUAL(utf16, expected_utf16.c_str());
     BOOST_REQUIRE_EQUAL(size, expected_utf16.size());
     BOOST_REQUIRE_EQUAL(truncated, 0u);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__to_utf16_array__non_ascii_truncation1__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__to_utf16_array__non_ascii_truncation1__expected)
 {
     const auto length = 36u;
     wchar_t utf16[length];
@@ -231,14 +239,16 @@ BOOST_AUTO_TEST_CASE(utf8_environment__to_utf16_array__non_ascii_truncation1__ex
     const auto expected_truncated = strlen("ト") - 1u;
 
     size_t truncated;
-    const auto size = to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
+    const auto size =
+        to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
 
     BOOST_REQUIRE_EQUAL(truncated, expected_truncated);
     BOOST_REQUIRE_EQUAL(utf16, expected_utf16.c_str());
     BOOST_REQUIRE_EQUAL(size, expected_utf16.size());
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__to_utf16_array__non_ascii_truncation2__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__to_utf16_array__non_ascii_truncation2__expected)
 {
     const auto length = 36u;
     wchar_t utf16[length];
@@ -260,7 +270,8 @@ BOOST_AUTO_TEST_CASE(utf8_environment__to_utf16_array__non_ascii_truncation2__ex
     const auto expected_truncated = strlen("ト") - drop_bytes;
 
     size_t truncated;
-    const auto size = to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
+    const auto size =
+        to_utf16(truncated, utf16, length, utf8.c_str(), utf8.length());
 
     BOOST_REQUIRE_EQUAL(truncated, expected_truncated);
     BOOST_REQUIRE_EQUAL(utf16, expected_utf16.c_str());
@@ -273,21 +284,24 @@ BOOST_AUTO_TEST_CASE(utf8_environment__to_utf16_array__non_ascii_truncation2__ex
 
 // allocate_environment (vars) / free_environment
 
-BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_vars__ascii__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__allocate_environment_vars__ascii__expected)
 {
-    std::vector<const wchar_t*> wide_environment = { L"ascii", nullptr };
+    std::vector<const wchar_t*> wide_environment = {L"ascii", nullptr};
     auto variables = const_cast<wchar_t**>(&wide_environment[0]);
     auto narrow_environment = allocate_environment(variables);
     BOOST_REQUIRE_EQUAL(narrow_environment[0], "ascii");
     free_environment(narrow_environment);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_vars__utf16__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__allocate_environment_vars__utf16__expected)
 {
     // We cannot use L for literal encoding of non-ascii text on Windows.
     auto utf16 = to_utf16("テスト");
     auto non_literal_utf16 = utf16.c_str();
-    std::vector<const wchar_t*> wide_environment = { L"ascii", non_literal_utf16, nullptr };
+    std::vector<const wchar_t*> wide_environment = {
+        L"ascii", non_literal_utf16, nullptr};
     auto variables = const_cast<wchar_t**>(&wide_environment[0]);
     auto narrow_environment = allocate_environment(variables);
     BOOST_REQUIRE_EQUAL(narrow_environment[0], "ascii");
@@ -295,9 +309,10 @@ BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_vars__utf16__expecte
     free_environment(narrow_environment);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_vars__null_termination__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__allocate_environment_vars__null_termination__expected)
 {
-    std::vector<const wchar_t*> wide_environment = { L"ascii", nullptr };
+    std::vector<const wchar_t*> wide_environment = {L"ascii", nullptr};
     auto variables = const_cast<wchar_t**>(&wide_environment[0]);
     auto expected_count = static_cast<int>(wide_environment.size()) - 1u;
     auto narrow_environment = allocate_environment(variables);
@@ -315,9 +330,10 @@ BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_vars__null_terminati
 
 // allocate_environment (args) / free_environment
 
-BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_args__ascii__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__allocate_environment_args__ascii__expected)
 {
-    std::vector<const wchar_t*> wide_args = { L"ascii", nullptr };
+    std::vector<const wchar_t*> wide_args = {L"ascii", nullptr};
     auto argv = const_cast<wchar_t**>(&wide_args[0]);
     auto argc = static_cast<int>(wide_args.size()) - 1u;
     auto narrow_args = allocate_environment(argc, argv);
@@ -325,12 +341,14 @@ BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_args__ascii__expecte
     free_environment(narrow_args);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_args__utf16__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__allocate_environment_args__utf16__expected)
 {
     // We cannot use L for literal encoding of non-ascii text on Windows.
     auto utf16 = to_utf16("テスト");
     auto non_literal_utf16 = utf16.c_str();
-    std::vector<const wchar_t*> wide_args = { L"ascii", non_literal_utf16, nullptr };
+    std::vector<const wchar_t*> wide_args = {
+        L"ascii", non_literal_utf16, nullptr};
     auto argv = const_cast<wchar_t**>(&wide_args[0]);
     auto argc = static_cast<int>(wide_args.size()) - 1u;
     auto narrow_args = allocate_environment(argc, argv);
@@ -339,9 +357,10 @@ BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_args__utf16__expecte
     free_environment(narrow_args);
 }
 
-BOOST_AUTO_TEST_CASE(utf8_environment__allocate_environment_args__null_termination__expected)
+BOOST_AUTO_TEST_CASE(
+    utf8_environment__allocate_environment_args__null_termination__expected)
 {
-    std::vector<const wchar_t*> wide_args = { L"ascii", nullptr };
+    std::vector<const wchar_t*> wide_args = {L"ascii", nullptr};
     auto argv = const_cast<wchar_t**>(&wide_args[0]);
     auto argc = static_cast<int>(wide_args.size()) - 1u;
     auto narrow_args = allocate_environment(argc, argv);

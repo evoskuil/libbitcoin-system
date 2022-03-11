@@ -28,8 +28,10 @@
 #include <bitcoin/system/stream/streamers/byte_writer.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/bitwriter.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Suppress multiple inheritance warnings.
 // The inheritance is virtual, so not actually multiple.
@@ -41,9 +43,7 @@ namespace system {
 
 /// A bit writer that accepts an ostream.
 template <typename OStream = std::ostream>
-class bit_writer
-  : public byte_writer<OStream>,
-    public virtual bitwriter
+class bit_writer : public byte_writer<OStream>, public virtual bitwriter
 {
 public:
     /// Constructors.

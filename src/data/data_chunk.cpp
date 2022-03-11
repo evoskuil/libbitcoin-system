@@ -23,12 +23,14 @@
 #include <cstdint>
 #include <bitcoin/system/data/data_slice.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 data_chunk to_chunk(uint8_t byte) noexcept
 {
-    return { byte };
+    return {byte};
 }
 
 data_chunk to_chunk(const data_slice& bytes) noexcept
@@ -39,13 +41,13 @@ data_chunk to_chunk(const data_slice& bytes) noexcept
 data_chunk build_chunk(const data_loaf& slices, size_t extra_reserve) noexcept
 {
     size_t size = 0;
-    for (const auto& slice: slices)
+    for (const auto& slice : slices)
         size += slice.size();
 
     data_chunk out;
     out.reserve(size + extra_reserve);
 
-    for (const auto& slice: slices)
+    for (const auto& slice : slices)
         out.insert(out.end(), slice.begin(), slice.end());
 
     return out;
@@ -54,7 +56,8 @@ data_chunk build_chunk(const data_loaf& slices, size_t extra_reserve) noexcept
 data_chunk splice(const data_slice& left, const data_slice& right) noexcept
 {
     data_chunk out(left.size() + right.size());
-    std::copy(right.begin(), right.end(),
+    std::copy(
+        right.begin(), right.end(),
         std::copy(left.begin(), left.end(), out.begin()));
 
     return out;

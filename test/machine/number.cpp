@@ -32,23 +32,23 @@ using namespace bc::system::machine;
 // ----------------------------------------------------------------------------
 
 #define BC_SCRIPT_NUMBER_CHECK_EQ(buffer_num, script_num, value, offset, test) \
-    BOOST_CHECK_MESSAGE( \
-        encode_base16((buffer_num).bytes) == encode_base16((script_num).data()), \
-        "\n\tvalue index : " << value << \
-        "\n\tvalue       : " << number_values[value] << \
-        "\n\toffset index: " << offset << \
-        "\n\toffset      : " << number_offsets[offset] << \
-        "\n\ttest        : " << test << \
-        "\n\tFAILURE     : [" << encode_base16((buffer_num).bytes) << " != " << \
-        encode_base16((script_num).data()) << "]"); \
-    BOOST_CHECK_MESSAGE((buffer_num).number == (script_num).int32(), \
-        "\n\tvalue index : " << value << \
-        "\n\tvalue       : " << number_values[value] << \
-        "\n\toffset index: " << offset << \
-        "\n\toffset      : " << number_offsets[offset] << \
-        "\n\ttest        : " << test << \
-        "\n\tFAILURE     : [" << (buffer_num).number << " != " << \
-        (script_num).int32() << "]")
+    BOOST_CHECK_MESSAGE(                                                       \
+        encode_base16((buffer_num).bytes)                                      \
+            == encode_base16((script_num).data()),                             \
+        "\n\tvalue index : "                                                   \
+            << value << "\n\tvalue       : " << number_values[value]           \
+            << "\n\toffset index: " << offset << "\n\toffset      : "          \
+            << number_offsets[offset] << "\n\ttest        : " << test          \
+            << "\n\tFAILURE     : [" << encode_base16((buffer_num).bytes)      \
+            << " != " << encode_base16((script_num).data()) << "]");           \
+    BOOST_CHECK_MESSAGE(                                                       \
+        (buffer_num).number == (script_num).int32(),                           \
+        "\n\tvalue index : "                                                   \
+            << value << "\n\tvalue       : " << number_values[value]           \
+            << "\n\toffset index: " << offset                                  \
+            << "\n\toffset      : " << number_offsets[offset]                  \
+            << "\n\ttest        : " << test << "\n\tFAILURE     : ["           \
+            << (buffer_num).number << " != " << (script_num).int32() << "]")
 
 static bool is(uint8_t byte)
 {
@@ -58,16 +58,16 @@ static bool is(uint8_t byte)
 // check left - right
 static bool subtract_overflow64(const int64_t left, const int64_t right)
 {
-    return
-        ((right > 0 && left < std::numeric_limits<int64_t>::min() + right) ||
-        (right < 0 && left > std::numeric_limits<int64_t>::max() + right));
+    return (
+        (right > 0 && left < std::numeric_limits<int64_t>::min() + right)
+        || (right < 0 && left > std::numeric_limits<int64_t>::max() + right));
 }
 
 static bool add_overflow64(const int64_t left, const int64_t right)
 {
-    return
-        ((right > 0 && left > (std::numeric_limits<int64_t>::max() - right)) ||
-        (right < 0 && left < (std::numeric_limits<int64_t>::min() - right)));
+    return (
+        (right > 0 && left > (std::numeric_limits<int64_t>::max() - right))
+        || (right < 0 && left < (std::numeric_limits<int64_t>::min() - right)));
 }
 
 static bool negate_overflow64(const int64_t number)
@@ -78,8 +78,9 @@ static bool negate_overflow64(const int64_t number)
 // Operators
 // ----------------------------------------------------------------------------
 
-static void CheckAdd(const int64_t num1, const int64_t num2, size_t value,
-    size_t offset, size_t test)
+static void CheckAdd(
+    const int64_t num1, const int64_t num2, size_t value, size_t offset,
+    size_t test)
 {
     const number_buffer& add = number_adds[value][offset][test];
     const number scriptnum1(num1);
@@ -87,15 +88,15 @@ static void CheckAdd(const int64_t num1, const int64_t num2, size_t value,
 
     if (!add_overflow64(num1, num2))
     {
-        BC_SCRIPT_NUMBER_CHECK_EQ(add, scriptnum1 + scriptnum2, value, offset,
-            test);
+        BC_SCRIPT_NUMBER_CHECK_EQ(
+            add, scriptnum1 + scriptnum2, value, offset, test);
         BC_SCRIPT_NUMBER_CHECK_EQ(add, scriptnum1 + num2, value, offset, test);
         BC_SCRIPT_NUMBER_CHECK_EQ(add, scriptnum2 + num1, value, offset, test);
     }
 }
 
-static void CheckNegate(const int64_t num, size_t value,
-    size_t offset, size_t test)
+static void CheckNegate(
+    const int64_t num, size_t value, size_t offset, size_t test)
 {
     const number_buffer& negated = number_negates[value][offset][test];
     const number scriptnum(num);
@@ -106,8 +107,9 @@ static void CheckNegate(const int64_t num, size_t value,
     }
 }
 
-static void CheckSubtract(const int64_t num1, const int64_t num2, size_t value,
-    size_t offset, size_t test)
+static void CheckSubtract(
+    const int64_t num1, const int64_t num2, size_t value, size_t offset,
+    size_t test)
 {
     const number_subtract& subtract = number_subtracts[value][offset][test];
     const number scriptnum1(num1);
@@ -115,23 +117,24 @@ static void CheckSubtract(const int64_t num1, const int64_t num2, size_t value,
 
     if (!subtract_overflow64(num1, num2))
     {
-        BC_SCRIPT_NUMBER_CHECK_EQ(subtract.forward, scriptnum1 - scriptnum2,
-            value, offset, test);
-        BC_SCRIPT_NUMBER_CHECK_EQ(subtract.forward, scriptnum1 - num2, value,
-            offset, test);
+        BC_SCRIPT_NUMBER_CHECK_EQ(
+            subtract.forward, scriptnum1 - scriptnum2, value, offset, test);
+        BC_SCRIPT_NUMBER_CHECK_EQ(
+            subtract.forward, scriptnum1 - num2, value, offset, test);
     }
 
     if (!subtract_overflow64(num2, num1))
     {
-        BC_SCRIPT_NUMBER_CHECK_EQ(subtract.reverse, scriptnum2 - scriptnum1,
-            value, offset, test);
-        BC_SCRIPT_NUMBER_CHECK_EQ(subtract.reverse, scriptnum2 - num1, value,
-            offset, test);
+        BC_SCRIPT_NUMBER_CHECK_EQ(
+            subtract.reverse, scriptnum2 - scriptnum1, value, offset, test);
+        BC_SCRIPT_NUMBER_CHECK_EQ(
+            subtract.reverse, scriptnum2 - num1, value, offset, test);
     }
 }
 
-static void CheckCompare(const int64_t num1, const int64_t num2,
-    size_t value, size_t offset, size_t test)
+static void CheckCompare(
+    const int64_t num1, const int64_t num2, size_t value, size_t offset,
+    size_t test)
 {
     const number_compare& compare = number_compares[value][offset][test];
     const number scriptnum1(num1);
@@ -166,8 +169,8 @@ static void CheckCompare(const int64_t num1, const int64_t num2,
     BOOST_CHECK_EQUAL(is(compare.gt), (scriptnum1 > num2));
 }
 
-static void RunOperators(const int64_t num1, int64_t num2, size_t value,
-    size_t offset, size_t test)
+static void RunOperators(
+    const int64_t num1, int64_t num2, size_t value, size_t offset, size_t test)
 {
     //// Diagnostics
     //std::stringstream message;
@@ -196,14 +199,14 @@ BOOST_AUTO_TEST_CASE(number__operators__data_driven__expected)
             auto a = number_values[i];
             auto b = number_offsets[j];
 
-            RunOperators(a, +a,         i, j, 0);
-            RunOperators(a, -a,         i, j, 1);
-            RunOperators(a, +b,         i, j, 2);
-            RunOperators(a, -b,         i, j, 3);
-            RunOperators(a + b, +b,     i, j, 4);
-            RunOperators(a + b, -b,     i, j, 5);
-            RunOperators(a - b, +b,     i, j, 6);
-            RunOperators(a - b, -b,     i, j, 7);
+            RunOperators(a, +a, i, j, 0);
+            RunOperators(a, -a, i, j, 1);
+            RunOperators(a, +b, i, j, 2);
+            RunOperators(a, -b, i, j, 3);
+            RunOperators(a + b, +b, i, j, 4);
+            RunOperators(a + b, -b, i, j, 5);
+            RunOperators(a - b, +b, i, j, 6);
+            RunOperators(a - b, -b, i, j, 7);
             RunOperators(a + b, +a + b, i, j, 8);
             RunOperators(a + b, +a - b, i, j, 9);
             RunOperators(a - b, +a + b, i, j, 10);
@@ -224,7 +227,7 @@ BOOST_AUTO_TEST_CASE(number__construct__default__zero)
 
 BOOST_AUTO_TEST_CASE(number__construct__zero__zero)
 {
-    number instance{ 0 };
+    number instance{0};
     BOOST_REQUIRE(instance.data().empty());
     BOOST_REQUIRE_EQUAL(instance.int32(), 0);
     BOOST_REQUIRE_EQUAL(instance.int64(), 0);
@@ -236,20 +239,22 @@ constexpr auto min32 = std::numeric_limits<int32_t>::min();
 constexpr auto max32 = std::numeric_limits<int32_t>::max();
 
 // little-endian (with 0x80 negative sentinel)
-static const data_chunk min64_data{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80 };
-static const data_chunk max64_data{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f };
+static const data_chunk min64_data{0x00, 0x00, 0x00, 0x00, 0x00,
+                                   0x00, 0x00, 0x80, 0x80};
+static const data_chunk max64_data{0xff, 0xff, 0xff, 0xff,
+                                   0xff, 0xff, 0xff, 0x7f};
 
 BOOST_AUTO_TEST_CASE(number__construct__minimum__minimums)
 {
-    number instance{ min64 };
-    BOOST_REQUIRE_EQUAL(instance.data(), min64_data );
+    number instance{min64};
+    BOOST_REQUIRE_EQUAL(instance.data(), min64_data);
     BOOST_REQUIRE_EQUAL(instance.int32(), min32);
     BOOST_REQUIRE_EQUAL(instance.int64(), min64);
 }
 
 BOOST_AUTO_TEST_CASE(number__construct__maximum__maximums)
 {
-    number instance{ max64 };
+    number instance{max64};
     BOOST_REQUIRE_EQUAL(instance.data(), max64_data);
     BOOST_REQUIRE_EQUAL(instance.int32(), max32);
     BOOST_REQUIRE_EQUAL(instance.int64(), max64);
@@ -269,7 +274,7 @@ BOOST_AUTO_TEST_CASE(number__set_data__empty_four__zero)
 BOOST_AUTO_TEST_CASE(number__set_data__one_four__expected)
 {
     constexpr uint8_t value = 0x42;
-    const data_chunk data{ value };
+    const data_chunk data{value};
     number instance{};
     BOOST_REQUIRE(instance.set_data(data, 4));
     BOOST_REQUIRE_EQUAL(instance.data(), data);
@@ -280,7 +285,7 @@ BOOST_AUTO_TEST_CASE(number__set_data__one_four__expected)
 BOOST_AUTO_TEST_CASE(number__set_data__one_five__expected)
 {
     constexpr uint8_t value = 0x42;
-    const data_chunk data{ value };
+    const data_chunk data{value};
     number instance{};
     BOOST_REQUIRE(instance.set_data(data, 5));
     BOOST_REQUIRE_EQUAL(instance.data(), data);
@@ -290,7 +295,7 @@ BOOST_AUTO_TEST_CASE(number__set_data__one_five__expected)
 
 BOOST_AUTO_TEST_CASE(number__set_data__four_four__expected)
 {
-    const data_chunk data{ 0x42, 0x43, 0x44, 0x45 };
+    const data_chunk data{0x42, 0x43, 0x44, 0x45};
     number instance{};
     BOOST_REQUIRE(instance.set_data(data, 4));
     BOOST_REQUIRE_EQUAL(instance.data(), data);
@@ -300,7 +305,7 @@ BOOST_AUTO_TEST_CASE(number__set_data__four_four__expected)
 
 BOOST_AUTO_TEST_CASE(number__set_data__five_five__expected)
 {
-    const data_chunk data{ 0x42, 0x43, 0x44, 0x45, 0x46 };
+    const data_chunk data{0x42, 0x43, 0x44, 0x45, 0x46};
     number instance{};
     BOOST_REQUIRE(instance.set_data(data, 5));
     BOOST_REQUIRE_EQUAL(instance.data(), data);
@@ -312,14 +317,14 @@ BOOST_AUTO_TEST_CASE(number__set_data__five_five__expected)
 
 BOOST_AUTO_TEST_CASE(number__set_data__five_four__expected)
 {
-    const data_chunk data{ 0x42, 0x43, 0x44, 0x45, 0x46 };
+    const data_chunk data{0x42, 0x43, 0x44, 0x45, 0x46};
     number instance{};
     BOOST_REQUIRE(!instance.set_data(data, 4));
 }
 
 BOOST_AUTO_TEST_CASE(number__set_data__six_five__expected)
 {
-    const data_chunk data{ 0x42, 0x43, 0x44, 0x45, 0x46, 0x47 };
+    const data_chunk data{0x42, 0x43, 0x44, 0x45, 0x46, 0x47};
     number instance{};
     BOOST_REQUIRE(!instance.set_data(data, 5));
 }
@@ -328,37 +333,37 @@ BOOST_AUTO_TEST_CASE(number__set_data__six_five__expected)
 
 BOOST_AUTO_TEST_CASE(number__is_true__one__true)
 {
-    number instance{ 1 };
+    number instance{1};
     BOOST_REQUIRE(instance.is_true());
 }
 
 BOOST_AUTO_TEST_CASE(number__is_true__zero__false)
 {
-    number instance{ 0 };
+    number instance{0};
     BOOST_REQUIRE(!instance.is_true());
 }
 
 BOOST_AUTO_TEST_CASE(number__is_false__one__false)
 {
-    number instance{ 1 };
+    number instance{1};
     BOOST_REQUIRE(!instance.is_false());
 }
 
 BOOST_AUTO_TEST_CASE(number__is_false__zero__true)
 {
-    number instance{ 0 };
+    number instance{0};
     BOOST_REQUIRE(instance.is_false());
 }
 
 BOOST_AUTO_TEST_CASE(number__is_negative__negative__true)
 {
-    number instance{ -1 };
+    number instance{-1};
     BOOST_REQUIRE(instance.is_negative());
 }
 
 BOOST_AUTO_TEST_CASE(number__is_negative__positive__false)
 {
-    number instance{ 1 };
+    number instance{1};
     BOOST_REQUIRE(!instance.is_negative());
 }
 

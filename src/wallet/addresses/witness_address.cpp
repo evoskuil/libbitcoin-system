@@ -31,9 +31,12 @@
 #include <bitcoin/system/wallet/keys/ec_private.hpp>
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 constexpr char separator = '1';
 constexpr uint8_t version_0 = 0;
@@ -60,76 +63,77 @@ const size_t witness_address::checksum_length = 6;
 
 // invalid
 witness_address::witness_address() noexcept
-  : program_(), prefix_(), version_(version_invalid)
+    : program_(), prefix_(), version_(version_invalid)
 {
 }
 
 // move
 witness_address::witness_address(witness_address&& other) noexcept
-  : program_(std::move(other.program_)), prefix_(other.prefix_),
-    version_(other.version_)
+    : program_(std::move(other.program_)), prefix_(other.prefix_),
+      version_(other.version_)
 {
 }
 
 // copy
 witness_address::witness_address(const witness_address& other) noexcept
-  : program_(other.program_), prefix_(other.prefix_), version_(other.version_)
+    : program_(other.program_), prefix_(other.prefix_), version_(other.version_)
 {
 }
 
 // fully specified by address
-witness_address::witness_address(const std::string& address,
-    bool strict) noexcept
-  : witness_address(from_address(address, strict))
+witness_address::witness_address(
+    const std::string& address, bool strict) noexcept
+    : witness_address(from_address(address, strict))
 {
 }
 
 // fully specified by parameter
-witness_address::witness_address(const data_slice& program,
-    const std::string& prefix, uint8_t version) noexcept
-  : witness_address(from_parameters(program, prefix, version))
+witness_address::witness_address(
+    const data_slice& program, const std::string& prefix,
+    uint8_t version) noexcept
+    : witness_address(from_parameters(program, prefix, version))
 {
 }
 
 // version_0_p2kh
-witness_address::witness_address(const short_hash& public_key_hash,
-    const std::string& prefix) noexcept
-  : witness_address(from_short(public_key_hash, prefix))
+witness_address::witness_address(
+    const short_hash& public_key_hash, const std::string& prefix) noexcept
+    : witness_address(from_short(public_key_hash, prefix))
 {
 }
 
 // version_0_p2kh
-witness_address::witness_address(const ec_private& secret,
-    const std::string& prefix) noexcept
-  : witness_address(from_private(secret, prefix))
+witness_address::witness_address(
+    const ec_private& secret, const std::string& prefix) noexcept
+    : witness_address(from_private(secret, prefix))
 {
 }
 
 // version_0_p2kh
-witness_address::witness_address(const ec_public& point,
-    const std::string& prefix) noexcept
-  : witness_address(from_public(point, prefix))
+witness_address::witness_address(
+    const ec_public& point, const std::string& prefix) noexcept
+    : witness_address(from_public(point, prefix))
 {
 }
 
 // version_0_p2sh
-witness_address::witness_address(const hash_digest& script_hash,
-    const std::string& prefix) noexcept
-  : witness_address(from_long(script_hash, prefix))
+witness_address::witness_address(
+    const hash_digest& script_hash, const std::string& prefix) noexcept
+    : witness_address(from_long(script_hash, prefix))
 {
 }
 
 // version_0_p2sh
-witness_address::witness_address(const chain::script& script,
-    const std::string& prefix) noexcept
-  : witness_address(from_script(script, prefix))
+witness_address::witness_address(
+    const chain::script& script, const std::string& prefix) noexcept
+    : witness_address(from_script(script, prefix))
 {
 }
 
 // private
-witness_address::witness_address(const std::string& prefix, uint8_t version,
-    data_chunk&& program) noexcept
-  : program_(std::move(program)), prefix_(prefix), version_(version)
+witness_address::witness_address(
+    const std::string& prefix, uint8_t version, data_chunk&& program) noexcept
+    : program_(std::move(program)), prefix_(prefix), version_(version)
 {
 }
 
@@ -141,8 +145,8 @@ inline bool is_valid_program(const data_slice& program) noexcept
 {
     // BIP141: the script consists of ... a data push between 2 and 40 bytes.
     const auto size = program.size();
-    return size >= witness_address::program_minimum_size &&
-        size <= witness_address::program_maximum_size;
+    return size >= witness_address::program_minimum_size
+           && size <= witness_address::program_maximum_size;
 }
 
 // local
@@ -154,11 +158,12 @@ inline bool is_valid_version(uint8_t version) noexcept
 // local
 static bool has_invalid_prefix_character(const std::string& prefix) noexcept
 {
-    return std::any_of(prefix.begin(), prefix.end(),
+    return std::any_of(
+        prefix.begin(), prefix.end(),
         [](const char character) noexcept
         {
-            return character < witness_address::prefix_minimum_character ||
-                character > witness_address::prefix_maximum_character;
+            return character < witness_address::prefix_minimum_character
+                   || character > witness_address::prefix_maximum_character;
         });
 }
 
@@ -178,8 +183,9 @@ witness_address::parse_result witness_address::parse_prefix(
         return parse_result::prefix_too_short;
 
     // A separator, version, program and checksum are also required.
-    if (prefix.length() > (address_maximum_length - two -
-        program_minimum_length - checksum_length))
+    if (prefix.length()
+        > (address_maximum_length - two - program_minimum_length
+           - checksum_length))
         return parse_result::prefix_too_long;
 
     // Excludes all non-ascii as well.
@@ -189,34 +195,34 @@ witness_address::parse_result witness_address::parse_prefix(
     // If strict require a known prefix.
     if (strict && prefix != mainnet && prefix != testnet)
         return parse_result::prefix_unknown;
-        
+
     return parse_result::valid;
 }
 
-witness_address::program_type witness_address::parse_program(uint8_t version,
-    const data_slice& program, bool strict) noexcept
+witness_address::program_type witness_address::parse_program(
+    uint8_t version, const data_slice& program, bool strict) noexcept
 {
     if (!is_valid_version(version) || !is_valid_program(program))
         return program_type::invalid;
 
     switch (version)
     {
-        case version_0:
+    case version_0:
+    {
+        switch (program.size())
         {
-            switch (program.size())
-            {
-                case version_0_p2kh_program_size:
-                    return program_type::version_0_p2kh;
-                case version_0_p2sh_program_size:
-                    return program_type::version_0_p2sh;
-                default:
-                    return program_type::invalid;
-            }
-        }
+        case version_0_p2kh_program_size:
+            return program_type::version_0_p2kh;
+        case version_0_p2sh_program_size:
+            return program_type::version_0_p2sh;
         default:
-        {
-            return strict ? program_type::invalid : program_type::unknown;
+            return program_type::invalid;
         }
+    }
+    default:
+    {
+        return strict ? program_type::invalid : program_type::unknown;
+    }
     }
 }
 
@@ -283,56 +289,57 @@ witness_address::parse_result witness_address::parse_address(
 // ----------------------------------------------------------------------------
 
 // fully specified by address
-witness_address witness_address::from_address(const std::string& address,
-    bool strict) noexcept
+witness_address witness_address::from_address(
+    const std::string& address, bool strict) noexcept
 {
     std::string prefix;
     uint8_t version;
     data_chunk program;
 
     // Unknown programs are invalid if strict.
-    if (parse_address(prefix, version, program, address, strict) !=
-        parse_result::valid)
+    if (parse_address(prefix, version, program, address, strict)
+        != parse_result::valid)
         return {};
 
-    return { prefix, version, std::move(program) };
+    return {prefix, version, std::move(program)};
 }
 
 // fully specified by parameter
-witness_address witness_address::from_parameters(const data_slice& program,
-    const std::string& prefix, uint8_t version) noexcept
+witness_address witness_address::from_parameters(
+    const data_slice& program, const std::string& prefix,
+    uint8_t version) noexcept
 {
     switch (parse_program(version, program, false))
     {
-        case program_type::version_0_p2kh:
-            return from_short(to_array<short_hash_size>(program), prefix);
-        case program_type::version_0_p2sh:
-            return from_long(to_array<hash_size>(program), prefix);
-        case program_type::unknown:
-            return parse_prefix(prefix, false) == parse_result::valid ?
-                witness_address{ prefix, version, program } :
-                witness_address{};
-        case program_type::invalid:
-        default:
-            return {};
+    case program_type::version_0_p2kh:
+        return from_short(to_array<short_hash_size>(program), prefix);
+    case program_type::version_0_p2sh:
+        return from_long(to_array<hash_size>(program), prefix);
+    case program_type::unknown:
+        return parse_prefix(prefix, false) == parse_result::valid
+                   ? witness_address{prefix, version, program}
+                   : witness_address{};
+    case program_type::invalid:
+    default:
+        return {};
     }
 }
 
 // version_0_p2kh
-witness_address witness_address::from_short(const short_hash& hash,
-    const std::string& prefix) noexcept
+witness_address witness_address::from_short(
+    const short_hash& hash, const std::string& prefix) noexcept
 {
     if (parse_prefix(prefix) != parse_result::valid)
         return {};
 
     // If the version byte is 0, and the witness program is 20 bytes it is
     // interpreted as a pay-to-witness-public-key-hash (P2WPKH) program.
-    return { prefix, version_0, to_chunk(hash) };
+    return {prefix, version_0, to_chunk(hash)};
 }
 
 // version_0_p2kh
-witness_address witness_address::from_private(const ec_private& secret,
-    const std::string& prefix) noexcept
+witness_address witness_address::from_private(
+    const ec_private& secret, const std::string& prefix) noexcept
 {
     if (!secret)
         return {};
@@ -342,8 +349,8 @@ witness_address witness_address::from_private(const ec_private& secret,
 }
 
 // version_0_p2kh
-witness_address witness_address::from_public(const ec_public& point,
-    const std::string& prefix) noexcept
+witness_address witness_address::from_public(
+    const ec_public& point, const std::string& prefix) noexcept
 {
     if (!point)
         return {};
@@ -353,20 +360,20 @@ witness_address witness_address::from_public(const ec_public& point,
 }
 
 // version_0_p2sh
-witness_address witness_address::from_long(const hash_digest& hash,
-    const std::string& prefix) noexcept
+witness_address witness_address::from_long(
+    const hash_digest& hash, const std::string& prefix) noexcept
 {
     if (parse_prefix(prefix) != parse_result::valid)
         return {};
 
     // If the version byte is 0, and the witness program is 32 bytes it is
     // interpreted as a pay-to-witness-script-hash (P2WSH) program.
-    return { prefix, version_0, to_chunk(hash) };
+    return {prefix, version_0, to_chunk(hash)};
 }
 
 // version_0_p2sh
-witness_address witness_address::from_script(const chain::script& script,
-    const std::string& prefix) noexcept
+witness_address witness_address::from_script(
+    const chain::script& script, const std::string& prefix) noexcept
 {
     // Disallow construction of a valid address for an invalid script.
     if (!script.is_valid())
@@ -430,7 +437,7 @@ chain::script witness_address::script() const noexcept
     if (!(*this))
         return {};
 
-    return { chain::script::to_pay_witness_pattern(version_, program_) };
+    return {chain::script::to_pay_witness_pattern(version_, program_)};
 }
 
 // Operators.
@@ -458,14 +465,14 @@ bool witness_address::operator<(const witness_address& other) const noexcept
     return encoded() < other.encoded();
 }
 
-bool operator==(const witness_address& left,
-    const witness_address& right) noexcept
+bool operator==(
+    const witness_address& left, const witness_address& right) noexcept
 {
     return left.encoded() == right.encoded();
 }
 
-bool operator!=(const witness_address& left,
-    const witness_address& right) noexcept
+bool operator!=(
+    const witness_address& left, const witness_address& right) noexcept
 {
     return !(left == right);
 }

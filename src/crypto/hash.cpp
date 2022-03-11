@@ -35,8 +35,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/serial/serial.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Hash conversions of corresponding integers.
 // ----------------------------------------------------------------------------
@@ -119,8 +121,8 @@ hash_digest bitcoin_hash(const data_slice& data) noexcept
     return sha256_hash(sha256_hash(data));
 }
 
-hash_digest bitcoin_hash(const data_slice& first,
-    const data_slice& second) noexcept
+hash_digest bitcoin_hash(
+    const data_slice& first, const data_slice& second) noexcept
 {
     return sha256_hash(sha256_hash(first, second));
 }
@@ -192,34 +194,36 @@ data_chunk sha256_hash_chunk(const data_slice& data) noexcept
     return hash;
 }
 
-hash_digest sha256_hash(const data_slice& first,
-    const data_slice& second) noexcept
+hash_digest sha256_hash(
+    const data_slice& first, const data_slice& second) noexcept
 {
     using namespace intrinsics;
 
     hash_digest hash;
-    sha256_context context{ sha256_initial };
+    sha256_context context{sha256_initial};
     sha256_update(context, first.data(), first.size());
     sha256_update(context, second.data(), second.size());
     sha256_finalize(context, hash.data());
     return hash;
 }
 
-hash_digest hmac_sha256_hash(const data_slice& data,
-    const data_slice& key) noexcept
+hash_digest hmac_sha256_hash(
+    const data_slice& data, const data_slice& key) noexcept
 {
     hash_digest hash;
     HMACSHA256(data.data(), data.size(), key.data(), key.size(), hash.data());
     return hash;
 }
 
-data_chunk pbkdf2_hmac_sha256_chunk(const data_slice& passphrase,
-    const data_slice& salt, size_t iterations, size_t length)noexcept
+data_chunk pbkdf2_hmac_sha256_chunk(
+    const data_slice& passphrase, const data_slice& salt, size_t iterations,
+    size_t length) noexcept
 {
     data_chunk hash(no_fill_byte_allocator);
     hash.resize(length);
-    pbkdf2_sha256(passphrase.data(), passphrase.size(), salt.data(),
-        salt.size(), iterations, hash.data(), length);
+    pbkdf2_sha256(
+        passphrase.data(), passphrase.size(), salt.data(), salt.size(),
+        iterations, hash.data(), length);
     return hash;
 }
 
@@ -230,34 +234,37 @@ long_hash sha512_hash(const data_slice& data) noexcept
     return hash;
 }
 
-long_hash hmac_sha512_hash(const data_slice& data,
-    const data_slice& key) noexcept
+long_hash hmac_sha512_hash(
+    const data_slice& data, const data_slice& key) noexcept
 {
     long_hash hash;
     HMACSHA512(data.data(), data.size(), key.data(), key.size(), hash.data());
     return hash;
 }
 
-long_hash pkcs5_pbkdf2_hmac_sha512(const data_slice& passphrase,
-    const data_slice& salt, size_t iterations) noexcept
+long_hash pkcs5_pbkdf2_hmac_sha512(
+    const data_slice& passphrase, const data_slice& salt,
+    size_t iterations) noexcept
 {
     auto hash = null_long_hash;
-    pkcs5_pbkdf2(passphrase.data(), passphrase.size(),
-        salt.data(), salt.size(), hash.data(), hash.size(), iterations);
+    pkcs5_pbkdf2(
+        passphrase.data(), passphrase.size(), salt.data(), salt.size(),
+        hash.data(), hash.size(), iterations);
 
     // If pkcs5_pbkdf2 returns != 0 then hash will be zeroized.
     // This can only be caused by out-of-memory or invalid parameterization.
     return hash;
 }
 
-data_chunk scrypt_chunk(const data_slice& data, const data_slice& salt,
-    uint64_t work, uint32_t resources, uint32_t parallelism,
-    size_t length) noexcept
+data_chunk scrypt_chunk(
+    const data_slice& data, const data_slice& salt, uint64_t work,
+    uint32_t resources, uint32_t parallelism, size_t length) noexcept
 {
     data_chunk hash(no_fill_byte_allocator);
     data_chunk out(length, 0x00);
-    crypto_scrypt(data.data(), data.size(), salt.data(), salt.size(), work,
-        resources, parallelism, out.data(), out.size());
+    crypto_scrypt(
+        data.data(), data.size(), salt.data(), salt.size(), work, resources,
+        parallelism, out.data(), out.size());
 
     // If crypto_scrypt returns != 0 then out will be zeroized.
     // This can only be caused by out-of-memory or invalid parameterization.
@@ -271,7 +278,7 @@ size_t djb2_hash(const data_slice& data) noexcept
     size_t hash = 5381;
 
     // Efficient sum of ((hash * 33) + byte) for all bytes.
-    for (const auto byte: data)
+    for (const auto byte : data)
         hash = ((hash << 5) + hash) + byte;
 
     return hash;

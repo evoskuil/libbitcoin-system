@@ -24,24 +24,26 @@
 #include <bitcoin/system/config/base16.hpp>
 #include <bitcoin/system/exceptions.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 using namespace boost::program_options;
 
-transaction::transaction() noexcept
-  : value_()
+transaction::transaction() noexcept : value_()
 {
 }
 
 transaction::transaction(const chain::transaction& value) noexcept
-  : value_(value)
+    : value_(value)
 {
 }
 
 transaction::transaction(const transaction& other) noexcept
-  : transaction(other.value_)
+    : transaction(other.value_)
 {
 }
 
@@ -65,7 +67,7 @@ std::istream& operator>>(std::istream& input, transaction& argument)
     std::string hexcode;
     input >> hexcode;
 
-    argument.value_ = chain::transaction{ base16(hexcode), true };
+    argument.value_ = chain::transaction{base16(hexcode), true};
 
     if (!argument.value_.is_valid())
         throw istream_exception(hexcode);
@@ -73,8 +75,8 @@ std::istream& operator>>(std::istream& input, transaction& argument)
     return input;
 }
 
-std::ostream& operator<<(std::ostream& output,
-    const transaction& argument) noexcept
+std::ostream& operator<<(
+    std::ostream& output, const transaction& argument) noexcept
 {
     output << base16(argument.value_.to_data(true));
     return output;

@@ -29,9 +29,12 @@
 #include <bitcoin/system/wallet/addresses/uri.hpp>
 #include <bitcoin/system/wallet/addresses/uri_reader.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 static const auto bitcoin_scheme = "bitcoin";
 static const auto parameter_amount = "amount";
@@ -41,19 +44,18 @@ static const auto parameter_r = "r";
 static const auto parameter_req_ = "req-";
 static constexpr size_t parameter_req_length = 4;
 
-bitcoin_uri::bitcoin_uri() noexcept
-  : strict_(true)
+bitcoin_uri::bitcoin_uri() noexcept : strict_(true)
 {
 }
 
 bitcoin_uri::bitcoin_uri(const bitcoin_uri& other) noexcept
-  : strict_(other.strict_), scheme_(other.scheme_), address_(other.address_),
-    query_(other.query_)
+    : strict_(other.strict_), scheme_(other.scheme_), address_(other.address_),
+      query_(other.query_)
 {
 }
 
 bitcoin_uri::bitcoin_uri(const std::string& uri, bool strict) noexcept
-  : bitcoin_uri(uri_reader::parse<bitcoin_uri>(uri, strict))
+    : bitcoin_uri(uri_reader::parse<bitcoin_uri>(uri, strict))
 {
 }
 
@@ -226,8 +228,8 @@ bool bitcoin_uri::set_fragment(const std::string& /* fragment */) noexcept
     return false;
 }
 
-bool bitcoin_uri::set_parameter(const std::string& key,
-    const std::string& value) noexcept
+bool bitcoin_uri::set_parameter(
+    const std::string& key, const std::string& value) noexcept
 {
     const auto required = [](const std::string& key) noexcept
     {
@@ -267,8 +269,8 @@ bool bitcoin_uri::operator<(const bitcoin_uri& other) const noexcept
 
 bool bitcoin_uri::operator==(const bitcoin_uri& other) const noexcept
 {
-    return strict_ == other.strict_ && scheme_ == other.scheme_ &&
-        address_ == other.address_ && query_ == other.query_;
+    return strict_ == other.strict_ && scheme_ == other.scheme_
+           && address_ == other.address_ && query_ == other.query_;
 }
 
 bool bitcoin_uri::operator!=(const bitcoin_uri& other) const noexcept

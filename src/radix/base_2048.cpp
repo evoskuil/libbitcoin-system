@@ -32,50 +32,56 @@
 // The 5 bit encoding (words) is authoritative as byte encoding is padded.
 // Invalid padding results in a decoding error.
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 // Use the BIP39 dictionary set.
 // This allows the encoding to map to BIP39 in any language.
-static const words::mnemonic::catalogs base2048
-{
-    {
-        words::mnemonic::catalog{ language::en, words::mnemonic::en },
-        words::mnemonic::catalog{ language::es, words::mnemonic::es },
-        words::mnemonic::catalog{ language::it, words::mnemonic::it },
-        words::mnemonic::catalog{ language::fr, words::mnemonic::fr },
-        words::mnemonic::catalog{ language::cs, words::mnemonic::cs },
-        words::mnemonic::catalog{ language::pt, words::mnemonic::pt },
-        words::mnemonic::catalog{ language::ja, words::mnemonic::ja },
-        words::mnemonic::catalog{ language::ko, words::mnemonic::ko },
-        words::mnemonic::catalog{ language::zh_Hans, words::mnemonic::zh_Hans },
-        words::mnemonic::catalog{ language::zh_Hant, words::mnemonic::zh_Hant }
-    }
-};
+static const words::mnemonic::catalogs base2048{
+    {words::mnemonic::catalog{language::en, words::mnemonic::en},
+     words::mnemonic::catalog{language::es, words::mnemonic::es},
+     words::mnemonic::catalog{language::it, words::mnemonic::it},
+     words::mnemonic::catalog{language::fr, words::mnemonic::fr},
+     words::mnemonic::catalog{language::cs, words::mnemonic::cs},
+     words::mnemonic::catalog{language::pt, words::mnemonic::pt},
+     words::mnemonic::catalog{language::ja, words::mnemonic::ja},
+     words::mnemonic::catalog{language::ko, words::mnemonic::ko},
+     words::mnemonic::catalog{language::zh_Hans, words::mnemonic::zh_Hans},
+     words::mnemonic::catalog{language::zh_Hant, words::mnemonic::zh_Hant}}};
 
 // encode
 
-static bool encode_base2048(base2048_chunk& out, const string_list& in,
-    language language) noexcept
+static bool encode_base2048(
+    base2048_chunk& out, const string_list& in, language language) noexcept
 {
     // Empty if words not contained in dictionary.
     const auto indexes = base2048.index(in, language);
     if (indexes.empty() && !in.empty())
         return false;
 
-    if (std::any_of(indexes.begin(), indexes.end(),
-        [](const int32_t& index) { return is_negative(index); }))
+    if (std::any_of(
+            indexes.begin(), indexes.end(),
+            [](const int32_t& index)
+            {
+                return is_negative(index);
+            }))
         return false;
 
     out.resize(indexes.size());
-    std::transform(indexes.begin(), indexes.end(), out.begin(),
-        [](const int32_t& index) { return static_cast<uint11_t>(index); });
+    std::transform(
+        indexes.begin(), indexes.end(), out.begin(),
+        [](const int32_t& index)
+        {
+            return static_cast<uint11_t>(index);
+        });
 
     return true;
 }
 
-bool encode_base2048_list(data_chunk& out, const string_list& in,
-    language language) noexcept
+bool encode_base2048_list(
+    data_chunk& out, const string_list& in, language language) noexcept
 {
     base2048_chunk packed;
     if (!encode_base2048(packed, in, language))
@@ -85,8 +91,8 @@ bool encode_base2048_list(data_chunk& out, const string_list& in,
     return true;
 }
 
-bool encode_base2048(data_chunk& out, const std::string& in,
-    language language) noexcept
+bool encode_base2048(
+    data_chunk& out, const std::string& in, language language) noexcept
 {
     out.clear();
 
@@ -96,19 +102,23 @@ bool encode_base2048(data_chunk& out, const std::string& in,
 
 // decode
 
-static string_list decode_base2048(const base2048_chunk& data,
-    language language) noexcept
+static string_list decode_base2048(
+    const base2048_chunk& data, language language) noexcept
 {
     words::mnemonic::catalogs::search indexes(data.size());
-    std::transform(data.begin(), data.end(), indexes.begin(),
-        [](const uint11_t& index) { return index.convert_to<size_t>(); });
+    std::transform(
+        data.begin(), data.end(), indexes.begin(),
+        [](const uint11_t& index)
+        {
+            return index.convert_to<size_t>();
+        });
 
     // Empty if dictionary not found.
     return base2048.at(indexes, language);
 }
 
-string_list decode_base2048_list(const data_chunk& data,
-    language language) noexcept
+string_list decode_base2048_list(
+    const data_chunk& data, language language) noexcept
 {
     return decode_base2048(base2048_pack(data), language);
 }
@@ -151,7 +161,7 @@ data_chunk base2048_unpack(const base2048_chunk& packed) noexcept
     data_chunk unpacked;
     write::bits::data sink(unpacked);
 
-    for (const auto& value: packed)
+    for (const auto& value : packed)
         sink.write_bits(value.convert_to<uint16_t>(), 11);
 
     sink.flush();

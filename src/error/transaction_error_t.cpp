@@ -21,41 +21,45 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/error/macros.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace error {
-
-DEFINE_ERROR_T_MESSAGE_MAP(transaction_error)
+namespace libbitcoin
 {
-    { transaction_success, "transaction success" },
+namespace system
+{
+namespace error
+{
+
+DEFINE_ERROR_T_MESSAGE_MAP(transaction_error){
+    {transaction_success, "transaction success"},
 
     // check transaction
-    { empty_transaction, "transaction inputs or outputs empty" },
-    { previous_output_null, "non-coinbase transaction has input with null previous output" },
-    { spend_overflow, "spend outside valid range" },
-    { invalid_coinbase_script_size, "coinbase script too small or large" },
-    { coinbase_transaction, "coinbase transaction disallowed in memory pool" },
-    { transaction_internal_double_spend, "double spend internal to transaction" },
-    { transaction_size_limit, "transaction size limit exceeded" },
-    { transaction_legacy_sigop_limit, "too many transaction legacy signature operations" },
+    {empty_transaction, "transaction inputs or outputs empty"},
+    {previous_output_null,
+     "non-coinbase transaction has input with null previous output"},
+    {spend_overflow, "spend outside valid range"},
+    {invalid_coinbase_script_size, "coinbase script too small or large"},
+    {coinbase_transaction, "coinbase transaction disallowed in memory pool"},
+    {transaction_internal_double_spend, "double spend internal to transaction"},
+    {transaction_size_limit, "transaction size limit exceeded"},
+    {transaction_legacy_sigop_limit,
+     "too many transaction legacy signature operations"},
 
     // accept transaction
-    { unexpected_witness_transaction, "unexpected witness transaction" },
-    { transaction_non_final, "transaction currently non-final for next block" },
-    { premature_validation, "transaction validation under checkpoint" },
-    { unspent_duplicate, "matching transaction with unspent outputs" },
-    { missing_previous_output, "previous output not found" },
-    { double_spend, "double spend of input" },
-    { coinbase_maturity, "immature coinbase spent" },
-    { spend_exceeds_value, "spend exceeds value of inputs" },
-    { transaction_sigop_limit, "too many transaction embedded signature operations" },
-    { relative_time_locked, "transaction currently locked" },
-    { transaction_weight_limit, "transaction weight limit exceeded" },
+    {unexpected_witness_transaction, "unexpected witness transaction"},
+    {transaction_non_final, "transaction currently non-final for next block"},
+    {premature_validation, "transaction validation under checkpoint"},
+    {unspent_duplicate, "matching transaction with unspent outputs"},
+    {missing_previous_output, "previous output not found"},
+    {double_spend, "double spend of input"},
+    {coinbase_maturity, "immature coinbase spent"},
+    {spend_exceeds_value, "spend exceeds value of inputs"},
+    {transaction_sigop_limit,
+     "too many transaction embedded signature operations"},
+    {relative_time_locked, "transaction currently locked"},
+    {transaction_weight_limit, "transaction weight limit exceeded"},
 
     // dconfirm transaction
-    { unconfirmed_spend, "spend of unconfirmed previous output" },
-    { confirmed_double_spend, "spend of confirmed spent previous output" }
-};
+    {unconfirmed_spend, "spend of unconfirmed previous output"},
+    {confirmed_double_spend, "spend of confirmed spent previous output"}};
 
 DEFINE_ERROR_T_CATEGORY(transaction_error, "transaction", "transaction code")
 

@@ -26,27 +26,29 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
-ek_private::ek_private() noexcept
-  : valid_(false), private_()
+ek_private::ek_private() noexcept : valid_(false), private_()
 {
 }
 
 ek_private::ek_private(const std::string& encoded) noexcept
-  : ek_private(from_string(encoded))
+    : ek_private(from_string(encoded))
 {
 }
 
 ek_private::ek_private(const ek_private& other) noexcept
-  : valid_(other.valid_), private_(other.private_)
+    : valid_(other.valid_), private_(other.private_)
 {
 }
 
 ek_private::ek_private(const encrypted_private& value) noexcept
-  : valid_(true), private_(value)
+    : valid_(true), private_(value)
 {
 }
 
@@ -58,8 +60,8 @@ ek_private ek_private::from_string(const std::string& encoded) noexcept
     // TODO: incorporate existing parser here, setting new members.
 
     encrypted_private key;
-    return decode_base58(key, encoded) && verify_checksum(key) ?
-        ek_private(key) : ek_private();
+    return decode_base58(key, encoded) && verify_checksum(key) ? ek_private(key)
+                                                               : ek_private();
 }
 
 // Cast operators.

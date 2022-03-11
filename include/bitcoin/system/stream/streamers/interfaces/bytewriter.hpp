@@ -27,9 +27,11 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/error/error.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 /// A byte writer interface.
 class bytewriter
 {
@@ -67,8 +69,8 @@ public:
 
     /// This is only used for writing Bitcoin command command text.
     /// Write string to specified length, padded with nulls as required.
-    virtual void write_string_buffer(const std::string& value, size_t size)
-        noexcept = 0;
+    virtual void write_string_buffer(
+        const std::string& value, size_t size) noexcept = 0;
 
     /// Flush the buffer.
     virtual void flush() noexcept = 0;

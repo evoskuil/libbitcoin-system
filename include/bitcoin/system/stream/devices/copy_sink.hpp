@@ -25,26 +25,25 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/device.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Sink for ios::stream, copies bytes to Container.
 template <typename Container, if_base_of<data_slab, Container> = true>
-class copy_sink
-  : public device<Container>
+class copy_sink : public device<Container>
 {
 public:
     typedef const Container& container;
-    struct category
-      : ios::output_seekable, ios::direct_tag
+    struct category : ios::output_seekable, ios::direct_tag
     {
     };
 
     copy_sink(const Container& data) noexcept
-      : device<Container>(limit<typename device<Container>::size_type>(
-          data.size())),
-        container_(data),
-        next_(data.begin())
+        : device<Container>(
+            limit<typename device<Container>::size_type>(data.size())),
+          container_(data), next_(data.begin())
     {
     }
 

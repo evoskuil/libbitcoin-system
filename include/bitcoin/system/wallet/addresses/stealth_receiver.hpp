@@ -26,18 +26,22 @@
 #include <bitcoin/system/wallet/addresses/payment_address.hpp>
 #include <bitcoin/system/wallet/addresses/stealth_address.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /// This class does not support multisignature stealth addresses.
 class BC_API stealth_receiver
 {
 public:
     /// Constructors.
-    stealth_receiver(const ec_secret& scan_private,
-        const ec_secret& spend_private, const binary& filter,
-        uint8_t version=payment_address::mainnet_p2kh) noexcept;
+    stealth_receiver(
+        const ec_secret& scan_private, const ec_secret& spend_private,
+        const binary& filter,
+        uint8_t version = payment_address::mainnet_p2kh) noexcept;
 
     /// Caller must test after construct.
     operator bool() const noexcept;
@@ -46,11 +50,13 @@ public:
     const wallet::stealth_address& stealth_address() const noexcept;
 
     /// Derive a payment address to compare against the blockchain.
-    bool derive_address(payment_address& out_address,
+    bool derive_address(
+        payment_address& out_address,
         const ec_compressed& ephemeral_public) const noexcept;
 
     /// Once address is discovered, derive the private spend key.
-    bool derive_private(ec_secret& out_private,
+    bool derive_private(
+        ec_secret& out_private,
         const ec_compressed& ephemeral_public) const noexcept;
 
 private:

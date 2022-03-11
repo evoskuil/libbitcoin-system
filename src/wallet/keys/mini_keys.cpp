@@ -21,9 +21,12 @@
 #include <string>
 #include <bitcoin/system/crypto/crypto.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 static bool check_minikey(const std::string& minikey) noexcept
 {

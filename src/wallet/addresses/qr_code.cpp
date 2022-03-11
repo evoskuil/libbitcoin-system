@@ -30,9 +30,12 @@
 #include <bitcoin/system/wallet/addresses/qr_code.hpp>
 #include "qrencode/qrencode.h"
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 // External (embedded) qrencode library types.
 static QRecLevel recovery_level_to_qr_recovery_level(
@@ -40,14 +43,14 @@ static QRecLevel recovery_level_to_qr_recovery_level(
 {
     switch (level)
     {
-        case qr_code::recovery_level::low:
-            return QR_ECLEVEL_L;
-        case qr_code::recovery_level::medium:
-            return QR_ECLEVEL_M;
-        case qr_code::recovery_level::high:
-            return QR_ECLEVEL_Q;
-        default:
-            return QR_ECLEVEL_H;
+    case qr_code::recovery_level::low:
+        return QR_ECLEVEL_L;
+    case qr_code::recovery_level::medium:
+        return QR_ECLEVEL_M;
+    case qr_code::recovery_level::high:
+        return QR_ECLEVEL_Q;
+    default:
+        return QR_ECLEVEL_H;
     }
 }
 
@@ -57,24 +60,24 @@ static QRencodeMode encode_mode_to_qr_encode_mode(
 {
     switch (mode)
     {
-        // These are not supported by QRcode_encodeString.
-        ////case qr_code::encode_mode::numeric:
-        ////    return QR_MODE_NUM;
-        ////case qr_code::encode_mode::alpha_numeric:
-        ////    return QR_MODE_AN;
-        ////case qr_code::encode_mode::eci_mode:
-        ////    return QR_MODE_ECI;
-        ////case qr_code::encode_mode::fcn1_1:
-        ////    return QR_MODE_FNC1FIRST;
-        ////case qr_code::encode_mode::fcn1_2:
-        ////    return QR_MODE_FNC1SECOND;
-        ////default:
-        ////    return QR_MODE_NUL;
-        case qr_code::encode_mode::kanji:
-            return QR_MODE_KANJI;
-        default:
-        case qr_code::encode_mode::eight_bit:
-            return QR_MODE_8;
+    // These are not supported by QRcode_encodeString.
+    ////case qr_code::encode_mode::numeric:
+    ////    return QR_MODE_NUM;
+    ////case qr_code::encode_mode::alpha_numeric:
+    ////    return QR_MODE_AN;
+    ////case qr_code::encode_mode::eci_mode:
+    ////    return QR_MODE_ECI;
+    ////case qr_code::encode_mode::fcn1_1:
+    ////    return QR_MODE_FNC1FIRST;
+    ////case qr_code::encode_mode::fcn1_2:
+    ////    return QR_MODE_FNC1SECOND;
+    ////default:
+    ////    return QR_MODE_NUL;
+    case qr_code::encode_mode::kanji:
+        return QR_MODE_KANJI;
+    default:
+    case qr_code::encode_mode::eight_bit:
+        return QR_MODE_8;
     }
 }
 
@@ -95,9 +98,10 @@ static bool safe_free_and_return(QRcode* qrcode, bool result) noexcept
 
 // TODO: remove scale and margin, call to_pixels() independently.
 // TODO: create independent method to perform scaling and margining.
-bool qr_code::encode(std::ostream& out, const std::string& value,
-    uint8_t version, uint16_t scale, uint16_t margin, recovery_level level,
-    encode_mode mode, bool case_sensitive) noexcept
+bool qr_code::encode(
+    std::ostream& out, const std::string& value, uint8_t version,
+    uint16_t scale, uint16_t margin, recovery_level level, encode_mode mode,
+    bool case_sensitive) noexcept
 {
     // Guard integer conversion, encode would return null pointer.
     if (version > maximum_version)
@@ -110,7 +114,8 @@ bool qr_code::encode(std::ostream& out, const std::string& value,
     // External (embedded) qrencode library function.
     // QRcode_encodeString supports only QR_MODE_8 and QR_MODE_KANJI.
     // TODO: look into supporting other modes via QRcode_encodeDataStructured.
-    const auto qrcode = QRcode_encodeString(value.c_str(), signed_version,
+    const auto qrcode = QRcode_encodeString(
+        value.c_str(), signed_version,
         recovery_level_to_qr_recovery_level(level),
         encode_mode_to_qr_encode_mode(mode), sensitive);
 
@@ -140,8 +145,8 @@ bool qr_code::encode(std::ostream& out, const std::string& value,
     const auto pixels = to_pixels(data, qrcode->width, scale, margin);
 
     // Convert to TIFF image stream.
-    const auto result = tiff::to_image(out, pixels,
-        static_cast<uint16_t>(width));
+    const auto result =
+        tiff::to_image(out, pixels, static_cast<uint16_t>(width));
 
     return safe_free_and_return(qrcode, result);
 }
@@ -150,12 +155,13 @@ bool qr_code::encode(std::ostream& out, const std::string& value,
 // Scale may move the image off of a byte-aligned square of pixels in bytes.
 // So the dimensions cannot be derived from the result, caller must retain.
 // pixel_width = 2 * margin + scale * coded_width.
-data_chunk qr_code::to_pixels(const data_chunk& coded, uint32_t width_coded,
-    uint16_t scale, uint16_t margin) noexcept
+data_chunk qr_code::to_pixels(
+    const data_chunk& coded, uint32_t width_coded, uint16_t scale,
+    uint16_t margin) noexcept
 {
     // Pixel is the least significant bit of a qrencode byte.
-    constexpr auto pixel_mask = uint8_t{ 0x01 };
-    constexpr auto pixels_off = uint8_t{ 0x00 };
+    constexpr auto pixel_mask = uint8_t{0x01};
+    constexpr auto pixels_off = uint8_t{0x00};
     constexpr auto pixel_off = false;
 
     // For readability (image is always square).

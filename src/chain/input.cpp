@@ -32,131 +32,120 @@
 #include <bitcoin/system/math/math.hpp>
 #include <bitcoin/system/stream/stream.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 // Constructors.
 // ----------------------------------------------------------------------------
 
-// Default point is null_hash and point::null_index. 
-// Default prevout (metadata) is spent, invalid, max_size_t value. 
+// Default point is null_hash and point::null_index.
+// Default prevout (metadata) is spent, invalid, max_size_t value.
 input::input() noexcept
-  : input(
-      to_shared<chain::point>(),
-      to_shared<chain::script>(),
-      to_shared<chain::witness>(), 0, false,
-      to_shared<chain::prevout>())
+    : input(
+        to_shared<chain::point>(), to_shared<chain::script>(),
+        to_shared<chain::witness>(), 0, false, to_shared<chain::prevout>())
 {
 }
 
-input::input(input&& other) noexcept
-  : input(other)
+input::input(input&& other) noexcept : input(other)
 {
 }
 
 input::input(const input& other) noexcept
-  : input(
-      other.point_,
-      other.script_,
-      other.witness_,
-      other.sequence_,
-      other.valid_,
-      other.prevout)
+    : input(
+        other.point_, other.script_, other.witness_, other.sequence_,
+        other.valid_, other.prevout)
 {
 }
 
-input::input(chain::point&& point, chain::script&& script,
+input::input(
+    chain::point&& point, chain::script&& script, uint32_t sequence) noexcept
+    : input(
+        to_shared(std::move(point)), to_shared(std::move(script)),
+        to_shared<chain::witness>(), sequence, true,
+        to_shared<chain::prevout>())
+{
+}
+
+input::input(
+    const chain::point& point, const chain::script& script,
     uint32_t sequence) noexcept
-  : input(
-      to_shared(std::move(point)),
-      to_shared(std::move(script)),
-      to_shared<chain::witness>(), sequence, true,
-      to_shared<chain::prevout>())
+    : input(
+        to_shared(point), to_shared(script), to_shared<chain::witness>(),
+        sequence, true, to_shared<chain::prevout>())
 {
 }
 
-input::input(const chain::point& point, const chain::script& script,
+input::input(
+    const chain::point::ptr& point, const chain::script::ptr& script,
     uint32_t sequence) noexcept
-  : input(
-      to_shared(point),
-      to_shared(script),
-      to_shared<chain::witness>(), sequence, true,
-      to_shared<chain::prevout>())
+    : input(
+        point ? point : to_shared<chain::point>(),
+        script ? script : to_shared<chain::script>(),
+        std::make_shared<chain::witness>(), sequence, true,
+        std::make_shared<chain::prevout>())
 {
 }
 
-input::input(const chain::point::ptr& point, const chain::script::ptr& script,
+input::input(
+    chain::point&& point, chain::script&& script, chain::witness&& witness,
     uint32_t sequence) noexcept
-  : input(
-      point ? point : to_shared<chain::point>(),
-      script ? script : to_shared<chain::script>(),
-      std::make_shared<chain::witness>(), sequence, true,
-      std::make_shared<chain::prevout>())
+    : input(
+        to_shared(std::move(point)), to_shared(std::move(script)),
+        to_shared(std::move(witness)), sequence, true,
+        to_shared<chain::prevout>())
 {
 }
 
-input::input(chain::point&& point, chain::script&& script,
-    chain::witness&& witness, uint32_t sequence) noexcept
-  : input(
-      to_shared(std::move(point)),
-      to_shared(std::move(script)),
-      to_shared(std::move(witness)), sequence, true,
-      to_shared<chain::prevout>())
-{
-}
-
-input::input(const chain::point& point, const chain::script& script,
+input::input(
+    const chain::point& point, const chain::script& script,
     const chain::witness& witness, uint32_t sequence) noexcept
-  : input(
-      to_shared(point),
-      to_shared(script),
-      to_shared(witness), sequence, true,
-      to_shared<chain::prevout>())
+    : input(
+        to_shared(point), to_shared(script), to_shared(witness), sequence, true,
+        to_shared<chain::prevout>())
 {
 }
 
-input::input(const chain::point::ptr& point, const chain::script::ptr& script,
+input::input(
+    const chain::point::ptr& point, const chain::script::ptr& script,
     const chain::witness::ptr& witness, uint32_t sequence) noexcept
-  : input(point, script, witness, sequence, true, to_shared<chain::prevout>())
+    : input(point, script, witness, sequence, true, to_shared<chain::prevout>())
 {
 }
 
-input::input(const data_slice& data) noexcept
-  : input(stream::in::copy(data))
+input::input(const data_slice& data) noexcept : input(stream::in::copy(data))
 {
 }
 
 input::input(std::istream&& stream) noexcept
-  : input(read::bytes::istream(stream))
+    : input(read::bytes::istream(stream))
 {
 }
 
 input::input(std::istream& stream) noexcept
-  : input(read::bytes::istream(stream))
+    : input(read::bytes::istream(stream))
 {
 }
 
-input::input(reader&& source) noexcept
-  : input(from_data(source))
+input::input(reader&& source) noexcept : input(from_data(source))
 {
 }
 
-input::input(reader& source) noexcept
-  : input(from_data(source))
+input::input(reader& source) noexcept : input(from_data(source))
 {
 }
 
 // protected
-input::input(const chain::point::ptr& point, const chain::script::ptr& script,
+input::input(
+    const chain::point::ptr& point, const chain::script::ptr& script,
     const chain::witness::ptr& witness, uint32_t sequence, bool valid,
     const chain::prevout::ptr& prevout) noexcept
-  : point_(point),
-    script_(script),
-    witness_(witness),
-    sequence_(sequence),
-    valid_(valid),
-    prevout(prevout)
+    : point_(point), script_(script), witness_(witness), sequence_(sequence),
+      valid_(valid), prevout(prevout)
 {
 }
 
@@ -182,10 +171,8 @@ input& input::operator=(const input& other) noexcept
 
 bool input::operator==(const input& other) const noexcept
 {
-    return (sequence_ == other.sequence_)
-        && (*point_ == *other.point_)
-        && (*script_ == *other.script_)
-        && (*witness_ == *other.witness_);
+    return (sequence_ == other.sequence_) && (*point_ == *other.point_)
+           && (*script_ == *other.script_) && (*witness_ == *other.witness_);
 }
 
 bool input::operator!=(const input& other) const noexcept
@@ -200,15 +187,13 @@ bool input::operator!=(const input& other) const noexcept
 input input::from_data(reader& source) noexcept
 {
     // Witness is deserialized by transaction.
-    return
-    {
-        to_shared(new chain::point{ source }),
-        to_shared(new chain::script{ source, true }),
+    return {
+        to_shared(new chain::point{source}),
+        to_shared(new chain::script{source, true}),
         to_shared<chain::witness>(),
         source.read_4_bytes_little_endian(),
         source,
-        to_shared<chain::prevout>()
-    };
+        to_shared<chain::prevout>()};
 }
 
 // Serialization.
@@ -243,10 +228,9 @@ size_t input::serialized_size(bool witness) const noexcept
     // witnesses are serialized by the transaction. This is an ugly hack as a
     // consequence of bip144 not serializing witnesses as part of inputs, which
     // is logically the proper association.
-    return point_->serialized_size()
-        + script_->serialized_size(true)
-        + (witness ? witness_->serialized_size(true) : zero)
-        + sizeof(sequence_);
+    return point_->serialized_size() + script_->serialized_size(true)
+           + (witness ? witness_->serialized_size(true) : zero)
+           + sizeof(sequence_);
 }
 
 // Properties.
@@ -314,7 +298,8 @@ bool input::is_locked(size_t height, uint32_t median_time_past) const noexcept
     {
         // BIP68: change sequence to seconds by shifting up by 9 bits (x 512).
         auto time = shift_left(blocks, relative_locktime_seconds_shift_left);
-        auto age = floored_subtract(median_time_past, prevout->median_time_past);
+        auto age =
+            floored_subtract(median_time_past, prevout->median_time_past);
         return age < time;
     }
 
@@ -348,13 +333,14 @@ bool input::embedded_script(chain::script& out) const noexcept
 
     // Parse the embedded script from the last input script item (data).
     // This cannot fail because there is no prefix to invalidate the length.
-    out = { ops.back().data(), false };
+    out = {ops.back().data(), false};
     return true;
 }
 
 // Product overflows guarded by script size limit.
-static_assert(max_script_size < 
-    max_size_t / multisig_default_sigops / heavy_sigops_factor,
+static_assert(
+    max_script_size
+        < max_size_t / multisig_default_sigops / heavy_sigops_factor,
     "input sigop overflow guard");
 
 // TODO: Prior to block 79400 sigops were limited only by policy.
@@ -404,34 +390,31 @@ namespace json = boost::json;
 
 input tag_invoke(json::value_to_tag<input>, const json::value& value) noexcept
 {
-    return
-    {
+    return {
         json::value_to<chain::point>(value.at("point")),
         json::value_to<chain::script>(value.at("script")),
         json::value_to<chain::witness>(value.at("witness")),
-        value.at("sequence").to_number<uint32_t>()
-    };
+        value.at("sequence").to_number<uint32_t>()};
 }
 
-void tag_invoke(json::value_from_tag, json::value& value,
-    const input& input) noexcept
+void tag_invoke(
+    json::value_from_tag, json::value& value, const input& input) noexcept
 {
-    value =
-    {
-        { "point", input.point() },
-        { "script", input.script() },
-        { "witness", input.witness() },
-        { "sequence", input.sequence() }
-    };
+    value = {
+        {"point", input.point()},
+        {"script", input.script()},
+        {"witness", input.witness()},
+        {"sequence", input.sequence()}};
 }
 
-input::ptr tag_invoke(json::value_to_tag<input::ptr>,
-    const json::value& value) noexcept
+input::ptr tag_invoke(
+    json::value_to_tag<input::ptr>, const json::value& value) noexcept
 {
     return to_shared(tag_invoke(json::value_to_tag<input>{}, value));
 }
 
-void tag_invoke(json::value_from_tag tag, json::value& value,
+void tag_invoke(
+    json::value_from_tag tag, json::value& value,
     const input::ptr& input) noexcept
 {
     tag_invoke(tag, value, *input);

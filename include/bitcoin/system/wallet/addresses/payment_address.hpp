@@ -19,7 +19,6 @@
 #ifndef LIBBITCOIN_SYSTEM_WALLET_ADDRESSES_PAYMENT_ADDRESS_HPP
 #define LIBBITCOIN_SYSTEM_WALLET_ADDRESSES_PAYMENT_ADDRESS_HPP
 
-
 #include <iostream>
 #include <cstdint>
 #include <memory>
@@ -33,9 +32,12 @@
 #include <bitcoin/system/wallet/keys/ec_private.hpp>
 #include <bitcoin/system/wallet/keys/ec_public.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 typedef checked<1, short_hash_size, 4> payment;
 
@@ -54,15 +56,15 @@ public:
     typedef std::shared_ptr<payment_address> ptr;
 
     /// Extract a payment address from an input or output script.
-    static list extract(const chain::script& script,
-        uint8_t p2kh_prefix=mainnet_p2kh,
-        uint8_t p2sh_prefix=mainnet_p2sh) noexcept;
-    static list extract_input(const chain::script& script,
-        uint8_t p2kh_prefix=mainnet_p2kh,
-        uint8_t p2sh_prefix=mainnet_p2sh) noexcept;
-    static payment_address extract_output(const chain::script& script,
-        uint8_t p2kh_prefix=mainnet_p2kh,
-        uint8_t p2sh_prefix=mainnet_p2sh) noexcept;
+    static list extract(
+        const chain::script& script, uint8_t p2kh_prefix = mainnet_p2kh,
+        uint8_t p2sh_prefix = mainnet_p2sh) noexcept;
+    static list extract_input(
+        const chain::script& script, uint8_t p2kh_prefix = mainnet_p2kh,
+        uint8_t p2sh_prefix = mainnet_p2sh) noexcept;
+    static payment_address extract_output(
+        const chain::script& script, uint8_t p2kh_prefix = mainnet_p2kh,
+        uint8_t p2sh_prefix = mainnet_p2sh) noexcept;
 
     /// Constructors.
     payment_address() noexcept;
@@ -73,20 +75,20 @@ public:
 
     payment_address(const std::string& address) noexcept;
     payment_address(const ec_private& secret) noexcept;
-    payment_address(const ec_public& point,
-        uint8_t prefix=mainnet_p2kh) noexcept;
-    payment_address(const short_hash& hash,
-        uint8_t prefix=mainnet_p2kh) noexcept;
-    payment_address(const chain::script& script,
-        uint8_t prefix=mainnet_p2sh) noexcept;
+    payment_address(
+        const ec_public& point, uint8_t prefix = mainnet_p2kh) noexcept;
+    payment_address(
+        const short_hash& hash, uint8_t prefix = mainnet_p2kh) noexcept;
+    payment_address(
+        const chain::script& script, uint8_t prefix = mainnet_p2sh) noexcept;
 
     /// Operators.
     payment_address& operator=(payment_address&& other) noexcept;
     payment_address& operator=(const payment_address& other) noexcept;
     bool operator<(const payment_address& other) const noexcept;
     friend std::istream& operator>>(std::istream& in, payment_address& to);
-    friend std::ostream& operator<<(std::ostream& out,
-        const payment_address& of) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& out, const payment_address& of) noexcept;
 
     /// Cast operators.
     operator bool() const noexcept;
@@ -106,19 +108,19 @@ private:
     // Factories.
     static payment_address from_string(const std::string& address) noexcept;
     static payment_address from_private(const ec_private& secret) noexcept;
-    static payment_address from_public(const ec_public& point,
-        uint8_t prefix) noexcept;
-    static payment_address from_script(const chain::script& script,
-        uint8_t prefix) noexcept;
+    static payment_address from_public(
+        const ec_public& point, uint8_t prefix) noexcept;
+    static payment_address from_script(
+        const chain::script& script, uint8_t prefix) noexcept;
 
     // This should be const, apart from the need to implement assignment.
     payment payment_;
 };
 
-bool operator==(const payment_address& left,
-    const payment_address& right) noexcept;
-bool operator!=(const payment_address& left,
-    const payment_address& right) noexcept;
+bool operator==(
+    const payment_address& left, const payment_address& right) noexcept;
+bool operator!=(
+    const payment_address& left, const payment_address& right) noexcept;
 
 } // namespace wallet
 } // namespace system

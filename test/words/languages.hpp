@@ -21,84 +21,44 @@
 
 #include <bitcoin/system.hpp>
 
- // Avoid using namespace in shared headers, but okay here.
+// Avoid using namespace in shared headers, but okay here.
 using namespace bc::system::words;
 
-namespace test {
-namespace mnemonics_languages {
+namespace test
+{
+namespace mnemonics_languages
+{
 
 const size_t test_dictionary_size = 10;
 typedef dictionary<test_dictionary_size>::words test_words;
 
-const test_words test_words_es
-{
+const test_words test_words_es{
     true,
-    {
-        "ábaco",
-        "abdomen",
-        "abeja",
-        "abierto",
-        "abogado",
-        "abono",
-        "aborto",
-        "abrazo",
-        "abrir",
-        "abuelo"
-    }
-};
+    {"ábaco", "abdomen", "abeja", "abierto", "abogado", "abono", "aborto",
+     "abrazo", "abrir", "abuelo"}};
 
-const test_words test_words_zh_Hans
-{
-    true,
-    {
-        "的",
-        "一",
-        "是",
-        "在",
-        "不",
-        "了",
-        "有",
-        "和",
-        "人",
-        "这"
-    }
-};
+const test_words test_words_zh_Hans{
+    true, {"的", "一", "是", "在", "不", "了", "有", "和", "人", "这"}};
 
-const test_words test_words_zh_Hant
-{
-    true,
-    {
-        "的",
-        "一",
-        "是",
-        "在",
-        "不",
-        "了",
-        "有",
-        "和",
-        "人",
-        "這"
-    }
-};
+const test_words test_words_zh_Hant{
+    true, {"的", "一", "是", "在", "不", "了", "有", "和", "人", "這"}};
 
 // Test wrapper for access to protected methods.
-class accessor
-  : public languages
+class accessor : public languages
 {
 public:
-    accessor()
-      : languages(), value_()
+    accessor() : languages(), value_()
     {
     }
 
-    accessor(const languages& other)
-      : languages(other), value_()
+    accessor(const languages& other) : languages(other), value_()
     {
     }
 
-    accessor(const data_chunk& entropy, const string_list& words,
-        language identifier, const std::string& value="")
-      : languages(entropy, words, identifier), value_(value)
+    accessor(
+        const data_chunk& entropy, const string_list& words,
+        language identifier, const std::string& value = "")
+        : languages(entropy, words, identifier), value_(value)
     {
     }
 
@@ -117,7 +77,7 @@ private:
     std::string value_;
 };
 
-} // mnemonics_languages
-} // test
+} // namespace mnemonics_languages
+} // namespace test
 
 #endif

@@ -31,13 +31,14 @@
 #include <bitcoin/system/error/error.hpp>
 #include <bitcoin/system/stream/streamers/interfaces/bytereader.hpp>
 
-namespace libbitcoin {
-namespace system {
-    
+namespace libbitcoin
+{
+namespace system
+{
+
 /// A byte reader that accepts an istream.
 template <typename IStream = std::istream>
-class byte_reader
-  : public virtual bytereader
+class byte_reader : public virtual bytereader
 {
 public:
     /// Constructors.
@@ -65,7 +66,7 @@ public:
 
     /// Cast read_variable to size_t, facilitates read_bytes(read_size()).
     /// Returns zero and invalidates stream if would exceed read limit.
-    size_t read_size(size_t limit=max_size_t) noexcept override;
+    size_t read_size(size_t limit = max_size_t) noexcept override;
 
     /// Convert read_4_bytes_little_endian to an error code.
     code read_error_code() noexcept override;
@@ -98,7 +99,7 @@ public:
 
     /// Read Bitcoin length-prefixed string.
     /// Returns empty and invalidates stream if would exceed read limit.
-    std::string read_string(size_t limit=max_size_t) noexcept override;
+    std::string read_string(size_t limit = max_size_t) noexcept override;
 
     /// Read string, truncated at size or first null.
     /// This is only used for reading Bitcoin heading command text.
@@ -122,7 +123,7 @@ public:
     void set_position(size_t absolute) noexcept override;
 
     /// Limit stream upper bound to current position plus size (default resets).
-    void set_limit(size_t size=max_size_t) noexcept override;
+    void set_limit(size_t size = max_size_t) noexcept override;
 
     /// Invalidate the stream.
     void invalidate() noexcept override;
@@ -134,7 +135,10 @@ public:
     bool operator!() const noexcept override;
 
 protected:
-    static constexpr uint8_t pad() { return 0x00; };
+    static constexpr uint8_t pad()
+    {
+        return 0x00;
+    };
 
     // The maximum addressable stream position.
     // Should be defined on IStream::pos_type, however that is implementation

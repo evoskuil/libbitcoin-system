@@ -24,9 +24,12 @@
 #include <bitcoin/system/chain/chain.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for transactions.
 class BC_API transaction
@@ -41,10 +44,9 @@ public:
 
     operator const chain::transaction&() const noexcept;
 
-    friend std::istream& operator>>(std::istream& input,
-        transaction& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const transaction& argument) noexcept;
+    friend std::istream& operator>>(std::istream& input, transaction& argument);
+    friend std::ostream& operator<<(
+        std::ostream& output, const transaction& argument) noexcept;
 
 private:
     chain::transaction value_;

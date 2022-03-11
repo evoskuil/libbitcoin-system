@@ -26,9 +26,12 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace config {
+namespace libbitcoin
+{
+namespace system
+{
+namespace config
+{
 
 /// Serialization helper for base16 encoded data.
 class BC_API base16
@@ -39,9 +42,9 @@ public:
     base16(const data_chunk& value) noexcept;
     base16(const std::string& hexcode);
 
-    template<size_t Size>
+    template <size_t Size>
     base16(const data_array<Size>& value) noexcept
-      : value_(value.begin(), value.end())
+        : value_(value.begin(), value.end())
     {
     }
 
@@ -49,8 +52,8 @@ public:
     operator data_slice() const noexcept;
 
     friend std::istream& operator>>(std::istream& input, base16& argument);
-    friend std::ostream& operator<<(std::ostream& output,
-        const base16& argument) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& output, const base16& argument) noexcept;
 
 private:
     data_chunk value_;

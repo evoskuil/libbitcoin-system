@@ -26,8 +26,10 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// The bitcoin hash format is base16 with the bytes reversed.
 /// This reversed format is generally used only for display formatting.
@@ -38,7 +40,7 @@ constexpr size_t octet_width = 2;
 BC_API bool is_base16(char character) noexcept;
 
 /// Byte value of the literal octet, undefined (but safe) if not base16.
-BC_API uint8_t encode_octet(const char(&string)[add1(octet_width)]) noexcept;
+BC_API uint8_t encode_octet(const char (&string)[add1(octet_width)]) noexcept;
 
 // Encoding of data_slice (e.g. data_array/data_chunk/string) to hex string.
 // ----------------------------------------------------------------------------
@@ -72,22 +74,24 @@ bool decode_hash(data_array<Size>& out, const std::string& in) noexcept;
 /// Convert a literal hex string to a string (bytes are cast to string chars).
 /// Empty string returned if decoding fails.
 template <size_t Size, if_odd<Size> = true>
-std::string base16_string(const char(&string)[Size]) noexcept;
+std::string base16_string(const char (&string)[Size]) noexcept;
 
 /// Convert a literal hexidecimal string literal to a byte array.
 /// Empty chunk returned if decoding fails.
 template <size_t Size, if_odd<Size> = true>
-data_chunk base16_chunk(const char(&string)[Size]) noexcept;
+data_chunk base16_chunk(const char (&string)[Size]) noexcept;
 
 /// Convert a hexidecimal string literal to a byte array.
 /// Zeroized array returned if decoding fails.
 template <size_t Size, if_odd<Size> = true>
-data_array<to_half(sub1(Size))> base16_array(const char(&string)[Size]) noexcept;
+data_array<to_half(sub1(Size))> base16_array(
+    const char (&string)[Size]) noexcept;
 
 /// Convert a reversed byte order hexidecimal string literal to a byte array.
 /// Zeroized array returned if decoding fails.
 template <size_t Size, if_odd<Size> = true>
-data_array<to_half(sub1(Size))> base16_hash(const char(&string)[Size]) noexcept;
+data_array<to_half(sub1(Size))> base16_hash(
+    const char (&string)[Size]) noexcept;
 
 } // namespace system
 } // namespace libbitcoin

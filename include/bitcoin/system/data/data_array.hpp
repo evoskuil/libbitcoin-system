@@ -29,8 +29,10 @@
 #include <bitcoin/system/data/data_chunk.hpp>
 #include <bitcoin/system/data/data_slice.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Byte array of a specified length.
 template <size_t Size>
@@ -70,9 +72,9 @@ template <class Target, class Extension>
 Target& extend(Target& target, Extension&& extension) noexcept;
 
 /// Extract a byte subarray from start position with length end minus start.
-template <size_t Start, size_t End, size_t Size,
-    if_not_greater<Start, Size> = true, if_not_greater<End, Size> = true,
-    if_not_lesser<End, Start> = true>
+template <
+    size_t Start, size_t End, size_t Size, if_not_greater<Start, Size> = true,
+    if_not_greater<End, Size> = true, if_not_lesser<End, Start> = true>
 data_array<End - Start> slice(const data_array<Size>& bytes) noexcept;
 
 /// Break an evenly-sized byte array array into two equal length parts.
@@ -81,26 +83,29 @@ split_parts<to_half(Size)> split(const data_array<Size>& bytes) noexcept;
 
 /// Concatenate two byte arrays into a new array.
 template <size_t Left, size_t Right>
-data_array<Left + Right> splice(const data_array<Left>& left,
-    const data_array<Right>& right) noexcept;
+data_array<Left + Right> splice(
+    const data_array<Left>& left, const data_array<Right>& right) noexcept;
 
 /// Concatenate three byte arrays into a new array.
 template <size_t Left, size_t Middle, size_t Right>
-data_array<Left + Middle + Right> splice(const data_array<Left>& left,
-    const data_array<Middle>& middle, const data_array<Right>& right) noexcept;
+data_array<Left + Middle + Right> splice(
+    const data_array<Left>& left, const data_array<Middle>& middle,
+    const data_array<Right>& right) noexcept;
 
 /// Perform an exclusive or (xor) on two arrays to specified length.
-template <size_t Size, size_t Size1, size_t Size2,
-    if_not_lesser<Size1, Size> = true, if_not_lesser<Size2, Size> = true>
-data_array<Size> xor_data(const data_array<Size1>& bytes1,
-    const data_array<Size2>& bytes2) noexcept;
+template <
+    size_t Size, size_t Size1, size_t Size2, if_not_lesser<Size1, Size> = true,
+    if_not_lesser<Size2, Size> = true>
+data_array<Size> xor_data(
+    const data_array<Size1>& bytes1, const data_array<Size2>& bytes2) noexcept;
 
 /// Perform an exclusive or (xor) on two arrays at specified offsets and length.
-template <size_t Size, size_t Offset1, size_t Offset2, size_t Size1, size_t Size2,
+template <
+    size_t Size, size_t Offset1, size_t Offset2, size_t Size1, size_t Size2,
     if_not_lesser<Size1, Offset1 + Size> = true,
     if_not_lesser<Size2, Offset2 + Size> = true>
-data_array<Size> xor_offset(const data_array<Size1>& bytes1,
-    const data_array<Size2>& bytes2) noexcept;
+data_array<Size> xor_offset(
+    const data_array<Size1>& bytes1, const data_array<Size2>& bytes2) noexcept;
 
 } // namespace system
 } // namespace libbitcoin

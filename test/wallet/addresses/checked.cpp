@@ -30,19 +30,26 @@ typedef checked<3, short_hash_size, 4> short_checked;
 typedef checked<5, long_hash_size, 8> long_checked;
 
 const data_array<0> zero_prefix{};
-const data_array<1> mini_prefix{ 1 };
-const data_array<3> short_prefix{ 1, 2, 3 };
-const data_array<5> long_prefix{ 1, 2, 3, 4, 5 };
+const data_array<1> mini_prefix{1};
+const data_array<3> short_prefix{1, 2, 3};
+const data_array<5> long_prefix{1, 2, 3, 4, 5};
 
 const data_array<0> test_zero_hash = base16_hash("");
 const mini_hash test_mini_hash = base16_hash("000102030405");
-const short_hash test_short_hash = base16_hash("0908070605040302010009080706050403020100");
-const long_hash test_long_hash = base16_hash("09080706050403020100090807060504030201000908070605040302010009080706050403020100090807060504030201000908070605040302010003020100");
+const short_hash test_short_hash =
+    base16_hash("0908070605040302010009080706050403020100");
+const long_hash test_long_hash = base16_hash(
+    "09080706050403020100090807060504030201000908070605040302010009080706050403"
+    "020100090807060504030201000908070605040302010003020100");
 
-const auto zero_valid_value = insert_checksum<zero_checked::value_size, 0>({ zero_prefix,  test_zero_hash });
-const auto mini_valid_value = insert_checksum<mini_checked::value_size, 2>({ mini_prefix,  test_mini_hash });
-const auto short_valid_value = insert_checksum<short_checked::value_size, 4>({ short_prefix, test_short_hash });
-const auto long_valid_value = insert_checksum<long_checked::value_size, 8>({ long_prefix,  test_long_hash });
+const auto zero_valid_value =
+    insert_checksum<zero_checked::value_size, 0>({zero_prefix, test_zero_hash});
+const auto mini_valid_value =
+    insert_checksum<mini_checked::value_size, 2>({mini_prefix, test_mini_hash});
+const auto short_valid_value = insert_checksum<short_checked::value_size, 4>(
+    {short_prefix, test_short_hash});
+const auto long_valid_value =
+    insert_checksum<long_checked::value_size, 8>({long_prefix, test_long_hash});
 
 BOOST_AUTO_TEST_CASE(checked__default_construct__zero__valid)
 {
@@ -64,13 +71,13 @@ BOOST_AUTO_TEST_CASE(checked__values_construct__zero__valid)
     const zero_checked zero_instance({}, {});
     BOOST_REQUIRE(zero_instance);
 
-    const mini_checked mini_instance({ 0 }, null_mini_hash);
+    const mini_checked mini_instance({0}, null_mini_hash);
     BOOST_REQUIRE(mini_instance);
 
-    const short_checked short_instance({ 0, 0, 0 }, null_short_hash);
+    const short_checked short_instance({0, 0, 0}, null_short_hash);
     BOOST_REQUIRE(short_instance);
 
-    const long_checked long_instance({ 0, 0, 0, 0, 0 }, null_long_hash);
+    const long_checked long_instance({0, 0, 0, 0, 0}, null_long_hash);
     BOOST_REQUIRE(long_instance);
 }
 
@@ -158,9 +165,9 @@ BOOST_AUTO_TEST_CASE(checked__properies__zero__expected)
 
 BOOST_AUTO_TEST_CASE(checked__properies__mini__expected)
 {
-    const mini_checked mini_instance({ 42 }, test_mini_hash);
+    const mini_checked mini_instance({42}, test_mini_hash);
     BOOST_REQUIRE(mini_instance);
-    const auto expected_prefix = mini_checked::prefix_type{ 42 };
+    const auto expected_prefix = mini_checked::prefix_type{42};
     BOOST_REQUIRE(mini_instance.prefix() == expected_prefix);
     BOOST_REQUIRE(mini_instance.payload() == test_mini_hash);
     BOOST_REQUIRE_EQUAL(encode_base16(mini_instance.checksum()), "6a7b");
@@ -168,9 +175,9 @@ BOOST_AUTO_TEST_CASE(checked__properies__mini__expected)
 
 BOOST_AUTO_TEST_CASE(checked__properies__short__expected)
 {
-    const short_checked short_instance({ 42, 24, 0 }, test_short_hash);
+    const short_checked short_instance({42, 24, 0}, test_short_hash);
     BOOST_REQUIRE(short_instance);
-    const auto expected_prefix = short_checked::prefix_type{ 42, 24 };
+    const auto expected_prefix = short_checked::prefix_type{42, 24};
     BOOST_REQUIRE(short_instance.prefix() == expected_prefix);
     BOOST_REQUIRE(short_instance.payload() == test_short_hash);
     BOOST_REQUIRE_EQUAL(encode_base16(short_instance.checksum()), "77a9ccbb");
@@ -178,22 +185,24 @@ BOOST_AUTO_TEST_CASE(checked__properies__short__expected)
 
 BOOST_AUTO_TEST_CASE(checked__properies__long__expected)
 {
-    const long_checked long_instance({ 1, 24, 42, 2, 0 }, test_long_hash);
+    const long_checked long_instance({1, 24, 42, 2, 0}, test_long_hash);
     BOOST_REQUIRE(long_instance);
-    const auto expected_prefix = long_checked::prefix_type{ 1, 24, 42, 2, 0 };
+    const auto expected_prefix = long_checked::prefix_type{1, 24, 42, 2, 0};
     BOOST_REQUIRE(long_instance.prefix() == expected_prefix);
     BOOST_REQUIRE(long_instance.payload() == test_long_hash);
-    BOOST_REQUIRE_EQUAL(encode_base16(long_instance.checksum()), "2aed29c75b84cdaf");
+    BOOST_REQUIRE_EQUAL(
+        encode_base16(long_instance.checksum()), "2aed29c75b84cdaf");
 }
 
 BOOST_AUTO_TEST_CASE(checked__equality__same__true)
 {
-    const long_checked long_instance({ 1, 24, 42, 2, 0 }, test_long_hash);
+    const long_checked long_instance({1, 24, 42, 2, 0}, test_long_hash);
     BOOST_REQUIRE(long_instance);
-    const auto expected_prefix = long_checked::prefix_type{ 1, 24, 42, 2, 0 };
+    const auto expected_prefix = long_checked::prefix_type{1, 24, 42, 2, 0};
     BOOST_REQUIRE(long_instance.prefix() == expected_prefix);
     BOOST_REQUIRE(long_instance.payload() == test_long_hash);
-    BOOST_REQUIRE_EQUAL(encode_base16(long_instance.checksum()), "2aed29c75b84cdaf");
+    BOOST_REQUIRE_EQUAL(
+        encode_base16(long_instance.checksum()), "2aed29c75b84cdaf");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

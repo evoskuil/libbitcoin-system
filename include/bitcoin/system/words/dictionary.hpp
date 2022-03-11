@@ -28,24 +28,34 @@
 #include <bitcoin/system/data/data.hpp>
 #include <bitcoin/system/words/language.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace words {
+namespace libbitcoin
+{
+namespace system
+{
+namespace words
+{
 
 // Search container for a dictionary of lexically-sorted words.
 // POD dictionary wrapper with O(n) search and O(1) index.
 // Search order is guaranteed, always returns first match.
-template<size_t Size>
+template <size_t Size>
 class dictionary
 {
 public:
     typedef std::vector<size_t> search;
     typedef std::vector<int32_t> result;
-    typedef struct { bool sorted; std::array<const char*, Size> word; } words;
+    typedef struct
+    {
+        bool sorted;
+        std::array<const char*, Size> word;
+    } words;
     static_assert(Size <= static_cast<size_t>(max_int32), "dictionary");
 
     /// The number of words in the dictionary.
-    static constexpr size_t size() noexcept { return Size; };
+    static constexpr size_t size() noexcept
+    {
+        return Size;
+    };
 
     /// Constructor.
     dictionary(language identifier, const words& words) noexcept;

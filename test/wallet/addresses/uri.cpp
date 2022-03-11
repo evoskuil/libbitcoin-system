@@ -156,7 +156,9 @@ BOOST_AUTO_TEST_CASE(uri__encode__positive__test)
     out.set_path("/some/path/?/#");
     out.set_query("tacos=yummy");
     out.set_fragment("good evening");
-    BOOST_REQUIRE_EQUAL(out.encoded(), "test://user@hostname/some/path/%3F/%23?tacos=yummy#good%20evening");
+    BOOST_REQUIRE_EQUAL(
+        out.encoded(),
+        "test://user@hostname/some/path/%3F/%23?tacos=yummy#good%20evening");
 
     out.remove_authority();
     out.remove_query();

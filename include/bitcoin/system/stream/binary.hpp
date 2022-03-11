@@ -28,8 +28,10 @@
 #include <bitcoin/system/data/data_slice.hpp>
 #include <bitcoin/system/define.hpp>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 /// Constant class for bit vector serialization and comparison.
 class BC_API binary
@@ -78,7 +80,7 @@ std::ostream& operator<<(std::ostream& out, const binary& of) noexcept;
 namespace std
 {
 
-template<>
+template <>
 struct hash<bc::system::binary>
 {
     size_t operator()(const bc::system::binary& value) const

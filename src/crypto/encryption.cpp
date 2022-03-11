@@ -23,8 +23,10 @@
 #include <bitcoin/system/crypto/hash.hpp>
 #include <bitcoin/system/crypto/external/aes256.h>
 
-namespace libbitcoin {
-namespace system {
+namespace libbitcoin
+{
+namespace system
+{
 
 void aes256_encrypt(const aes_secret& key, aes_block& block) noexcept
 {

@@ -26,27 +26,29 @@
 #include <bitcoin/system/exceptions.hpp>
 #include <bitcoin/system/radix/radix.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
-ek_token::ek_token() noexcept
-  : valid_(false), token_()
+ek_token::ek_token() noexcept : valid_(false), token_()
 {
 }
 
 ek_token::ek_token(const std::string& encoded) noexcept
-  : ek_token(from_string(encoded))
+    : ek_token(from_string(encoded))
 {
 }
 
 ek_token::ek_token(const ek_token& other) noexcept
-  : valid_(other.valid_), token_(other.token_)
+    : valid_(other.valid_), token_(other.token_)
 {
 }
 
 ek_token::ek_token(const encrypted_token& value) noexcept
-  : valid_(true), token_(value)
+    : valid_(true), token_(value)
 {
 }
 
@@ -58,8 +60,8 @@ ek_token ek_token::from_string(const std::string& encoded) noexcept
     // TODO: incorporate existing parser here, setting new members.
 
     encrypted_token key;
-    return decode_base58(key, encoded) && verify_checksum(key) ?
-        ek_token(key) : ek_token();
+    return decode_base58(key, encoded) && verify_checksum(key) ? ek_token(key)
+                                                               : ek_token();
 }
 
 // Cast operators.

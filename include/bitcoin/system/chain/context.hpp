@@ -24,9 +24,12 @@
 #include <bitcoin/system/chain/enums/forks.hpp>
 #include <bitcoin/system/chain/enums/policy.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace chain {
+namespace libbitcoin
+{
+namespace system
+{
+namespace chain
+{
 
 class BC_API context
 {

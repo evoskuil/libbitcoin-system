@@ -24,9 +24,12 @@
 #include <bitcoin/system/define.hpp>
 #include <bitcoin/system/wallet/keys/encrypted_keys.hpp>
 
-namespace libbitcoin {
-namespace system {
-namespace wallet {
+namespace libbitcoin
+{
+namespace system
+{
+namespace wallet
+{
 
 /**
  * Serialization helper to convert between base58 string and bip38 token.
@@ -46,8 +49,8 @@ public:
     bool operator!=(const ek_token& other) const noexcept;
     ek_token& operator=(const ek_token& other) noexcept;
     friend std::istream& operator>>(std::istream& in, ek_token& to);
-    friend std::ostream& operator<<(std::ostream& out,
-        const ek_token& of) noexcept;
+    friend std::ostream& operator<<(
+        std::ostream& out, const ek_token& of) noexcept;
 
     /// Cast operators.
     operator bool() const noexcept;
