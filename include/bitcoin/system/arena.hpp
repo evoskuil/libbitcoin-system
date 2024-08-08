@@ -33,26 +33,17 @@ public:
     /// Allocate bytes with alignment (align must be power of 2).
     /// Throws if the requested size and alignment cannot be obtained.
     NODISCARD ALLOCATOR void* allocate(size_t bytes,
-        size_t align=alignof(max_align_t)) THROWS
-    {
-        return do_allocate(bytes, align);
-    }
+        size_t align=alignof(max_align_t)) THROWS;
 
     /// Deallocate allocated bytes with alignment (align must be power of 2).
     void deallocate(void* ptr, const size_t bytes,
-        size_t align=alignof(max_align_t)) NOEXCEPT
-    {
-        return do_deallocate(ptr, bytes, align);
-    }
+        size_t align=alignof(max_align_t)) NOEXCEPT;
 
     /// Other can deallocate memory allocated by this and vice versa.
-    NODISCARD bool is_equal(const arena& other) const NOEXCEPT
-    {
-        return do_is_equal(other);
-    }
+    NODISCARD bool is_equal(const arena& other) const NOEXCEPT;
 
-    /// Require memory capacity, return current or nullptr (custom interface).
-    virtual void* require(size_t bytes) NOEXCEPT = 0;
+    /// Initialize the return starting address (not pmr interface).
+    virtual void* initialize() NOEXCEPT = 0;
 
 private:
     virtual void* do_allocate(size_t bytes, size_t align) THROWS = 0;
@@ -82,7 +73,7 @@ class BC_API default_arena final
 {
 public:
     static arena* get() NOEXCEPT;
-    void* require(size_t bytes) NOEXCEPT override;
+    void* initialize() NOEXCEPT override;
 
 private:
     void* do_allocate(size_t bytes, size_t align) THROWS override;

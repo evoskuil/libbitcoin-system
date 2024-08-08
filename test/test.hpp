@@ -127,13 +127,13 @@ public:
     size_t dec_count{};
     size_t dec_bytes{};
 
-    void* require(size_t) NOEXCEPT override
+    void* initialize() NOEXCEPT override
     {
         return nullptr;
     }
 
 private:
-    void* do_allocate(size_t bytes, size_t align) override
+    void* do_allocate(size_t bytes, size_t align) THROWS override
     {
         if (align > __STDCPP_DEFAULT_NEW_ALIGNMENT__)
             throw std::bad_alloc();
@@ -189,7 +189,7 @@ public:
     size_t do_deallocate_align{};
     mutable const arena* do_is_equal_address{};
 
-    void* require(size_t) NOEXCEPT override
+    void* initialize() NOEXCEPT override
     {
         return nullptr;
     }

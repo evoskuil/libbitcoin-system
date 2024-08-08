@@ -24,6 +24,21 @@ namespace libbitcoin {
 
 BC_PUSH_WARNING(NO_NEW_OR_DELETE)
 
+void* arena::allocate(size_t bytes, size_t align) THROWS
+{
+    return do_allocate(bytes, align);
+}
+
+void arena::deallocate(void* ptr, const size_t bytes, size_t align) NOEXCEPT
+{
+    return do_deallocate(ptr, bytes, align);
+}
+
+bool arena::is_equal(const arena& other) const NOEXCEPT
+{
+    return do_is_equal(other);
+}
+
 bool operator==(const arena& left, const arena& right) NOEXCEPT
 {
     return &left == &right || left.is_equal(right);
@@ -57,7 +72,7 @@ bool default_arena::do_is_equal(const arena& other) const NOEXCEPT
     return &other == this;
 }
 
-void* default_arena::require(size_t) NOEXCEPT
+void* default_arena::initialize() NOEXCEPT
 {
     return nullptr;
 }
