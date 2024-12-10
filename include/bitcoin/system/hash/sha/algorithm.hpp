@@ -113,6 +113,9 @@ public:
     static void accumulate(state_t& state, iblocks_t&& blocks) NOEXCEPT;
     static constexpr void accumulate(state_t& state, const block_t& block) NOEXCEPT;
     static constexpr digest_t normalize(const state_t& state) NOEXCEPT;
+
+    template <size_t Blocks>
+    static constexpr digest_t finalize(state_t& state) NOEXCEPT;
     static constexpr digest_t finalize(state_t& state, size_t blocks) NOEXCEPT;
     static constexpr digest_t finalize_second(const state_t& state) NOEXCEPT;
     static constexpr digest_t finalize_double(state_t& state, size_t blocks) NOEXCEPT;
@@ -165,9 +168,6 @@ protected:
 
     template <typename xWord, if_extended<xWord> = true>
     using wstate_t = std_array<xWord, sizeof(state_t) / sizeof(xWord)>;
-
-    ////template <typename xWord, if_extended<xWord> = true>
-    ////using wblock_t = std_array<xWord, sizeof(block_t) / sizeof(xWord)>;
 
     /// Other types.
     /// -----------------------------------------------------------------------
@@ -232,8 +232,10 @@ protected:
     /// -----------------------------------------------------------------------
 
     INLINE static constexpr void input(buffer_t& buffer, const block_t& block) NOEXCEPT;
-    INLINE static constexpr void input_left(buffer_t& buffer, const half_t& half) NOEXCEPT;
-    INLINE static constexpr void input_right(buffer_t& buffer, const half_t& half) NOEXCEPT;
+    INLINE static constexpr void input_left(auto& buffer, const half_t& half) NOEXCEPT;
+    INLINE static constexpr void input_right(auto& buffer, const half_t& half) NOEXCEPT;
+    INLINE static constexpr void reinput_left(auto& buffer, const auto& left) NOEXCEPT;
+    INLINE static constexpr void reinput_right(auto& buffer, const auto& right) NOEXCEPT;
     INLINE static constexpr digest_t output(const state_t& state) NOEXCEPT;
 
     /// Padding.
@@ -250,17 +252,12 @@ protected:
     /// Unscheduled padding (new objects).
     static words_t pad_block() NOEXCEPT;
     static words_t pad_blocks(count_t blocks) NOEXCEPT;
-    static CONSTEVAL chunk_t chunk_pad() NOEXCEPT;
     static CONSTEVAL pad_t stream_pad() NOEXCEPT;
+    static CONSTEVAL chunk_t chunk_pad() NOEXCEPT;
 
     /// Unscheduled padding (update block or buffer object).
     static constexpr void pad_half(auto& buffer) NOEXCEPT;
     static constexpr void pad_n(auto& buffer, count_t blocks) NOEXCEPT;
-
-    /// Double hashing.
-    /// -----------------------------------------------------------------------
-
-    static constexpr void reinput(auto& buffer, const auto& state) NOEXCEPT;
 
     /// Iteration (message scheduling vectorized for multiple blocks).
     /// -----------------------------------------------------------------------
@@ -388,10 +385,28 @@ protected:
     INLINE static void native_rounds(xint128_t& lo, xint128_t& hi,
         const block_t& block) NOEXCEPT;
 
-    static void native_(state_t& state, iblocks_t& blocks) NOEXCEPT;
-    static void native_(state_t& state, const block_t& block) NOEXCEPT;
-    INLINE static void native_preswapped(state_t& state,
-        const words_t& block) NOEXCEPT;
+    INLINE static void native_rounds(xint128_t& lo, xint128_t& hi,
+        const half_t& left, const chunk_t& pad) NOEXCEPT;
+
+    template <bool Swap>
+    static void native_transform(state_t& state, const auto& block) NOEXCEPT;
+    static void native_transform(state_t& state, iblocks_t& blocks) NOEXCEPT;
+
+    template <size_t Blocks>
+    static digest_t native_finalize(state_t& state) NOEXCEPT;
+    static digest_t native_finalize(state_t& state, size_t blocks) NOEXCEPT;
+    static digest_t native_finalize(state_t& state, const words_t& pad) NOEXCEPT;
+
+    static digest_t native_finalize_second(const state_t& half) NOEXCEPT;
+    static digest_t native_finalize_double(state_t& half, size_t blocks) NOEXCEPT;
+
+    ////static digest_t native_hash(const block_t& block) NOEXCEPT;
+    static digest_t native_hash(const half_t& half) NOEXCEPT;
+    static digest_t native_hash(const half_t& left, const half_t& right) NOEXCEPT;
+
+    static digest_t native_double_hash(const block_t& block) NOEXCEPT;
+    static digest_t native_double_hash(const half_t& half) NOEXCEPT;
+    static digest_t native_double_hash(const half_t& left, const half_t& right) NOEXCEPT;
 
 public:
     /// Summary public values.
