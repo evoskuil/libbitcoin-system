@@ -18,6 +18,8 @@
  */
 #include "../../test.hpp"
 
+BC_PUSH_WARNING(NO_USE_OF_SPAN)
+
 BOOST_AUTO_TEST_SUITE(secp256k1_tests)
 
 const ec_secret one = base16_array(
@@ -53,7 +55,7 @@ BOOST_AUTO_TEST_CASE(secp256k1__ecdsa_batch_verify__singles_all_valid__expected)
         batch{ hash, point2, sig2, 0, 0, { 2, 0, 0 } }
     };
 
-    stopper cancel{};
+    const stopper cancel{};
     const auto tokens = batch::verify(cancel, { triples.data(), triples.size() });
     BOOST_REQUIRE(tokens.empty());
 }
@@ -83,7 +85,7 @@ BOOST_AUTO_TEST_CASE(secp256k1__ecdsa_batch_verify__singles_one_invalid__expecte
         batch{ hash, point2, sig2, 0, 0, { 2, 0, 0 } }
     };
 
-    stopper cancel{};
+    const stopper cancel{};
     const auto tokens = batch::verify(cancel, { triples.data(), triples.size() });
     BOOST_REQUIRE_EQUAL(tokens.size(), 1u);
     BOOST_REQUIRE_EQUAL(tokens.front(), from_little_array<batched::link_t>(triples.at(2).id));
@@ -114,7 +116,7 @@ BOOST_AUTO_TEST_CASE(secp256k1__ecdsa_batch_verify__multisig_all_valid__expected
         batch{ hash, point2, sig1, 0b0001'0010, 5, { 0, 0, 0 } }  // valid
     };
 
-    stopper cancel{};
+    const stopper cancel{};
     const auto tokens = batch::verify(cancel, { triples.data(), triples.size() });
     BOOST_REQUIRE(tokens.empty());
 }
@@ -146,7 +148,7 @@ BOOST_AUTO_TEST_CASE(secp256k1__ecdsa_batch_verify__multisig_one_invalid__expect
         batch{ hash, point2, sig2, 0b0001'0000, 7, { 0, 0, 0 } }  // valid
     };
 
-    stopper cancel{};
+    const stopper cancel{};
     const auto tokens = batch::verify(cancel, { triples.data(), triples.size() });
     BOOST_REQUIRE_EQUAL(tokens.size(), 1u);
     BOOST_REQUIRE_EQUAL(tokens.front(), from_little_array<batched::link_t>(triples.at(0).id));
@@ -257,7 +259,7 @@ BOOST_AUTO_TEST_CASE(secp256k1__schnorr_batch_verify__single_all_valid__expected
         batch{ hash, point2, sig2, 0, 0, 0, { 2, 0, 0 } }
     };
 
-    stopper cancel{};
+    const stopper cancel{};
     const auto tokens = batch::verify(cancel, { triples.data(), triples.size() });
     BOOST_REQUIRE(tokens.empty());
 }
@@ -292,7 +294,7 @@ BOOST_AUTO_TEST_CASE(secp256k1__schnorr_batch_verify__single_one_invalid__expect
         batch{ hash, point2, sig2, 0, 0, 0, { 2, 0, 0 } }
     };
 
-    stopper cancel{};
+    const stopper cancel{};
     const auto tokens = batch::verify(cancel, { triples.data(), triples.size() });
     BOOST_REQUIRE_EQUAL(tokens.size(), 1u);
     BOOST_REQUIRE_EQUAL(tokens.front(), from_little_array<batched::link_t>(triples.at(1).id));
@@ -391,3 +393,5 @@ BOOST_AUTO_TEST_CASE(schnorr_batch__meets_threshold__unknown_category__failure)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BC_POP_WARNING()
