@@ -61,6 +61,9 @@
 #if defined(_MSC_VER) && !defined(HAVE_CLANG)
     #define HAVE_MSC
 #endif
+#if defined(__CUDA_ARCH__)
+    #define HAVE_DEVICE
+#endif
 
 /// Determines linker defines (Windows vs. Unix/Linux).
 #if defined(HAVE_CLANG) || defined(HAVE_GNUC)

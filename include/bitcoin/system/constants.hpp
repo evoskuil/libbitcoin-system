@@ -38,6 +38,12 @@ namespace libbitcoin {
     constexpr auto have_64b = true;
 #endif
 
+#ifdef HAVE_DEVICE
+    constexpr auto have_device = true;
+#else
+    constexpr auto have_device = false;
+#endif
+
 #ifdef HAVE_XCPU
     constexpr auto have_xcpu = true;
 #else
