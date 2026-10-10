@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(secp256k1_batch_silent__compute__chunks__expected)
     BOOST_REQUIRE(is_alternating(result));
 }
 
-BOOST_AUTO_TEST_CASE(secp256k1_batch_silent__compute__device_rows__expected)
+BOOST_AUTO_TEST_CASE(secp256k1_batch_silent__compute__many_rows__expected)
 {
     const auto result = compute(alternating(70000));
     BOOST_REQUIRE(result.success);
