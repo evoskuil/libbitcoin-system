@@ -58,10 +58,6 @@ struct BC_API batch
 protected:
     /// Transactions computed by one task.
     static constexpr size_t chunk_rows = power2(10_size);
-
-    /// Computations of at least this many transactions run on the device
-    /// where available.
-    static constexpr size_t device_rows = power2(16_size);
 };
 
 } // namespace silent

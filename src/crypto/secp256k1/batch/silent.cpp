@@ -134,7 +134,7 @@ bool silent::batch::compute(std_vector<ec_compressed>& out,
 
     std_vector<ec_compressed> products{};
     data_chunk computed{};
-    device = runs >= device_rows && secp256k1::cuda::available() &&
+    device = secp256k1::cuda::available() &&
         secp256k1::cuda::compute(products, computed, cancel, sums, hashes);
 
     if (!device)
