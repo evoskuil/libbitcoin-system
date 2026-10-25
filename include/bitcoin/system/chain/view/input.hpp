@@ -74,11 +74,11 @@ public:
     mutable chain::prevout metadata{};
 
 private:
+    size_t size_{};
+    size_t witness_size_{};
     const uint8_t* data_{};
     const uint8_t* script_{};
-    size_t size_{};
     const uint8_t* witness_{};
-    size_t witness_size_{};
     mutable chain::script::cptr script_ptr_{};
     mutable chain::witness::cptr witness_ptr_{};
 };
