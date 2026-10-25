@@ -40,13 +40,13 @@ public:
     /// chain: confirmed spender height or max_uint32.
     uint32_t spender_height{ max_uint32 };
 
-    /// node: database identifier for the parent tx.
+    /// node: database identifier for the spent output.
     /// Link::terminal must align with link defaults of max_uint32.
-    uint32_t parent_tx{ max_uint32 };
+    uint32_t output_link{ max_uint32 };
 
-    /// node: database identifier for input/point.
+    /// node: database identifier for the input.
     /// Link::terminal must align with link defaults of max_uint32.
-    uint32_t point_link{ max_uint32 };
+    uint32_t input_link{ max_uint32 };
 };
 
 } // namespace chain

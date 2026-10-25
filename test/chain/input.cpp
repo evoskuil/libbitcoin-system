@@ -363,8 +363,8 @@ BOOST_AUTO_TEST_CASE(input__metadata__default__fails_closed)
     BOOST_REQUIRE_EQUAL(instance.metadata.median_time_past, max_uint32);
     BOOST_REQUIRE_EQUAL(instance.metadata.prevout_height, max_uint32);
     BOOST_REQUIRE_EQUAL(instance.metadata.spender_height, max_uint32);
-    BOOST_REQUIRE_EQUAL(instance.metadata.parent_tx, max_uint32);
-    BOOST_REQUIRE_EQUAL(instance.metadata.point_link, max_uint32);
+    BOOST_REQUIRE_EQUAL(instance.metadata.output_link, max_uint32);
+    BOOST_REQUIRE_EQUAL(instance.metadata.input_link, max_uint32);
 }
 
 BOOST_AUTO_TEST_CASE(input__metadata__mutable_on_const_input__assignable)
