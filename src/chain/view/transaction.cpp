@@ -516,6 +516,18 @@ transaction::input_iterator transaction::input_at(
     return std::next(inputs_begin_, index);
 }
 
+transaction::output_iterator transaction::outputs_begin() const NOEXCEPT
+{
+    BC_ASSERT(populated_);
+    return outputs_begin_;
+}
+
+transaction::output_iterator transaction::outputs_end() const NOEXCEPT
+{
+    BC_ASSERT(populated_);
+    return outputs_end_;
+}
+
 output transaction::output_at(uint32_t index) const NOEXCEPT
 {
     BC_ASSERT(index < out_count_);
@@ -656,6 +668,13 @@ void transaction::set_inputs(const input_iterator& begin,
     inputs_begin_ = begin;
     inputs_end_ = end;
     populated_ = true;
+}
+
+void transaction::set_outputs(const output_iterator& begin,
+    const output_iterator& end) NOEXCEPT
+{
+    outputs_begin_ = begin;
+    outputs_end_ = end;
 }
 
 bool transaction::is_invalid_coinbase_size() const NOEXCEPT

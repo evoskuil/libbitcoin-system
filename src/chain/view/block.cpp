@@ -19,6 +19,7 @@
 #include <bitcoin/system/chain/view/block.hpp>
 
 #include <numeric>
+#include <unordered_map>
 #include <unordered_set>
 #include <bitcoin/system/chain/block.hpp>
 #include <bitcoin/system/chain/context.hpp>
@@ -64,7 +65,13 @@ block::block(data_chunk&& block_buffer, bool witness) NOEXCEPT
         txs_.emplace_back(in, *buffer_, false, witness);
 
     if (!in)
+    {
         txs_.clear();
+        return;
+    }
+
+    populate_inputs();
+    populate_outputs();
 }
 
 // serialization
@@ -142,19 +149,25 @@ size_t block::spends() const NOEXCEPT
 
 bool block::is_populated() const NOEXCEPT
 {
-    return !is_null(inputs_);
+    return !is_null(prevout_buffer_);
 }
 
 const view::inputs& block::inputs() const NOEXCEPT
 {
     static const view::inputs empty{};
-    return is_populated() ? *inputs_ : empty;
+    return is_null(inputs_) ? empty : *inputs_;
+}
+
+const view::outputs& block::outputs() const NOEXCEPT
+{
+    static const view::outputs empty{};
+    return is_null(outputs_) ? empty : *outputs_;
 }
 
 const view::outputs& block::prevouts() const NOEXCEPT
 {
     static const view::outputs empty{};
-    return is_populated() ? *prevouts_ : empty;
+    return is_null(prevouts_) ? empty : *prevouts_;
 }
 
 const view::transactions& block::views() const NOEXCEPT
@@ -330,27 +343,84 @@ bool block::get_witness_reservation(hash_cref& reservation) const NOEXCEPT
 // population
 // ----------------------------------------------------------------------------
 
-code block::populate(const context& ctx, data_chunk&& prevouts) NOEXCEPT
+code block::populate(const context& ctx) NOEXCEPT
 {
     if (txs_.empty())
         return error::empty_block;
 
-    populate_inputs();
-    const std::vector<bool> selected(txs_.size(), true);
-    if (!populate_prevouts(std::move(prevouts), selected))
-        return error::missing_previous_output;
+    std::unordered_map<hash_cref, size_t> positions{};
+    positions.reserve(txs_.size());
+    for (size_t position{}; position < txs_.size(); ++position)
+        positions.emplace(txs_.at(position).hash(false), position);
 
-    return populate_internal(ctx);
+    const auto& self = txs_.front().hash(false);
+    constexpr auto matures = !is_zero(coinbase_maturity);
+    const auto bip68 = ctx.is_enabled(chain::flags::bip68_rule);
+
+    for (auto tx = std::next(txs_.cbegin()); tx != txs_.cend(); ++tx)
+    {
+        const auto relative = bip68 &&
+            tx->version() >= relative_locktime_min_version;
+
+        for (auto in = tx->inputs_begin(); in != tx->inputs_end(); ++in)
+        {
+            const auto it = positions.find(in->point_hash());
+            if (it == positions.end())
+                continue;
+
+            const auto& parent = txs_.at(it->second);
+            if (in->point_index() >= parent.outputs())
+                continue;
+
+            in->metadata.coinbase = (in->point_hash() == self);
+            if (matures && in->metadata.coinbase)
+                return error::coinbase_maturity;
+
+            // An internal spend has zero age, so any relative lock applies.
+            if (relative &&
+                chain::input::is_relative_locktime_applied(in->sequence()) &&
+                chain::input::is_relative_locked(in->sequence(), zero, zero, zero, zero))
+                return error::relative_time_locked;
+
+            in->prevout = std::to_address(std::next(parent.outputs_begin(),
+                in->point_index()));
+        }
+    }
+
+    return error::block_success;
 }
 
-bool block::populate(data_chunk&& prevouts,
-    const std::vector<bool>& selected) NOEXCEPT
+bool block::populate(data_chunk&& prevouts) NOEXCEPT
 {
-    if (txs_.empty() || selected.size() != txs_.size())
+    if (txs_.empty())
         return false;
 
-    populate_inputs();
-    return populate_prevouts(std::move(prevouts), selected);
+    auto& outputs = populated_prevouts();
+    prevout_buffer_ = to_shared(std::move(prevouts));
+
+    // The vector is not reallocated, so its element addresses are stable.
+    const auto* position = prevout_buffer_->data();
+    const auto* end = std::next(position, prevout_buffer_->size());
+    for (auto tx = std::next(txs_.cbegin()); tx != txs_.cend(); ++tx)
+    {
+        if (tx->excluded)
+            continue;
+
+        for (auto in = tx->inputs_begin(); in != tx->inputs_end(); ++in)
+        {
+            if (!is_null(in->prevout))
+                continue;
+
+            if (position >= end)
+                return false;
+
+            const auto& prevout = outputs.emplace_back(position);
+            position = std::next(position, prevout.serialized_size());
+            in->prevout = &prevout;
+        }
+    }
+
+    return position == end;
 }
 
 // private
@@ -407,68 +477,51 @@ void block::populate_inputs() NOEXCEPT
 }
 
 // private
-bool block::populate_prevouts(data_chunk&& prevouts,
-    const std::vector<bool>& selected) NOEXCEPT
+void block::populate_outputs() NOEXCEPT
 {
-    prevout_buffer_ = to_shared(std::move(prevouts));
-    prevouts_ = to_shared<view::outputs>();
-    prevouts_->reserve(spends());
-
-    // The vector is not reallocated, so its element addresses are stable.
-    const auto* position = prevout_buffer_->data();
-    const auto* end = std::next(position, prevout_buffer_->size());
-    auto select = std::next(selected.cbegin());
-    for (auto tx = std::next(txs_.cbegin()); tx != txs_.cend(); ++tx, ++select)
+    // Overflow returns max_size_t.
+    const auto sum = [](size_t total, const auto& tx) NOEXCEPT
     {
-        if (!*select)
-            continue;
+        return ceilinged_add(total, tx.outputs());
+    };
 
-        for (auto in = tx->inputs_begin(); in != tx->inputs_end(); ++in)
+    outputs_ = to_shared<view::outputs>();
+    outputs_->reserve(std::accumulate(txs_.cbegin(), txs_.cend(), zero, sum));
+
+    for (const auto& tx: txs_)
+    {
+        auto stream = tx.get_outputs_stream();
+        read::bytes::fast source{ stream };
+        const auto* outputs = tx.at_outputs();
+        for (size_t out{}; out < tx.outputs(); ++out)
         {
-            if (position >= end)
-                return false;
-
-            const auto& prevout = prevouts_->emplace_back(position);
-            position = std::next(position, prevout.serialized_size());
-            in->prevout = &prevout;
+            outputs_->emplace_back(std::next(outputs,
+                source.get_read_position()));
+            source.skip_bytes(sizeof(uint64_t));
+            source.skip_bytes(source.read_size());
         }
     }
 
-    return position == end;
+    // Ranges are assigned after all insertions, which invalidate end.
+    auto begin = outputs_->cbegin();
+    for (auto& tx: txs_)
+    {
+        const auto end = std::next(begin, tx.outputs());
+        tx.set_outputs(begin, end);
+        begin = end;
+    }
 }
 
 // private
-code block::populate_internal(const context& ctx) const NOEXCEPT
+view::outputs& block::populated_prevouts() NOEXCEPT
 {
-    const auto& self = txs_.front().hash(false);
-    const auto bip68 = ctx.is_enabled(chain::flags::bip68_rule);
-    unordered_set_of_hash_cref hashes{};
-
-    for (auto tx = std::next(txs_.cbegin()); tx != txs_.cend(); ++tx)
+    if (is_null(prevouts_))
     {
-        const auto relative = bip68 &&
-            tx->version() >= relative_locktime_min_version;
-
-        for (auto in = tx->inputs_begin(); in != tx->inputs_end(); ++in)
-        {
-            if (in->point_hash() == self)
-                return error::coinbase_maturity;
-
-            if (!relative || !chain::input::is_relative_locktime_applied(in->sequence()))
-                continue;
-
-            if (hashes.empty())
-                for (const auto& other: txs_)
-                    hashes.emplace(other.hash(false));
-
-            // An internal spend has zero age, so any relative lock applies.
-            if (hashes.contains(in->point_hash()) &&
-                chain::input::is_relative_locked(in->sequence(), zero, zero, zero, zero))
-                return error::relative_time_locked;
-        }
+        prevouts_ = to_shared<view::outputs>();
+        prevouts_->reserve(spends());
     }
 
-    return error::block_success;
+    return *prevouts_;
 }
 
 // validation

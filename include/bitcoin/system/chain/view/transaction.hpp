@@ -43,6 +43,7 @@ public:
 
     typedef std::shared_ptr<const transaction> cptr;
     using input_iterator = view::inputs::const_iterator;
+    using output_iterator = view::outputs::const_iterator;
 
     /// Source must be set to a tx position within the block buffer.
     /// Source position zero must be at the first byte of the block buffer.
@@ -96,6 +97,8 @@ public:
     input_iterator inputs_begin() const NOEXCEPT;
     input_iterator inputs_end() const NOEXCEPT;
     input_iterator input_at(uint32_t index) const NOEXCEPT;
+    output_iterator outputs_begin() const NOEXCEPT;
+    output_iterator outputs_end() const NOEXCEPT;
     output output_at(uint32_t index) const NOEXCEPT;
 
     /// Computed properties.
@@ -118,12 +121,17 @@ public:
         script_version version, uint8_t sighash_flags,
         uint32_t flags) const NOEXCEPT;
 
+    /// Public mutable, excludes the inputs from prevout population.
+    mutable bool excluded{};
+
 protected:
     friend class block;
 
     /// Population (block view).
     void set_inputs(const input_iterator& begin,
         const input_iterator& end) NOEXCEPT;
+    void set_outputs(const output_iterator& begin,
+        const output_iterator& end) NOEXCEPT;
 
     /// Validation helpers.
     bool is_invalid_coinbase_size() const NOEXCEPT;
@@ -256,6 +264,8 @@ private:
     bool populated_{};
     input_iterator inputs_begin_{};
     input_iterator inputs_end_{};
+    output_iterator outputs_begin_{};
+    output_iterator outputs_end_{};
 
     // Signature hash caching (witness and taproot).
     mutable std::shared_ptr<base_cache> x1_base_cache_{};

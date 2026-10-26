@@ -19,6 +19,7 @@
 #ifndef LIBBITCOIN_SYSTEM_CHAIN_VIEW_INPUT_HPP
 #define LIBBITCOIN_SYSTEM_CHAIN_VIEW_INPUT_HPP
 
+#include <bitcoin/system/chain/prevout.hpp>
 #include <bitcoin/system/chain/script.hpp>
 #include <bitcoin/system/chain/view/output.hpp>
 #include <bitcoin/system/chain/witness.hpp>
@@ -68,6 +69,9 @@ public:
 
     /// Public mutable prevout, populated by block view (null if not).
     mutable const output* prevout{};
+
+    /// Public mutable metadata, populated with the prevout.
+    mutable chain::prevout metadata{};
 
 private:
     const uint8_t* data_{};

@@ -84,15 +84,20 @@ bool add_metadata(const prevout_data::list& metadata, const chain::block& block)
 
 bool compute_view_filter(data_chunk& out, const chain::block& block)
 {
-    const auto& txs = *block.transactions_ptr();
-    std::vector<bool> selected(txs.size(), true);
-    selected.front() = false;
+    chain::view::block view{ block.to_data(true), true };
+    if (view.populate(chain::context{}))
+        return false;
 
     data_chunk prevouts{};
-    for (auto tx = std::next(txs.cbegin()); tx != txs.cend(); ++tx)
+    const auto& txs = *block.transactions_ptr();
+    for (size_t tx = one; tx < txs.size(); ++tx)
     {
-        for (const auto& input: *(*tx)->inputs_ptr())
+        auto in = view.views().at(tx).inputs_begin();
+        for (const auto& input: *txs.at(tx)->inputs_ptr())
         {
+            if (!is_null((in++)->prevout))
+                continue;
+
             if (!input->prevout)
                 return false;
 
@@ -101,8 +106,7 @@ bool compute_view_filter(data_chunk& out, const chain::block& block)
         }
     }
 
-    chain::view::block view{ block.to_data(true), true };
-    return view.populate(std::move(prevouts), selected) &&
+    return view.populate(std::move(prevouts)) &&
         neutrino::compute_filter(out, view);
 }
 
@@ -3066,7 +3070,9 @@ BOOST_AUTO_TEST_CASE(neutrino__compute_filter__block_49291_wothout_prevouts__fal
     BOOST_REQUIRE(!neutrino::compute_filter(result, validated_block));
 
     chain::view::block view{ validated_block.to_data(true), true };
-    BOOST_REQUIRE(view.populate({}, std::vector<bool>(view.transactions(), false)));
+    std::ranges::for_each(view.views(), [](const auto& tx) NOEXCEPT { tx.excluded = true; });
+
+    BOOST_REQUIRE(view.populate(data_chunk{}));
     BOOST_REQUIRE(!neutrino::compute_filter(result, view));
 }
 

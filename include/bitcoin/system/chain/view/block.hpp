@@ -60,6 +60,7 @@ public:
     /// Populated properties (population required).
     bool is_populated() const NOEXCEPT;
     const view::inputs& inputs() const NOEXCEPT;
+    const view::outputs& outputs() const NOEXCEPT;
     const view::outputs& prevouts() const NOEXCEPT;
 
     /// Identity.
@@ -67,14 +68,13 @@ public:
     code identify(const context& ctx) const NOEXCEPT;
 
     /// Population.
-    /// Prevouts are the wire-encoded prevouts of each spend in block order.
+    /// Populates internal spends from the block.
     /// Fails if any populated prevout is internally immature or locked.
-    code populate(const context& ctx, data_chunk&& prevouts) NOEXCEPT;
+    code populate(const context& ctx) NOEXCEPT;
 
-    /// Prevouts are the wire-encoded prevouts of each spend of the selected
-    /// txs in block order, others are null (internal checks are skipped).
-    bool populate(data_chunk&& prevouts,
-        const std::vector<bool>& selected) NOEXCEPT;
+    /// Prevouts are the wire-encoded prevouts of each unpopulated spend in
+    /// block order, excluding spends of excluded transactions.
+    bool populate(data_chunk&& prevouts) NOEXCEPT;
 
     /// Validation (population required).
     code check() const NOEXCEPT;
@@ -139,9 +139,8 @@ private:
 
     // Population.
     void populate_inputs() NOEXCEPT;
-    bool populate_prevouts(data_chunk&& prevouts,
-        const std::vector<bool>& selected) NOEXCEPT;
-    code populate_internal(const context& ctx) const NOEXCEPT;
+    void populate_outputs() NOEXCEPT;
+    view::outputs& populated_prevouts() NOEXCEPT;
 
     bool witness_;
     chunk_cptr buffer_;
@@ -150,6 +149,7 @@ private:
     // Populated (shared by copies).
     chunk_cptr prevout_buffer_{};
     std::shared_ptr<view::inputs> inputs_{};
+    std::shared_ptr<view::outputs> outputs_{};
     std::shared_ptr<view::outputs> prevouts_{};
 };
 
