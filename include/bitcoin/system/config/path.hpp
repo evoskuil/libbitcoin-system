@@ -69,11 +69,6 @@ private:
 BC_API std::filesystem::path operator/(const path& left,
     const std::filesystem::path& right) NOEXCEPT;
 
-/// Assign the token as the path, bypassing stream extraction, which cannot
-/// obtain an empty token and terminates a token at its first space.
-BC_API void validate(boost::any& value, const string_list& tokens, path*,
-    int) THROWS;
-
 } // namespace config
 } // namespace system
 } // namespace libbitcoin

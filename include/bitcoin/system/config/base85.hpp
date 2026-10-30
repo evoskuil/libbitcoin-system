@@ -54,11 +54,6 @@ private:
     data_chunk value_;
 };
 
-/// Assign the token as the key, bypassing stream extraction, which cannot
-/// obtain an empty token (the unencrypted default).
-BC_API void validate(boost::any& value, const string_list& tokens, base85*,
-    int) THROWS;
-
 } // namespace config
 } // namespace system
 } // namespace libbitcoin
