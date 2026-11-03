@@ -69,6 +69,9 @@ settings::settings() NOEXCEPT
     bip54_txsize_deployment.bit = bit_right<uint32_t>(8);
     bip54_txsize_deployment.flags = chain::flags::bip54_txsize_rule;
     bip54_txsize_deployment.speedy = true;
+    bip54_coinbase_deployment.bit = bit_right<uint32_t>(9);
+    bip54_coinbase_deployment.flags = chain::flags::bip54_coinbase_rule;
+    bip54_coinbase_deployment.speedy = true;
 
     forks.bip16 = true;
     forks.bip30 = true;
@@ -89,6 +92,7 @@ settings::settings() NOEXCEPT
     forks.bip54_timespan = true;
     forks.bip54_sigops = true;
     forks.bip54_txsize = true;
+    forks.bip54_coinbase = true;
     forks.retarget = true;                     // !regtest
     forks.difficult = true;                    // !testnet
     forks.time_warp_patch = false;             // testnet4
@@ -170,6 +174,7 @@ settings::settings(chain::selection context) NOEXCEPT
             forks.bip54_timespan = true;
             forks.bip54_sigops = true;
             forks.bip54_txsize = true;
+            forks.bip54_coinbase = true;
             forks.retarget = true;                     // !regtest
             forks.difficult = true;                    // !testnet
             forks.time_warp_patch = false;             // testnet4
@@ -286,6 +291,7 @@ settings::settings(chain::selection context) NOEXCEPT
             forks.bip54_timespan = true;
             forks.bip54_sigops = true;
             forks.bip54_txsize = true;
+            forks.bip54_coinbase = true;
             forks.retarget = true;                     // !regtest
             forks.difficult = false;                   // !testnet
             forks.time_warp_patch = false;             // testnet4
@@ -386,6 +392,7 @@ settings::settings(chain::selection context) NOEXCEPT
             forks.bip54_timespan = true;
             forks.bip54_sigops = true;
             forks.bip54_txsize = true;
+            forks.bip54_coinbase = true;
             forks.retarget = true;                     // !regtest
             forks.difficult = false;                   // !testnet
             forks.time_warp_patch = true;              // testnet4
@@ -480,6 +487,7 @@ settings::settings(chain::selection context) NOEXCEPT
             forks.bip54_timespan = true;
             forks.bip54_sigops = true;
             forks.bip54_txsize = true;
+            forks.bip54_coinbase = true;
             forks.retarget = false;                    // !regtest
             forks.difficult = true;                    // !testnet
             forks.time_warp_patch = false;             // testnet4
@@ -506,6 +514,7 @@ settings::settings(chain::selection context) NOEXCEPT
             bip54_timespan_deployment.start = chain::chain_state::deployment::always_active;
             bip54_sigops_deployment.start = chain::chain_state::deployment::always_active;
             bip54_txsize_deployment.start = chain::chain_state::deployment::always_active;
+            bip54_coinbase_deployment.start = chain::chain_state::deployment::always_active;
             checkpoints = {};
             milestone = { "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206", 0 };
             minimum_work = base16_hash("0000000000000000000000000000000000000000000000000000000000000000");
@@ -577,6 +586,7 @@ settings::settings(chain::selection context) NOEXCEPT
             forks.bip54_timespan = true;
             forks.bip54_sigops = true;
             forks.bip54_txsize = true;
+            forks.bip54_coinbase = true;
             forks.retarget = true;                     // !regtest
             forks.difficult = true;                    // !testnet
             forks.time_warp_patch = false;             // testnet4
