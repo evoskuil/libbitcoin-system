@@ -472,6 +472,21 @@ constexpr uint64_t algorithm::evaluate(const std::span<const mask_t>& outcomes,
     return best;
 }
 
+template <typename Word>
+constexpr void algorithm::range(int64_t& least, int64_t& greatest,
+    const std::span<const mask_t>& outcomes, const component_t& component,
+    const weights_t& weights) NOEXCEPT
+{
+    least = outcomes.empty() ? 0_i64 : max_int64;
+    greatest = outcomes.empty() ? 0_i64 : min_int64;
+    each_sum<Word>(zero, outcomes, weights, component.count,
+        [&](size_t, uint64_t sum) NOEXCEPT
+        {
+            least = std::min(least, to_signed(sum));
+            greatest = std::max(greatest, to_signed(sum));
+        });
+}
+
 inline void algorithm::leaves(std::vector<mask_t>& out,
     const component_t& component, const graph_t& graph, size_t limit,
     uint64_t rate, uint32_t bytes_per_sigop) NOEXCEPT
@@ -2278,18 +2293,17 @@ inline bool algorithm::reform(const columns_t& columns,
 }
 
 template <typename Word>
-INLINE constexpr Word algorithm::fees(Word outcomes,
-    const component_t& component, const graph_t& graph) NOEXCEPT
+INLINE constexpr Word algorithm::sums(Word outcomes, const weights_t& weights,
+    size_t count) NOEXCEPT
 {
     constexpr auto lane = bits<mask_t>;
     auto sum = f::broadcast<Word>(mask_t{});
-    for (size_t member{}; member < component.count; ++member)
+    for (size_t member{}; member < count; ++member)
     {
         const auto bit = f::broadcast<Word>(set_right(mask_t{}, member));
-        const auto& total = totals(graph, component.rows[member]);
-        const auto fee = f::broadcast<Word>(total.fee);
+        const auto weight = f::broadcast<Word>(weights[member]);
         const auto selected = f::eq<lane>(f::and_(outcomes, bit), bit);
-        sum = f::add<lane>(sum, f::and_(selected, fee));
+        sum = f::add<lane>(sum, f::and_(selected, weight));
     }
 
     return sum;
@@ -2300,30 +2314,42 @@ constexpr void algorithm::each_fee(size_t index,
     const std::span<const mask_t>& outcomes, const component_t& component,
     const graph_t& graph, const Visitor& visit) NOEXCEPT
 {
+    weights_t fees{};
+    for (size_t member{}; member < component.count; ++member)
+        fees[member] = totals(graph, component.rows[member]).fee;
+
+    each_sum<Word>(index, outcomes, fees, component.count, visit);
+}
+
+template <typename Word, typename Visitor>
+constexpr void algorithm::each_sum(size_t index,
+    const std::span<const mask_t>& outcomes, const weights_t& weights,
+    size_t members, const Visitor& visit) NOEXCEPT
+{
     const auto count = outcomes.size();
     if constexpr (is_extended<Word>)
     {
         if constexpr (have<Word>)
         {
             constexpr auto lanes = mask_lanes<Word>;
-            aligned_array<uint64_t, lanes> sums{};
+            aligned_array<uint64_t, lanes> totals{};
             for (; index + lanes <= count; index += lanes)
             {
                 const auto word = load<Word>(&outcomes[index]);
-                store(sums.data(), fees<Word>(word, component, graph));
+                store(totals.data(), sums<Word>(word, weights, members));
 
                 for (size_t lane{}; lane < lanes; ++lane)
-                    visit(index + lane, sums[lane]);
+                    visit(index + lane, totals[lane]);
             }
         }
 
         using next = narrower<Word, mask_t>;
-        each_fee<next>(index, outcomes, component, graph, visit);
+        each_sum<next>(index, outcomes, weights, members, visit);
     }
     else
     {
         for (; index < count; ++index)
-            visit(index, fees<mask_t>(outcomes[index], component, graph));
+            visit(index, sums<mask_t>(outcomes[index], weights, members));
     }
 }
 

@@ -725,6 +725,30 @@ static bool evaluates_as_integral() NOEXCEPT
         accessor::evaluate<uint64_t>(masks, out, graph);
 }
 
+// Sums of the outcomes are 90, 60, 85 and -5.
+static accessor::weights_t signed_weights() NOEXCEPT
+{
+    return { 10u, 20u, to_unsigned(-5_i64), 40u, 80u };
+}
+
+template <typename Word>
+static bool ranges_as_integral() NOEXCEPT
+{
+    auto labeled = label<link_t>();
+    const auto out = component(labeled);
+    std_array<mask_t, 23> masks{};
+    size_t at{};
+    std::generate(masks.begin(), masks.end(), [&]() NOEXCEPT
+    {
+        return accessor::outcome(out, at++ % 4);
+    });
+
+    int64_t least{};
+    int64_t greatest{};
+    accessor::range<Word>(least, greatest, masks, out, signed_weights());
+    return least == -5 && greatest == 90;
+}
+
 template <typename Word>
 static bool bests_as_integral() NOEXCEPT
 {
@@ -1696,6 +1720,33 @@ BC_AUTO_TEST_CASE(pool_algorithm__evaluate__outcomes__highest_fee)
     const auto out = component(labeled);
     const graph_t graph{ labeled.columns() };
     BC_REQUIRE_EQUAL(accessor::evaluate<uint64_t>(outcomes_of(out), out, graph), 650u);
+}
+
+BC_AUTO_TEST_CASE(pool_algorithm__range__outcomes__least_and_greatest)
+{
+    auto labeled = label<link_t>();
+    const auto out = component(labeled);
+    int64_t least{};
+    int64_t greatest{};
+    accessor::range<uint64_t>(least, greatest, outcomes_of(out), out, signed_weights());
+    BC_REQUIRE_EQUAL(least, -5);
+    BC_REQUIRE_EQUAL(greatest, 90);
+}
+
+BC_AUTO_TEST_CASE(pool_algorithm__range__no_outcomes__zeros)
+{
+    int64_t least{ 1 };
+    int64_t greatest{ 1 };
+    accessor::range<uint64_t>(least, greatest, {}, {}, signed_weights());
+    BC_REQUIRE_EQUAL(least, 0);
+    BC_REQUIRE_EQUAL(greatest, 0);
+}
+
+BC_AUTO_TEST_CASE(pool_algorithm__range__extended__same_as_integral)
+{
+    BC_REQUIRE(ranges_as_integral<xint128_t>());
+    BC_REQUIRE(ranges_as_integral<xint256_t>());
+    BC_REQUIRE(ranges_as_integral<xint512_t>());
 }
 
 BC_AUTO_TEST_CASE(pool_algorithm__evaluate__extended__same_as_integral)

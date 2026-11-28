@@ -84,6 +84,9 @@ public:
         size_t contests{};
     };
 
+    /// Weight of each member of a component (twos complement if negative).
+    using weights_t = std_array<uint64_t, bits<mask_t>>;
+
     /// Columns of rows and of their inputs.
     struct columns_t
     {
@@ -360,6 +363,12 @@ public:
     template <typename Word = xint512_t>
     static constexpr uint64_t evaluate(const std::span<const mask_t>& outcomes,
         const component_t& component, const graph_t& graph) NOEXCEPT;
+
+    /// Least and greatest sum of member weights over the outcomes.
+    template <typename Word = xint512_t>
+    static constexpr void range(int64_t& least, int64_t& greatest,
+        const std::span<const mask_t>& outcomes, const component_t& component,
+        const weights_t& weights) NOEXCEPT;
 
     /// Distinct outcomes within limit, then greedy leaf past it.
     static void leaves(std::vector<mask_t>& out, const component_t& component,
@@ -653,10 +662,16 @@ protected:
     using narrower = iif<is_same_type<Word, xint512_t>, xint256_t,
         iif<is_same_type<Word, xint256_t>, xint128_t, Integral>>;
 
-    /// Lanes of fee sums of the outcomes, members broadcast and selected.
+    /// Lanes of weight sums of the outcomes, members broadcast and selected.
     template <typename Word>
-    INLINE static constexpr Word fees(Word outcomes,
-        const component_t& component, const graph_t& graph) NOEXCEPT;
+    INLINE static constexpr Word sums(Word outcomes, const weights_t& weights,
+        size_t count) NOEXCEPT;
+
+    /// Each outcome index and its sum of member weights, from the index.
+    template <typename Word, typename Visitor>
+    static constexpr void each_sum(size_t index,
+        const std::span<const mask_t>& outcomes, const weights_t& weights,
+        size_t members, const Visitor& visit) NOEXCEPT;
 
     /// Each outcome index and its fee, from the index.
     template <typename Word, typename Visitor>
