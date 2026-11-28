@@ -90,6 +90,7 @@ public:
     uint32_t work_required{};
     uint32_t previous_timestamp{};
     uint32_t retarget_timestamp{};
+    uint32_t version{};
 };
 
 BC_API bool operator==(const context& left, const context& right) NOEXCEPT;

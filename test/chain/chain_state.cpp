@@ -27,6 +27,7 @@ struct test_chain_state
 {
     using chain::chain_state::median_time_past;
     using chain::chain_state::next_state;
+    using chain::chain_state::signal_version;
     using chain::chain_state::work_required;
 
     static activations activation(data values, const forks& forks,
@@ -792,32 +793,78 @@ BC_AUTO_TEST_CASE(chain_state__get_map__bip9_always_active__signal_unrequested)
 // signal_version
 // ----------------------------------------------------------------------------
 
-BC_AUTO_TEST_CASE(chain_state__signal_version__mainnet__bip9_bit2)
+BC_AUTO_TEST_CASE(chain_state__signal_version__mainnet_defined__bip9_base)
 {
     const settings settings(selection::mainnet);
-    const auto expected = settings.bip9_version_base | settings.bip9_version_bit2;
-    BC_REQUIRE_EQUAL(chain_state::signal_version(settings), expected);
+    const chain_state::data values{};
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip9_version_base);
 }
 
-BC_AUTO_TEST_CASE(chain_state__signal_version__taproot_disabled__bip9_bit1)
+BC_AUTO_TEST_CASE(chain_state__signal_version__mainnet_started__bip9_bit2)
+{
+    const settings settings(selection::mainnet);
+    chain_state::data values{};
+    values.signals[2].state = state_t::started;
+    const auto expected = settings.bip9_version_base | bit_right<uint32_t>(2);
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), expected);
+}
+
+BC_AUTO_TEST_CASE(chain_state__signal_version__mainnet_locked_in__bip9_bit2)
+{
+    const settings settings(selection::mainnet);
+    chain_state::data values{};
+    values.signals[2].state = state_t::locked_in;
+    const auto expected = settings.bip9_version_base | bit_right<uint32_t>(2);
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), expected);
+}
+
+BC_AUTO_TEST_CASE(chain_state__signal_version__mainnet_active__bip9_base)
+{
+    const settings settings(selection::mainnet);
+    chain_state::data values{};
+    values.signals[0].state = state_t::active;
+    values.signals[1].state = state_t::active;
+    values.signals[2].state = state_t::active;
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip9_version_base);
+}
+
+BC_AUTO_TEST_CASE(chain_state__signal_version__mainnet_failed__bip9_base)
+{
+    const settings settings(selection::mainnet);
+    chain_state::data values{};
+    values.signals[2].state = state_t::failed;
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip9_version_base);
+}
+
+BC_AUTO_TEST_CASE(chain_state__signal_version__started_unconfigured__bip9_base)
 {
     settings settings(selection::mainnet);
     settings.forks.bip341 = false;
     settings.forks.bip342 = false;
-    const auto expected = settings.bip9_version_base | settings.bip9_version_bit1;
-    BC_REQUIRE_EQUAL(chain_state::signal_version(settings), expected);
+    chain_state::data values{};
+    values.signals[2].state = state_t::started;
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip9_version_base);
 }
 
-BC_AUTO_TEST_CASE(chain_state__signal_version__segwit_disabled__bip9_bit0)
+BC_AUTO_TEST_CASE(chain_state__signal_version__bip54_coinbase_started__bit9)
 {
     settings settings(selection::mainnet);
-    settings.forks.bip341 = false;
-    settings.forks.bip342 = false;
-    settings.forks.bip141 = false;
-    settings.forks.bip143 = false;
-    settings.forks.bip147 = false;
-    const auto expected = settings.bip9_version_base | settings.bip9_version_bit0;
-    BC_REQUIRE_EQUAL(chain_state::signal_version(settings), expected);
+    settings.forks.bip54_coinbase = true;
+    settings.bip54_coinbase_deployment.start = 1;
+    settings.bip54_coinbase_deployment.timeout = max_uint32;
+    settings.bip54_coinbase_deployment.threshold = 1;
+    chain_state::data values{};
+    values.signals[7].state = state_t::started;
+    const auto expected = settings.bip9_version_base | bit_right<uint32_t>(9);
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), expected);
+}
+
+BC_AUTO_TEST_CASE(chain_state__signal_version__always_active__bip9_base)
+{
+    const settings settings(selection::regtest);
+    chain_state::data values{};
+    values.signals[7].state = state_t::started;
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip9_version_base);
 }
 
 BC_AUTO_TEST_CASE(chain_state__signal_version__bip65_only__bip65_version)
@@ -831,8 +878,8 @@ BC_AUTO_TEST_CASE(chain_state__signal_version__bip65_only__bip65_version)
     settings.forks.bip68 = false;
     settings.forks.bip112 = false;
     settings.forks.bip113 = false;
-    const auto version = chain_state::signal_version(settings);
-    BC_REQUIRE_EQUAL(version, settings.bip65_version);
+    const chain_state::data values{};
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip65_version);
 }
 
 BC_AUTO_TEST_CASE(chain_state__signal_version__no_forks__first_version)
@@ -849,8 +896,8 @@ BC_AUTO_TEST_CASE(chain_state__signal_version__no_forks__first_version)
     settings.forks.bip65 = false;
     settings.forks.bip66 = false;
     settings.forks.bip34 = false;
-    const auto version = chain_state::signal_version(settings);
-    BC_REQUIRE_EQUAL(version, settings.first_version);
+    const chain_state::data values{};
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.first_version);
 }
 
 // configured_flags
@@ -964,6 +1011,19 @@ BC_AUTO_TEST_CASE(chain_state__construct__top_to_pool__promoted_timestamps)
     const chain_state pool{ top, settings };
     BC_REQUIRE_EQUAL(pool.timestamp(), top.timestamp());
     BC_REQUIRE_EQUAL(pool.previous_timestamp(), top.timestamp());
+}
+
+BC_AUTO_TEST_CASE(chain_state__construct__top_to_pool__started__signal_version)
+{
+    settings settings(selection::mainnet);
+    settings.forks.retarget = false;
+    auto values = transition_values();
+    values.signals[2].state = state_t::started;
+    const chain_state top{ std::move(values), settings };
+    const chain_state pool{ top, settings };
+    const auto expected = settings.bip9_version_base | bit_right<uint32_t>(2);
+    BC_REQUIRE_EQUAL(pool.version(), expected);
+    BC_REQUIRE_EQUAL(pool.context().version, expected);
 }
 
 BC_AUTO_TEST_CASE(chain_state__construct__pool_to_block__same_height)
@@ -1346,8 +1406,8 @@ BC_AUTO_TEST_CASE(chain_state__signal_version__bip66_only__bip66_version)
     settings settings(selection::mainnet);
     settings.forks = {};
     settings.forks.bip66 = true;
-    const auto version = chain_state::signal_version(settings);
-    BC_REQUIRE_EQUAL(version, settings.bip66_version);
+    const chain_state::data values{};
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip66_version);
 }
 
 BC_AUTO_TEST_CASE(chain_state__signal_version__bip34_only__bip34_version)
@@ -1355,8 +1415,8 @@ BC_AUTO_TEST_CASE(chain_state__signal_version__bip34_only__bip34_version)
     settings settings(selection::mainnet);
     settings.forks = {};
     settings.forks.bip34 = true;
-    const auto version = chain_state::signal_version(settings);
-    BC_REQUIRE_EQUAL(version, settings.bip34_version);
+    const chain_state::data values{};
+    BC_REQUIRE_EQUAL(test_chain_state::signal_version(values, settings), settings.bip34_version);
 }
 
 // get_map (regtest bypasses retargeting)
@@ -1427,6 +1487,7 @@ BC_AUTO_TEST_CASE(chain_state__context__always__matches_properties)
     BC_REQUIRE_EQUAL(ctx.height, state.height());
     BC_REQUIRE_EQUAL(ctx.work_required, state.work_required());
     BC_REQUIRE_EQUAL(ctx.previous_timestamp, state.previous_timestamp());
+    BC_REQUIRE_EQUAL(ctx.version, state.version());
     const auto version = state.minimum_block_version();
     BC_REQUIRE_EQUAL(ctx.minimum_block_version, version);
 }

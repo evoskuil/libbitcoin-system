@@ -224,10 +224,6 @@ public:
     static map get_map(size_t height,
         const system::settings& settings) NOEXCEPT;
 
-    /// The block version to signal based on configured forks.
-    static uint32_t signal_version(
-        const system::settings& settings) NOEXCEPT;
-
     /// The flags of all configured forks, independent of activation.
     static uint32_t configured_flags(const forks& forks) NOEXCEPT;
 
@@ -257,6 +253,7 @@ public:
     chain::context context() const NOEXCEPT;
     const hash_digest& hash() const NOEXCEPT;
     const uint256_t& cumulative_work() const NOEXCEPT;
+    uint32_t version() const NOEXCEPT;
     uint32_t minimum_block_version() const NOEXCEPT;
     uint32_t work_required() const NOEXCEPT;
     uint32_t timestamp() const NOEXCEPT;
@@ -287,6 +284,10 @@ protected:
     /// Returns zero if data is invalid.
     static uint32_t median_time_past(const data& values,
         const forks& forks) NOEXCEPT;
+
+    /// The block version to signal in a block templated on the pool values.
+    static uint32_t signal_version(const data& values,
+        const system::settings& settings) NOEXCEPT;
 
     /// The deployment state of the period opened by the boundary.
     static deployment_state next_state(const deployment& deployment,

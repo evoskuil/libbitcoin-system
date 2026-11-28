@@ -740,26 +740,33 @@ bool chain_state::is_signal(uint32_t version, uint32_t base,
 }
 
 // Only a miner signals, in version of a block templated on pool state.
-// Configured bip9 groups are signaled unconditionally, where bip9 defines
-// signaling only while deployment is started or locked in.
-uint32_t chain_state::signal_version(const system::settings& settings) NOEXCEPT
+// A configured deployment is signaled while started or locked in (bip9).
+uint32_t chain_state::signal_version(const data& values,
+    const system::settings& settings) NOEXCEPT
 {
     const auto& forks = settings.forks;
+    const auto configured = configured_flags(forks);
+    const auto list = deployments(settings);
 
-    // TODO: these can be retired.
-    // Signal bip9 bit2 if any of the group is configured.
-    if (forks.bip341 || forks.bip342)
-        return settings.bip9_version_base | settings.bip9_version_bit2;
+    auto deployed = false;
+    auto version = settings.bip9_version_base;
+    for (size_t index{}; index < list.size(); ++index)
+    {
+        const auto& deployment = list.at(index);
+        const auto signaled = is_signaled(deployment, settings, configured);
+        const auto always = deployment.start == deployment::always_active;
+        if (!is_configured(deployment, configured) || !(signaled || always))
+            continue;
 
-    // TODO: these can be retired.
-    // Signal bip9 bit1 if any of the group is configured.
-    if (forks.bip141 || forks.bip143 || forks.bip147)
-        return settings.bip9_version_base | settings.bip9_version_bit1;
+        deployed = true;
+        const auto state = values.signals.at(index).state;
+        if (signaled && (state == deployment_state::started ||
+            state == deployment_state::locked_in))
+            set_right_into(version, deployment.bit);
+    }
 
-    // TODO: these can be retired.
-    // Signal bip9 bit0 if any of the group is configured.
-    if (forks.bip68 || forks.bip112 || forks.bip113)
-        return settings.bip9_version_base | settings.bip9_version_bit0;
+    if (deployed)
+        return version;
 
     if (forks.bip65)
         return settings.bip65_version;
@@ -879,7 +886,7 @@ chain_state::data chain_state::to_pool(const chain_state& top,
     data.height = height;
     data.hash = {};
     data.bits.self = 0;
-    data.version.self = signal_version(settings);
+    data.version.self = signal_version(data, settings);
     return data;
 }
 
@@ -999,7 +1006,8 @@ chain::context chain_state::context() const NOEXCEPT
         minimum_block_version(),
         work_required(),
         previous_timestamp(),
-        retarget_timestamp()
+        retarget_timestamp(),
+        version()
     };
 }
 
@@ -1011,6 +1019,11 @@ const hash_digest& chain_state::hash() const NOEXCEPT
 const uint256_t& chain_state::cumulative_work() const NOEXCEPT
 {
     return data_.cumulative_work;
+}
+
+uint32_t chain_state::version() const NOEXCEPT
+{
+    return data_.version.self;
 }
 
 uint32_t chain_state::minimum_block_version() const NOEXCEPT
