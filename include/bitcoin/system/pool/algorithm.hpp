@@ -399,6 +399,10 @@ public:
         const std::span<const link_t>& rows,
         const std::span<const link_t>& conflicts) NOEXCEPT;
 
+    /// Row of each other input spending a point spent by the rows.
+    static void rivals(std::vector<link_t>& out, const columns_t& columns,
+        const std::span<const link_t>& rows) NOEXCEPT;
+
     /// Template (frontier, table columns).
     /// -----------------------------------------------------------------------
 

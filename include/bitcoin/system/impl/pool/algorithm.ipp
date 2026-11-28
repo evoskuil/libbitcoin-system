@@ -651,6 +651,24 @@ inline bool algorithm::unconfirm(const columns_t& columns,
     return spread(walk, columns);
 }
 
+inline void algorithm::rivals(std::vector<link_t>& out,
+    const columns_t& columns, const std::span<const link_t>& rows) NOEXCEPT
+{
+    const graph_t graph{ columns };
+    for (const auto row: rows)
+    {
+        const auto slice = edges(graph, row);
+        for (auto input = slice.first; input < slice.first + slice.count;
+            ++input)
+        {
+            each_rival(graph, input, [&](link_t other) NOEXCEPT
+            {
+                out.push_back(owner(graph, other));
+            });
+        }
+    }
+}
+
 // Template (frontier, table columns).
 // ----------------------------------------------------------------------------
 

@@ -2721,6 +2721,38 @@ BC_AUTO_TEST_CASE(pool_algorithm__confirm__random__same_as_columns)
     BC_REQUIRE(walks_random_as_columns(4));
 }
 
+BC_AUTO_TEST_CASE(pool_algorithm__rivals__q__a)
+{
+    state table{};
+    std::vector<link_t> out{};
+    accessor::rivals(out, table.columns(), std::vector<link_t>{ 0 });
+    BC_REQUIRE(out == std::vector<link_t>{ 1 });
+}
+
+BC_AUTO_TEST_CASE(pool_algorithm__rivals__a__q_and_b)
+{
+    state table{};
+    std::vector<link_t> out{};
+    accessor::rivals(out, table.columns(), std::vector<link_t>{ 1 });
+    BC_REQUIRE(out == (std::vector<link_t>{ 0, 2 }));
+}
+
+BC_AUTO_TEST_CASE(pool_algorithm__rivals__q_and_b__a_of_each)
+{
+    state table{};
+    std::vector<link_t> out{};
+    accessor::rivals(out, table.columns(), std::vector<link_t>{ 0, 2 });
+    BC_REQUIRE(out == (std::vector<link_t>{ 1, 1 }));
+}
+
+BC_AUTO_TEST_CASE(pool_algorithm__rivals__uncontested__empty)
+{
+    state table{};
+    std::vector<link_t> out{};
+    accessor::rivals(out, table.columns(), std::vector<link_t>{ 3, 4 });
+    BC_REQUIRE(out.empty());
+}
+
 BC_AUTO_TEST_CASE(pool_algorithm__relabel__component__lowest_row)
 {
     auto labeled = label<link_t>();
